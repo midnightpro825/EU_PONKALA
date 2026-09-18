@@ -1,8 +1,2 @@
-﻿-- =============================================================
--- EU PONKALA - Migration 005: add auto_complete_at to orders
--- Used by engine/auto-complete.js scheduler
--- =============================================================
-
--- SQLite doesn't support IF NOT EXISTS on ALTER TABLE ADD COLUMN,
--- so this will error silently on subsequent runs (tolerated by db.js).
-ALTER TABLE orders ADD COLUMN auto_complete_at DATETIME;
+﻿-- Migration 005: auto_complete_at column (now included in schema.sql, this is a no-op safeguard)
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS auto_complete_at TIMESTAMP;
