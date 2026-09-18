@@ -1,4 +1,4 @@
-﻿CREATE TABLE IF NOT EXISTS zones (
+CREATE TABLE IF NOT EXISTS zones (
     zone_id     SERIAL PRIMARY KEY,
     zone_code   TEXT UNIQUE NOT NULL,
     zone_name   TEXT NOT NULL,

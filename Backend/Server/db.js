@@ -1,4 +1,4 @@
-﻿// =============================================
+// =============================================
 // EU PONKALA — Postgres Helper (SQLite-compat shim)
 // =============================================
 // Uses pg. Provides run/get/all with the SAME API as the old sqlite3 module.

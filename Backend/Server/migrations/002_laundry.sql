@@ -1,4 +1,4 @@
-﻿CREATE TABLE IF NOT EXISTS engine_laundry_items (
+CREATE TABLE IF NOT EXISTS engine_laundry_items (
     item_id     SERIAL PRIMARY KEY,
     item_code   TEXT UNIQUE NOT NULL,
     item_label  TEXT NOT NULL,

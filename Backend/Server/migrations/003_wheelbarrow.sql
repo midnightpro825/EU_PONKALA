@@ -1,4 +1,4 @@
-﻿CREATE TABLE IF NOT EXISTS engine_wheelbarrow_pricing (
+CREATE TABLE IF NOT EXISTS engine_wheelbarrow_pricing (
     rule_id              SERIAL PRIMARY KEY,
     rule_name            TEXT UNIQUE NOT NULL,
     base_price           NUMERIC(10,2) NOT NULL DEFAULT 20,

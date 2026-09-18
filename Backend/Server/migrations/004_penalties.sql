@@ -1,4 +1,4 @@
-﻿CREATE TABLE IF NOT EXISTS engine_penalties (
+CREATE TABLE IF NOT EXISTS engine_penalties (
     penalty_id   SERIAL PRIMARY KEY,
     subject_type TEXT NOT NULL,
     subject_id   INTEGER NOT NULL,
