@@ -57,4 +57,38 @@ const init = () => new Promise((resolve, reject) => {
     });
 });
 
-module.exports = { db, run, get, all, init, DB_PATH };
+// ─── Run migrations/*.sql on startup (idempotent) ───
+const MIGRATIONS_DIR = path.join(__dirname, 'migrations');
+const runMigrations = () => new Promise((resolve) => {
+    if (!fs.existsSync(MIGRATIONS_DIR)) return resolve(false);
+
+    const files = fs.readdirSync(MIGRATIONS_DIR)
+        .filter(f => f.endsWith('.sql'))
+        .sort();
+
+    if (files.length === 0) return resolve(false);
+
+    console.log(`📦 Running ${files.length} migration(s)...`);
+    let pending = files.length;
+    let applied = 0;
+
+    files.forEach(f => {
+        const sql = fs.readFileSync(path.join(MIGRATIONS_DIR, f), 'utf8');
+        db.exec(sql, (err) => {
+            if (err) {
+                // Tolerate common idempotency errors
+                if (/duplicate column|already exists/i.test(err.message)) {
+                    console.log(`  ⏭️  ${f} (already applied)`);
+                } else {
+                    console.warn(`  ⚠️  ${f} failed: ${err.message}`);
+                }
+            } else {
+                console.log(`  ✅ ${f}`);
+                applied++;
+            }
+            if (--pending === 0) resolve(applied);
+        });
+    });
+});
+
+module.exports = { db, run, get, all, init, runMigrations, DB_PATH };

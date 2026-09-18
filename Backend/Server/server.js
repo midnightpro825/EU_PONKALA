@@ -1823,6 +1823,11 @@ app.use((req, res) => {
 // ═══════════════════════════════════════════════
 (async () => {
     const created = await init();
+      // Run migrations/*.sql (idempotent)
+      try {
+          const { runMigrations } = require('./db');
+          await runMigrations();
+      } catch (e) { console.warn('migrations failed:', e.message); }
     // Laundry module: apply schema additions if needed and ensure seed data
     const fs = require('fs');
     const schemaPath = path.join(__dirname, 'schema.sql');
