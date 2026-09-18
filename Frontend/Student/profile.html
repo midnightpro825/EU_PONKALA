@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EU PONKALA - Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f5f7fb; color: #1a1a2e; padding-bottom: 90px; }
+        .top-header { background: white; padding: 14px 24px; border-bottom: 1px solid rgba(0,0,0,0.04); position: sticky; top: 0; z-index: 100; }
+        .top-header .inner { max-width: 900px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 22px; font-weight: 900; text-decoration: none; color: #1a1a2e; }
+        .logo span { color: #f5a623; }
+        .back-btn { background: #f5a623; color: white; padding: 8px 18px; border-radius: 10px; text-decoration: none; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+        .main-wrap { max-width: 900px; margin: 0 auto; padding: 24px 24px 0; }
+        .hero-card { background: white; border-radius: 20px; padding: 32px; border: 1px solid #eef2f6; margin-bottom: 20px; display: flex; align-items: center; gap: 24px; }
+        .hero-card img { width: 96px; height: 96px; border-radius: 50%; }
+        .hero-card h2 { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
+        .hero-card .meta { font-size: 14px; color: #6b7280; }
+        .hero-card .badge { display: inline-block; background: #d1fae5; color: #059669; font-size: 12px; font-weight: 700; padding: 3px 12px; border-radius: 20px; margin-top: 8px; }
+        .stats-mini { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
+        .mini-stat { background: white; border-radius: 16px; padding: 20px; border: 1px solid #eef2f6; text-align: center; }
+        .mini-stat .num { font-size: 26px; font-weight: 800; color: #f5a623; }
+        .mini-stat .lbl { font-size: 12px; color: #6b7280; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .card { background: white; border-radius: 20px; padding: 28px; border: 1px solid #eef2f6; margin-bottom: 20px; }
+        .card h3 { font-size: 17px; font-weight: 700; margin-bottom: 18px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #4b5563; }
+        .form-group input { width: 100%; padding: 12px 16px; border: 1.5px solid #eef2f6; border-radius: 12px; font-size: 14px; font-family: inherit; background: #f8f9fa; }
+        .form-group input:focus { outline: none; border-color: #f5a623; background: white; box-shadow: 0 0 0 4px rgba(245,166,35,0.1); }
+        .btn-primary { background: #f5a623; color: white; border: none; padding: 14px 32px; border-radius: 12px; font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit; }
+        .btn-primary:hover { background: #d4951f; }
+        .btn-danger { background: #fee2e2; color: #dc2626; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 14px; cursor: pointer; font-family: inherit; }
+        .btn-danger:hover { background: #dc2626; color: white; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-top: 1px solid rgba(0,0,0,0.04); display: flex; justify-content: space-around; padding: 8px 0 14px; z-index: 1000; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; background: none; border: none; cursor: pointer; color: #9ca3af; font-size: 10px; font-weight: 600; font-family: inherit; padding: 4px 12px; text-decoration: none; }
+        .nav-item i { font-size: 20px; }
+        .nav-item.active { color: #f5a623; }
+    </style>
+</head>
+<body>
+
+<header class="top-header">
+    <div class="inner">
+        <a href="/student" class="logo">EU <span>PONKALA</span></a>
+        <a href="/student" class="back-btn"><i class="fas fa-arrow-left"></i> Back</a>
+    </div>
+</header>
+
+<main class="main-wrap">
+    <div class="hero-card">
+        <img id="avatar" src="https://ui-avatars.com/api/?name=S&background=f5a623&color=fff&size=96" alt="Avatar">
+        <div>
+            <h2 id="name">Loading…</h2>
+            <div class="meta" id="meta">…</div>
+            <span class="badge">✅ Verified Student</span>
+        </div>
+    </div>
+
+    <div class="stats-mini">
+        <div class="mini-stat"><div class="num" id="savedCount">0</div><div class="lbl">Saved</div></div>
+        <div class="mini-stat"><div class="num" id="inquiryCount">0</div><div class="lbl">Inquiries</div></div>
+        <div class="mini-stat"><div class="num" id="convCount">0</div><div class="lbl">Chats</div></div>
+    </div>
+
+    <div class="card">
+        <h3>👤 Profile Details</h3>
+        <div class="form-group"><label>Full Name</label><input type="text" id="fullName"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="email"></div>
+        <div class="form-group"><label>Phone</label><input type="tel" id="phone"></div>
+        <button class="btn-primary" onclick="saveProfile()"><i class="fas fa-save"></i> Save Changes</button>
+    </div>
+
+    <div class="card">
+        <h3>⚙️ Account</h3>
+        <button class="btn-danger" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+</main>
+
+<nav class="bottom-nav">
+    <a href="/student" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="/search" class="nav-item"><i class="fas fa-search"></i><span>Search</span></a>
+    <a href="/saved" class="nav-item"><i class="fas fa-heart"></i><span>Saved</span></a>
+    <a href="/profile" class="nav-item active"><i class="fas fa-user"></i><span>Profile</span></a>
+</nav>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/shared/chat.js"></script>
+<script>
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    if (!localStorage.getItem('token')) window.location.href = '/login';
+    if (user && user.user_id && window.EU_CHAT) EU_CHAT.init({ userId: user.user_id, userType: 'student' });
+
+    async function loadProfile() {
+        if (!user || !user.user_id) return;
+
+        document.getElementById('avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.full_name || 'Student')}&background=f5a623&color=fff&size=96`;
+        document.getElementById('name').textContent = user.full_name || 'Student';
+        document.getElementById('meta').textContent = user.email || '';
+        document.getElementById('fullName').value = user.full_name || '';
+        document.getElementById('email').value = user.email || '';
+        document.getElementById('phone').value = user.phone || '';
+
+        try {
+            const res = await fetch('/api/dashboard/student/' + user.user_id);
+            const data = await res.json();
+            if (data.status === 'success') {
+                document.getElementById('savedCount').textContent = data.data.favourite_count || 0;
+                document.getElementById('inquiryCount').textContent = data.data.inquiry_count || 0;
+                document.getElementById('meta').textContent = (data.data.student.university_name || 'Eden University') + ' • ' + (data.data.student.course || 'Student');
+            }
+            const cres = await fetch('/api/conversations/' + user.user_id);
+            const cdata = await cres.json();
+            if (cdata.status === 'success') document.getElementById('convCount').textContent = (cdata.data || []).length;
+        } catch (e) { console.error(e); }
+    }
+
+    async function saveProfile() {
+        const full_name = document.getElementById('fullName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+
+        try {
+            const res = await fetch('/api/profile/' + user.user_id, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ full_name, email, phone })
+            });
+            const data = await res.json();
+            if (data.status === 'success') {
+                user.full_name = full_name;
+                user.email = email;
+                user.phone = phone;
+                localStorage.setItem('user', JSON.stringify(user));
+                alert('✅ Profile updated');
+                loadProfile();
+            } else {
+                alert('❌ ' + (data.message || 'Failed'));
+            }
+        } catch (e) { alert('❌ Network error'); }
+    }
+
+    function logout() {
+        if (confirm('Logout?')) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadProfile);
+</script>
+</body>
+</html>

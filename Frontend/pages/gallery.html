@@ -1,0 +1,267 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EU PONKALA - Gallery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link rel="stylesheet" href="/pages/_shared.css"/>
+    <style>
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 18px;
+            margin-top: 24px;
+        }
+        .gallery-item {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #eef2f6;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+            transition: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+        }
+        .gallery-item:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 50px rgba(245,166,35,0.15);
+            border-color: #f5a623;
+        }
+        .gallery-item .thumb {
+            aspect-ratio: 4 / 3;
+            background: #f0f2f5;
+            overflow: hidden;
+            position: relative;
+        }
+        .gallery-item .thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.5s;
+        }
+        .gallery-item:hover .thumb img { transform: scale(1.06); }
+        .gallery-item .thumb .tag {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(245,166,35,0.95);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            backdrop-filter: blur(4px);
+        }
+        .gallery-item .caption { padding: 16px 18px 18px; }
+        .gallery-item .caption h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #0f0c29;
+        }
+        .gallery-item .caption p {
+            font-size: 13.5px;
+            color: #6b7280;
+            line-height: 1.55;
+            margin: 0;
+        }
+
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15,12,41,0.96);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+        .lightbox.open { display: flex; }
+        .lightbox .lb-img-wrap { max-width: 90vw; max-height: 85vh; }
+        .lightbox .lb-img-wrap img {
+            max-width: 100%;
+            max-height: 85vh;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        .lightbox .lb-close {
+            position: fixed; top: 24px; right: 24px;
+            background: rgba(255,255,255,0.1);
+            border: none; color: white; font-size: 24px;
+            width: 48px; height: 48px; border-radius: 50%;
+            cursor: pointer; backdrop-filter: blur(8px);
+            transition: 0.2s;
+        }
+        .lightbox .lb-close:hover { background: #f5a623; }
+        .lightbox .lb-nav {
+            position: fixed; top: 50%; transform: translateY(-50%);
+            background: rgba(255,255,255,0.1);
+            border: none; color: white; font-size: 28px;
+            width: 56px; height: 56px; border-radius: 50%;
+            cursor: pointer; backdrop-filter: blur(8px);
+            transition: 0.2s;
+        }
+        .lightbox .lb-nav:hover { background: #f5a623; }
+        .lightbox .lb-prev { left: 24px; }
+        .lightbox .lb-next { right: 24px; }
+        .lightbox .lb-caption {
+            position: fixed; bottom: 30px; left: 50%;
+            transform: translateX(-50%);
+            color: white; font-size: 14px;
+            background: rgba(0,0,0,0.65);
+            padding: 12px 26px; border-radius: 50px;
+            backdrop-filter: blur(8px);
+            max-width: 90vw; text-align: center;
+        }
+        .lightbox .lb-caption strong { color: #f5a623; }
+        @media (max-width: 640px) {
+            .gallery-grid { grid-template-columns: 1fr; gap: 14px; }
+            .lightbox .lb-prev { left: 8px; }
+            .lightbox .lb-next { right: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="page-nav">
+        <div class="inner">
+            <a href="/" class="logo">EU <span>PONKALA</span></a>
+            <a href="/" class="back"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        </div>
+    </nav>
+
+    <div class="page-wrap">
+        <div class="page-hero">
+            <div class="badge">📸 Photo Gallery</div>
+            <h1>Life at <span>EU PONKALA</span></h1>
+            <p>Explore verified student accommodation across Lusaka — every room, kitchen, and common space captured exactly as it is.</p>
+        </div>
+
+        <div class="gallery-grid" id="galleryGrid"></div>
+    </div>
+
+    <footer class="page-footer">
+        <div class="inner">
+            <div>
+                <div style="font-size:20px;font-weight:900;color:white;margin-bottom:8px;">EU <span style="color:#f5a623;">PONKALA</span></div>
+                <p style="font-size:13px;line-height:1.7;">Find Your Place. Find Your Community.<br/>The trusted student accommodation marketplace for Eden University.</p>
+            </div>
+            <div>
+                <h4>Platform</h4>
+                <a href="/pages/student-dashboard.html">Student Dashboard</a>
+                <a href="/pages/landlord-dashboard.html">Landlord Dashboard</a>
+                <a href="/pages/admin-dashboard.html">Admin Dashboard</a>
+                <a href="/pages/features.html">Features</a>
+            </div>
+            <div>
+                <h4>Support</h4>
+                <a href="/pages/help-center.html">Help Center</a>
+                <a href="/pages/faq.html">FAQ</a>
+                <a href="/pages/contact-us.html">Contact Us</a>
+                <a href="/pages/report-an-issue.html">Report an Issue</a>
+            </div>
+            <div>
+                <h4>Company</h4>
+                <a href="/pages/about-us.html">About Us</a>
+                <a href="/pages/terms-of-service.html">Terms of Service</a>
+                <a href="/pages/privacy-policy.html">Privacy Policy</a>
+                <a href="/pages/cookie-policy.html">Cookie Policy</a>
+            </div>
+        </div>
+        <div class="bottom">
+            &copy; 2026 EU PONKALA. All rights reserved. Made with &hearts; in Lusaka, Zambia.
+        </div>
+    </footer>
+
+    <div class="lightbox" id="lightbox">
+        <button class="lb-close" onclick="closeLightbox()">✕</button>
+        <button class="lb-nav lb-prev" onclick="navigateLightbox(-1)">‹</button>
+        <div class="lb-img-wrap"><img id="lbImg" src="" alt=""></div>
+        <button class="lb-nav lb-next" onclick="navigateLightbox(1)">›</button>
+        <div class="lb-caption" id="lbCaption"></div>
+    </div>
+
+    <script>
+        const galleryData = [
+            { file: 'welcome-home.jpeg',          tag: 'Exterior',  title: 'Welcome Home',          desc: 'A warm, secure entrance that welcomes every student home.' },
+            { file: 'modern-exterior.jpeg',       tag: 'Exterior',  title: 'Modern Exterior',       desc: 'Freshly finished exterior with 24/7 security and parking.' },
+            { file: 'secure-compound.jpeg',       tag: 'Compound',  title: 'Secure Compound',       desc: 'Fully walled compound with gated entry and CCTV.' },
+            { file: 'neat-compound.jpeg',         tag: 'Compound',  title: 'Neat Compound',         desc: 'Well-maintained common areas, kept spotless year-round.' },
+            { file: 'communal-house.jpeg',        tag: 'Common',    title: 'Communal House',        desc: 'Shared living spaces designed for comfort and community.' },
+            { file: 'shared-rooms.jpeg',          tag: 'Room',      title: 'Shared Rooms',          desc: 'Spacious shared bedrooms with study desks and storage.' },
+            { file: 'single-rooms.jpeg',          tag: 'Room',      title: 'Single Rooms',          desc: 'Private single rooms for students who prefer quiet.' },
+            { file: 'private-space.jpeg',         tag: 'Room',      title: 'Private Space',         desc: 'Your own personal corner — furnished and ready.' },
+            { file: 'bright-interior.jpeg',       tag: 'Room',      title: 'Bright Interiors',      desc: 'Naturally lit rooms with large windows and airy layout.' },
+            { file: 'reading-corner.jpeg',        tag: 'Study',     title: 'Reading Corner',        desc: 'A dedicated, quiet corner for focused study.' },
+            { file: 'communal-kitchen.jpeg',      tag: 'Kitchen',   title: 'Communal Kitchen',      desc: 'Shared cooking area with modern appliances.' },
+            { file: 'fully-equipped-kitchen.jpeg',tag: 'Kitchen',   title: 'Fully Equipped Kitchen',desc: 'Cooker, fridge, and plenty of storage for every resident.' },
+            { file: 'kitchen-space.jpeg',         tag: 'Kitchen',   title: 'Kitchen Space',         desc: 'Roomy kitchen with space to cook and socialise.' },
+            { file: 'kitchen-flask.jpeg',         tag: 'Kitchen',   title: 'Kitchen Flask',         desc: 'Kettle and essentials for hot drinks any time.' },
+            { file: 'single-kitchen.jpeg',        tag: 'Kitchen',   title: 'Single Kitchen',        desc: 'Compact kitchen for students who prefer to cook alone.' },
+            { file: 'sink.jpeg',                  tag: 'Kitchen',   title: 'Wash Area',             desc: 'Clean washing sink with reliable water supply.' },
+            { file: 'clean-bathrooms.jpeg',       tag: 'Bathroom',  title: 'Clean Bathrooms',       desc: 'Modern bathrooms with hot showers and daily cleaning.' },
+            { file: 'single-bathroom.jpeg',       tag: 'Bathroom',  title: 'Single Bathroom',       desc: 'Private bathroom available in select rooms.' },
+            { file: 'clean-toilets.jpeg',         tag: 'Bathroom',  title: 'Clean Toilets',         desc: 'Hygienic, well-kept toilet facilities.' },
+            { file: 'interior-toilet.jpeg',       tag: 'Bathroom',  title: 'Interior Toilet',       desc: 'Ensuite toilet inside the room for privacy.' }
+        ];
+
+        let currentIndex = 0;
+
+        function renderGallery() {
+            const grid = document.getElementById('galleryGrid');
+            grid.innerHTML = '';
+            galleryData.forEach((g, i) => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                item.onclick = () => openLightbox(i);
+                item.innerHTML = `
+                    <div class="thumb">
+                        <img src="/images/${g.file}" alt="${g.title}" loading="lazy">
+                        <span class="tag">${g.tag}</span>
+                    </div>
+                    <div class="caption">
+                        <h4>${g.title}</h4>
+                        <p>${g.desc}</p>
+                    </div>
+                `;
+                grid.appendChild(item);
+            });
+        }
+
+        function openLightbox(i) {
+            currentIndex = i;
+            updateLightbox();
+            document.getElementById('lightbox').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+        function navigateLightbox(dir) {
+            currentIndex = (currentIndex + dir + galleryData.length) % galleryData.length;
+            updateLightbox();
+        }
+        function updateLightbox() {
+            const g = galleryData[currentIndex];
+            document.getElementById('lbImg').src = '/images/' + g.file;
+            document.getElementById('lbCaption').innerHTML =
+                `<strong>${g.title}</strong> — ${g.desc}`;
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (!document.getElementById('lightbox').classList.contains('open')) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowLeft') navigateLightbox(-1);
+            if (e.key === 'ArrowRight') navigateLightbox(1);
+        });
+
+        document.addEventListener('DOMContentLoaded', renderGallery);
+    </script>
+
+</body>
+</html>

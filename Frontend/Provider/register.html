@@ -1,0 +1,371 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>EU PONKALA - Provider Registration</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Inter,sans-serif;background:linear-gradient(135deg,#f5f7fb 0%,#e8ecf3 100%);color:#1a1a2e;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.wrap{max-width:520px;width:100%}
+.card{background:white;border-radius:24px;padding:40px;box-shadow:0 20px 60px rgba(0,0,0,0.08);border:1px solid #eef2f6}
+.logo{font-size:22px;font-weight:900;letter-spacing:-0.5px;text-align:center;margin-bottom:8px}
+.logo span{color:#f5a623}
+.subtitle{text-align:center;color:#6b7280;font-size:14px;margin-bottom:28px}
+h1{font-size:24px;font-weight:900;margin-bottom:6px;text-align:center;letter-spacing:-0.5px}
+p.intro{font-size:14px;color:#6b7280;text-align:center;margin-bottom:28px;line-height:1.5}
+.steps{display:flex;justify-content:center;gap:8px;margin-bottom:28px}
+.step{width:32px;height:32px;border-radius:50%;background:#f0f2f7;color:#9ca3af;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;transition:all 0.2s}
+.step.active{background:#f5a623;color:white;box-shadow:0 4px 12px rgba(245,166,35,0.4)}
+.step.done{background:#065f46;color:white}
+.step-connector{width:24px;height:2px;background:#e5e7eb;align-self:center}
+.step-connector.done{background:#065f46}
+label{font-size:11px;font-weight:800;color:#6b7280;display:block;margin-bottom:7px;text-transform:uppercase;letter-spacing:0.5px}
+input,select{width:100%;padding:14px 16px;border:1.5px solid #eef2f6;border-radius:12px;font-family:inherit;font-size:15px;background:#f8f9fa;color:#1a1a2e;font-weight:500;margin-bottom:16px}
+input:focus,select:focus{outline:none;border-color:#f5a623;background:white;box-shadow:0 0 0 4px rgba(245,166,35,0.1)}
+.btn{width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(135deg,#f5a623,#d4951f);color:white;font-weight:800;cursor:pointer;font-family:inherit;font-size:15px;box-shadow:0 10px 24px rgba(245,166,35,0.35);transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 14px 30px rgba(245,166,35,0.45)}
+.btn:disabled{opacity:0.6;cursor:not-allowed}
+.btn-ghost{background:transparent;color:#6b7280;box-shadow:none;font-weight:600;font-size:13px;padding:10px;margin-top:12px}
+.btn-ghost:hover{background:#f8f9fa}
+.otp-boxes{display:flex;gap:10px;justify-content:center;margin-bottom:20px}
+.otp-input{width:52px;height:60px;text-align:center;font-size:24px;font-weight:900;font-family:monospace;padding:0;margin:0;border:2px solid #eef2f6;border-radius:12px}
+.otp-input:focus{border-color:#f5a623;background:white}
+.hint{font-size:12px;color:#9ca3af;text-align:center;margin-bottom:16px}
+.hint b{color:#f5a623}
+.alert{padding:14px 18px;border-radius:12px;margin-bottom:18px;font-size:14px;font-weight:600;display:none}
+.alert.show{display:block}
+.alert.error{background:#fee2e2;color:#991b1b;border:1px solid #fecaca}
+.alert.success{background:#d1fae5;color:#065f46;border:1px solid #a7f3d0}
+.alert.info{background:#dbeafe;color:#1e40af;border:1px solid #bfdbfe}
+.success-screen{text-align:center;padding:20px 0}
+.success-icon{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#065f46,#059669);color:white;display:flex;align-items:center;justify-content:center;font-size:40px;margin:0 auto 20px;box-shadow:0 20px 50px rgba(6,95,70,0.3)}
+.success-screen h2{font-size:24px;font-weight:900;margin-bottom:10px}
+.success-screen p{font-size:14px;color:#6b7280;line-height:1.6;margin-bottom:24px}
+.provider-code{background:#f8f9fa;padding:16px;border-radius:12px;font-family:monospace;font-size:20px;font-weight:900;color:#f5a623;letter-spacing:2px;margin-bottom:24px}
+.toast{position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-100px);background:#1a1a2e;color:white;padding:14px 24px;border-radius:14px;font-size:14px;font-weight:700;z-index:9999;transition:transform 0.3s}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{background:linear-gradient(135deg,#065f46,#059669)}
+.toast.error{background:linear-gradient(135deg,#991b1b,#dc2626)}
+.info-box{background:#dbeafe;color:#1e40af;padding:12px 16px;border-radius:10px;font-size:12px;font-weight:600;margin-bottom:16px;display:flex;gap:8px;align-items:flex-start}
+.info-box i{margin-top:2px;flex-shrink:0}
+.login-link{text-align:center;margin-top:18px;font-size:13px;color:#6b7280}
+.login-link a{color:#f5a623;font-weight:800;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <div class="logo">EU <span>PONKALA</span></div>
+    <div class="subtitle">Provider Registration</div>
+
+    <div class="steps" id="stepsBar">
+      <div class="step active" data-step="1">1</div>
+      <div class="step-connector"></div>
+      <div class="step" data-step="2">2</div>
+      <div class="step-connector"></div>
+      <div class="step" data-step="3">3</div>
+    </div>
+
+    <div class="alert" id="alertBox"></div>
+
+    <!-- STEP 1  Phone + Name -->
+    <div id="step1">
+      <h1>Get started</h1>
+      <p class="intro">Sign up in 3 steps. You'll need your phone, a 6-digit OTP, and to set a PIN.</p>
+
+      <div class="info-box">
+        <i class="fas fa-info-circle"></i>
+        <div>Use the phone number registered in your name. Verification OTP will be sent to this number.</div>
+      </div>
+
+      <label>Full name</label>
+      <input id="fullName" type="text" placeholder="e.g. Mary Banda" />
+
+      <label>Phone number</label>
+      <input id="phone" type="tel" placeholder="+260971234567" />
+
+      <label>Service</label>
+      <select id="service">
+        <option value="LAUNDRY">Laundry</option>
+        <option value="WHEELBARROW">Wheelbarrow</option>
+        <option value="BOTH">Both (Laundry + Wheelbarrow)</option>
+      </select>
+
+      <label>Pickup zone</label>
+      <select id="zone"></select>
+
+      <button class="btn" id="step1Btn">
+        <i class="fas fa-arrow-right"></i> Send OTP
+      </button>
+
+      <div class="login-link">
+        Already registered? <a href="/provider">Sign in</a>
+      </div>
+    </div>
+
+    <!-- STEP 2  OTP -->
+    <div id="step2" style="display:none;">
+      <h1>Verify your phone</h1>
+      <p class="intro">Enter the 6-digit code we sent to <b id="phoneDisplay"></b></p>
+
+      <div class="hint">Test mode OTP: <b id="otpHint">------</b></div>
+
+      <div class="otp-boxes">
+        <input class="otp-input" id="otp0" maxlength="1" inputmode="numeric" />
+        <input class="otp-input" id="otp1" maxlength="1" inputmode="numeric" />
+        <input class="otp-input" id="otp2" maxlength="1" inputmode="numeric" />
+        <input class="otp-input" id="otp3" maxlength="1" inputmode="numeric" />
+        <input class="otp-input" id="otp4" maxlength="1" inputmode="numeric" />
+        <input class="otp-input" id="otp5" maxlength="1" inputmode="numeric" />
+      </div>
+
+      <button class="btn" id="step2Btn">
+        <i class="fas fa-check"></i> Verify OTP
+      </button>
+      <button class="btn btn-ghost" id="back1"><i class="fas fa-arrow-left"></i> Back</button>
+    </div>
+
+    <!-- STEP 3  PIN -->
+    <div id="step3" style="display:none;">
+      <h1>Create your PIN</h1>
+      <p class="intro">Set a 4-digit PIN. You'll use this to log in and manage your wallet.</p>
+
+      <div class="info-box">
+        <i class="fas fa-shield-alt"></i>
+        <div>Never share your PIN with anyone, including EU PONKALA staff.</div>
+      </div>
+
+      <label>Choose PIN (4 digits)</label>
+      <input id="pin" type="password" maxlength="4" inputmode="numeric" placeholder="****" style="letter-spacing:12px;text-align:center;font-size:24px;font-weight:900;" />
+
+      <label>Confirm PIN</label>
+      <input id="pinConfirm" type="password" maxlength="4" inputmode="numeric" placeholder="****" style="letter-spacing:12px;text-align:center;font-size:24px;font-weight:900;" />
+
+      <button class="btn" id="step3Btn">
+        <i class="fas fa-check-circle"></i> Complete Registration
+      </button>
+      <button class="btn btn-ghost" id="back2"><i class="fas fa-arrow-left"></i> Back</button>
+    </div>
+
+    <!-- SUCCESS -->
+    <div id="success" style="display:none;">
+      <div class="success-screen">
+        <div class="success-icon"><i class="fas fa-check"></i></div>
+        <h2>You're registered!</h2>
+        <p>Your provider ID is:</p>
+        <div class="provider-code" id="providerCode">PNK-XXXXXX</div>
+        <p>Our team will review your registration within 24 hours. You'll receive an SMS when you're verified.</p>
+        <a href="/provider" class="btn" style="text-decoration:none;">
+          <i class="fas fa-sign-in-alt"></i> Go to Login
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+'use strict';
+var ENGINE = '/api/engine';
+var registration = { phone: '', full_name: '', provider_id: null, service: 'LAUNDRY', zone_id: 1 };
+
+function $(s){ return document.querySelector(s); }
+function el(id){ return document.getElementById(id); }
+function toast(m, t){ var e = el('toast'); e.textContent = m; e.className = 'toast show ' + (t||''); setTimeout(function(){ e.className = 'toast'; }, 3500); }
+function alertMsg(msg, type){
+  var a = el('alertBox');
+  a.textContent = msg;
+  a.className = 'alert show ' + type;
+  setTimeout(function(){ a.className = 'alert'; }, 5000);
+}
+
+function setStep(n){
+  document.querySelectorAll('.step').forEach(function(s){
+    var sn = Number(s.dataset.step);
+    s.className = 'step' + (sn < n ? ' done' : sn === n ? ' active' : '');
+  });
+  document.querySelectorAll('.step-connector').forEach(function(c, i){
+    c.className = 'step-connector' + (i + 1 < n ? ' done' : '');
+  });
+  el('step1').style.display = n === 1 ? 'block' : 'none';
+  el('step2').style.display = n === 2 ? 'block' : 'none';
+  el('step3').style.display = n === 3 ? 'block' : 'none';
+}
+
+// ---------- LOAD ZONES ----------
+fetch('/api/engine/zones').then(function(r){ return r.json(); }).then(function(res){
+  if (res.status !== 'success') return;
+  var sel = el('zone');
+  sel.innerHTML = res.data.map(function(z){
+    return '<option value="' + z.zone_id + '">' + z.zone_code + ' - ' + z.zone_name + '</option>';
+  }).join('');
+  registration.zone_id = res.data[0] ? res.data[0].zone_id : 1;
+});
+
+// ---------- STEP 1: Start registration ----------
+el('step1Btn').onclick = async function(){
+  var name = el('fullName').value.trim();
+  var phone = el('phone').value.trim();
+  var service = el('service').value;
+  var zoneId = Number(el('zone').value);
+
+  if (!name) { alertMsg('Please enter your full name', 'error'); return; }
+  if (!phone || phone.length < 10) { alertMsg('Please enter a valid phone number', 'error'); return; }
+
+  registration.full_name = name;
+  registration.phone = phone;
+  registration.service = service;
+  registration.zone_id = zoneId;
+
+  el('step1Btn').disabled = true;
+  el('step1Btn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending OTP...';
+
+  try {
+    var res = await fetch(ENGINE + '/provider/register/start', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone: phone, full_name: name })
+    }).then(function(r){ return r.json(); });
+
+    if (res.status !== 'success') {
+      alertMsg(res.message || 'Registration failed', 'error');
+      el('step1Btn').disabled = false;
+      el('step1Btn').innerHTML = '<i class="fas fa-arrow-right"></i> Send OTP';
+      return;
+    }
+
+    registration.provider_id = res.data.provider_id;
+    el('phoneDisplay').textContent = phone;
+    el('otpHint').textContent = res.data.otp_dev || '------';
+    setStep(2);
+    el('otp0').focus();
+    toast('OTP sent to ' + phone, 'success');
+  } catch (e) {
+    alertMsg('Network error: ' + e.message, 'error');
+    el('step1Btn').disabled = false;
+    el('step1Btn').innerHTML = '<i class="fas fa-arrow-right"></i> Send OTP';
+  }
+};
+
+// ---------- OTP input auto-advance ----------
+document.querySelectorAll('.otp-input').forEach(function(input, i){
+  input.oninput = function(e){
+    var v = e.target.value.replace(/[^0-9]/g, '');
+    e.target.value = v;
+    if (v && i < 5) el('otp' + (i + 1)).focus();
+  };
+  input.onkeydown = function(e){
+    if (e.key === 'Backspace' && !e.target.value && i > 0) el('otp' + (i - 1)).focus();
+  };
+  input.onpaste = function(e){
+    e.preventDefault();
+    var paste = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '').slice(0, 6);
+    for (var j = 0; j < 6; j++) el('otp' + j).value = paste[j] || '';
+  };
+});
+
+// ---------- STEP 2: Verify OTP ----------
+el('step2Btn').onclick = async function(){
+  var otp = '';
+  for (var i = 0; i < 6; i++) otp += el('otp' + i).value || '';
+  if (otp.length !== 6) { alertMsg('Enter all 6 digits', 'error'); return; }
+
+  el('step2Btn').disabled = true;
+  el('step2Btn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+
+  try {
+    var res = await fetch(ENGINE + '/provider/register/verify-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ provider_id: registration.provider_id, otp: otp })
+    }).then(function(r){ return r.json(); });
+
+    if (res.status !== 'success') {
+      alertMsg(res.message || 'Invalid OTP', 'error');
+      el('step2Btn').disabled = false;
+      el('step2Btn').innerHTML = '<i class="fas fa-check"></i> Verify OTP';
+      return;
+    }
+
+    setStep(3);
+    el('pin').focus();
+    toast('Phone verified!', 'success');
+  } catch (e) {
+    alertMsg('Network error: ' + e.message, 'error');
+    el('step2Btn').disabled = false;
+    el('step2Btn').innerHTML = '<i class="fas fa-check"></i> Verify OTP';
+  }
+};
+
+el('back1').onclick = function(){ setStep(1); };
+el('back2').onclick = function(){ setStep(2); };
+
+// ---------- STEP 3: Set PIN ----------
+el('step3Btn').onclick = async function(){
+  var pin = el('pin').value.trim();
+  var confirmPin = el('pinConfirm').value.trim();
+
+  if (!pin || pin.length !== 4) { alertMsg('PIN must be 4 digits', 'error'); return; }
+  if (pin !== confirmPin) { alertMsg('PINs do not match', 'error'); return; }
+
+  el('step3Btn').disabled = true;
+  el('step3Btn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating account...';
+
+  try {
+    var res = await fetch(ENGINE + '/provider/register/set-pin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ provider_id: registration.provider_id, pin: pin })
+    }).then(function(r){ return r.json(); });
+
+    if (res.status !== 'success') {
+      alertMsg(res.message || 'Failed to set PIN', 'error');
+      el('step3Btn').disabled = false;
+      el('step3Btn').innerHTML = '<i class="fas fa-check-circle"></i> Complete Registration';
+      return;
+    }
+
+    // Submit for verification
+    await fetch(ENGINE + '/provider/verify/submit/' + registration.provider_id, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ notes: 'Self-registered via web' })
+    }).catch(function(){});
+
+    // Try to auto-verify in dev mode
+    await fetch(ENGINE + '/provider/verify/approve/' + registration.provider_id, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ admin_user_id: 1, notes: 'Auto-approved (dev)' })
+    }).catch(function(){});
+
+    // Show success
+    setStep(4);
+    el('stepsBar').style.display = 'none';
+    el('step1').style.display = 'none';
+    el('step2').style.display = 'none';
+    el('step3').style.display = 'none';
+    el('success').style.display = 'block';
+
+    // Fetch provider code
+    var provRes = await fetch(ENGINE + '/provider/register/state/' + registration.provider_id).then(function(r){ return r.json(); });
+    if (provRes.status === 'success' && provRes.data.provider_code) {
+      el('providerCode').textContent = provRes.data.provider_code;
+    }
+  } catch (e) {
+    alertMsg('Network error: ' + e.message, 'error');
+    el('step3Btn').disabled = false;
+    el('step3Btn').innerHTML = '<i class="fas fa-check-circle"></i> Complete Registration';
+  }
+};
+
+})();
+</script>
+</body>
+</html>

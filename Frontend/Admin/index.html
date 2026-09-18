@@ -1,0 +1,1389 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EU PONKALA - Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f0f2f5; color: #1a1a2e; }
+        .sidebar {
+            position: fixed; left: 0; top: 0; width: 260px; height: 100vh;
+            background: linear-gradient(180deg, #0f0c29, #302b63, #24243e);
+            color: white; z-index: 1000; overflow-y: auto;
+        }
+        .sidebar-brand { padding: 30px 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .sidebar-brand h2 { font-size: 24px; font-weight: 800; }
+        .sidebar-brand h2 span { color: #f5a623; }
+        .sidebar-brand small { display: block; font-size: 11px; opacity: 0.6; margin-top: 4px; }
+        .sidebar-nav { padding: 20px 16px; }
+        .sidebar-nav .nav-label {
+            font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+            opacity: 0.4; padding: 16px 12px 8px; font-weight: 600;
+        }
+        .sidebar-nav a {
+            display: flex; align-items: center; gap: 14px;
+            padding: 12px 16px; color: rgba(255,255,255,0.7);
+            text-decoration: none; border-radius: 12px;
+            transition: 0.2s; font-size: 14px; font-weight: 500;
+            margin-bottom: 4px; cursor: pointer;
+        }
+        .sidebar-nav a:hover { background: rgba(255,255,255,0.08); color: white; }
+        .sidebar-nav a.active {
+            background: rgba(245, 166, 35, 0.15);
+            color: #f5a623;
+            box-shadow: inset 3px 0 0 #f5a623;
+        }
+        .sidebar-nav a i { width: 20px; text-align: center; }
+        .sidebar-nav a .badge {
+            margin-left: auto; background: #f5a623; color: #1a1a2e;
+            font-size: 11px; font-weight: 700; padding: 2px 10px;
+            border-radius: 20px;
+        }
+        .sidebar-nav a .badge.red { background: #dc2626; color: white; }
+        .main-content { margin-left: 260px; padding: 24px 32px 40px; min-height: 100vh; }
+        .header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 24px; border-bottom: 1px solid #e4e7ec;
+            margin-bottom: 28px; flex-wrap: wrap; gap: 12px;
+        }
+        .header-left h1 { font-size: 28px; font-weight: 700; }
+        .header-left p { color: #6b7280; font-size: 14px; margin-top: 2px; }
+        .header-right { display: flex; align-items: center; gap: 16px; }
+        .header-right .notification-btn {
+            position: relative; width: 44px; height: 44px; border-radius: 50%;
+            background: white; border: 1px solid #e4e7ec;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: #1a1a2e; font-size: 18px;
+        }
+        .header-right .notification-btn .dot {
+            position: absolute; top: 8px; right: 8px; width: 10px; height: 10px;
+            background: #ef4444; border-radius: 50%; border: 2px solid white;
+        }
+        .header-right .user-profile {
+            display: flex; align-items: center; gap: 12px;
+            padding: 6px 16px 6px 6px; background: white;
+            border-radius: 50px; border: 1px solid #e4e7ec; cursor: pointer;
+        }
+        .header-right .user-profile img { width: 36px; height: 36px; border-radius: 50%; }
+        .header-right .user-profile .user-info .name { font-size: 14px; font-weight: 600; }
+        .header-right .user-profile .user-info .role { font-size: 12px; color: #6b7280; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 16px; margin-bottom: 32px;
+        }
+        .stat-card {
+            background: white; border-radius: 16px; padding: 20px 22px;
+            border: 1px solid #e4e7ec; transition: 0.2s; cursor: pointer;
+        }
+        .stat-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); transform: translateY(-2px); }
+        .stat-card .stat-icon {
+            width: 40px; height: 40px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; margin-bottom: 12px;
+        }
+        .stat-card .stat-icon.blue { background: #dbeafe; color: #2563eb; }
+        .stat-card .stat-icon.green { background: #d1fae5; color: #059669; }
+        .stat-card .stat-icon.orange { background: #fef3c7; color: #d97706; }
+        .stat-card .stat-icon.purple { background: #ede9fe; color: #7c3aed; }
+        .stat-card .stat-icon.red { background: #fee2e2; color: #dc2626; }
+        .stat-card .stat-icon.teal { background: #ccfbf1; color: #0d9488; }
+        .stat-card .stat-icon.pink { background: #fce7f3; color: #db2777; }
+        .stat-card .stat-number { font-size: 26px; font-weight: 700; }
+        .stat-card .stat-label { font-size: 13px; color: #6b7280; margin-top: 2px; }
+        .section-header {
+            display: flex; justify-content: space-between;
+            align-items: center; margin-bottom: 18px;
+        }
+        .section-header h3 { font-size: 18px; font-weight: 600; }
+        .section-header .view-all {
+            color: #f5a623; text-decoration: none;
+            font-size: 14px; font-weight: 500; cursor: pointer;
+        }
+        .table-container {
+            background: white; border-radius: 16px;
+            border: 1px solid #e4e7ec; overflow: hidden; margin-bottom: 32px;
+        }
+        .table-container table { width: 100%; border-collapse: collapse; }
+        .table-container th {
+            text-align: left; padding: 14px 18px;
+            font-size: 12px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            color: #6b7280; background: #f8f9fa;
+            border-bottom: 1px solid #e4e7ec;
+        }
+        .table-container td {
+            padding: 12px 18px; border-bottom: 1px solid #f0f2f5;
+            font-size: 14px;
+        }
+        .table-container tr:last-child td { border-bottom: none; }
+        .table-container .status-tag {
+            padding: 4px 12px; border-radius: 20px;
+            font-size: 12px; font-weight: 600;
+        }
+        .table-container .status-tag.verified { background: #d1fae5; color: #059669; }
+        .table-container .status-tag.pending { background: #fef3c7; color: #d97706; }
+        .table-container .status-tag.suspended { background: #fee2e2; color: #dc2626; }
+        .table-container .status-tag.active { background: #dbeafe; color: #2563eb; }
+        .table-container .status-tag.inactive { background: #f3f4f6; color: #6b7280; }
+        .table-container .action-btn {
+            padding: 5px 12px; border: none; border-radius: 8px;
+            font-size: 12px; font-weight: 500; cursor: pointer;
+            transition: 0.2s; margin-right: 4px;
+        }
+        .table-container .action-btn.verify { background: #d1fae5; color: #059669; }
+        .table-container .action-btn.verify:hover { background: #059669; color: white; }
+        .table-container .action-btn.suspend { background: #fee2e2; color: #dc2626; }
+        .table-container .action-btn.suspend:hover { background: #dc2626; color: white; }
+        .table-container .action-btn.edit { background: #dbeafe; color: #2563eb; }
+        .table-container .action-btn.edit:hover { background: #2563eb; color: white; }
+        .table-container .action-btn.view { background: #fef3c7; color: #d97706; }
+        .table-container .action-btn.view:hover { background: #d97706; color: white; }
+        .toast {
+            position: fixed; bottom: 24px; right: 24px; padding: 16px 24px;
+            border-radius: 12px; color: white; font-weight: 500; z-index: 10000;
+            transform: translateY(100px); opacity: 0; transition: 0.4s ease;
+            max-width: 400px;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { background: #059669; }
+        .toast.error { background: #dc2626; }
+        .toast.warning { background: #d97706; }
+        .toast.info { background: #2563eb; }
+        .mobile-toggle {
+            display: none; background: none; border: none;
+            font-size: 24px; color: #1a1a2e; cursor: pointer; padding: 8px;
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        @media (max-width: 768px) {
+            .sidebar { width: 0; overflow: hidden; padding: 0; }
+            .sidebar.open { width: 260px; padding: 0; }
+            .main-content { margin-left: 0; padding: 16px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .header-left h1 { font-size: 22px; }
+            .table-container { overflow-x: auto; }
+            .mobile-toggle { display: block; }
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f0f2f5; }
+        ::-webkit-scrollbar-thumb { background: #c4c8d0; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <h2>EU <span>PONKALA</span></h2>
+            <small>Admin Dashboard</small>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-label">Main</div>
+            <a class="active" data-section="dashboard"><i class="fas fa-home"></i> Dashboard</a>
+            <a data-section="properties"><i class="fas fa-building"></i> Properties <span class="badge" id="propertyBadge">0</span></a>
+            <a data-section="students"><i class="fas fa-users"></i> Students</a>
+            <a data-section="landlords"><i class="fas fa-user-tie"></i> Landlords</a>
+            <a data-section="services"><i class="fas fa-concierge-bell"></i> Service Engine</a>
+
+            <div class="nav-label">Management</div>
+            <a data-section="verification"><i class="fas fa-check-circle"></i> Verification <span class="badge" id="verifyBadge">0</span></a>
+            <a data-section="subscriptions"><i class="fas fa-credit-card"></i> Subscriptions</a>
+            <a data-section="reports"><i class="fas fa-flag"></i> Reports</a>
+
+            <div class="nav-label">Analytics</div>
+            <a data-section="analytics"><i class="fas fa-chart-line"></i> Insights</a>
+
+            <div class="nav-label">Settings</div>
+            <a onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="header">
+            <div class="header-left">
+                <button class="mobile-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 id="pageTitle">Dashboard</h1>
+                <p id="pageSubtitle">Welcome back, Admin!</p>
+            </div>
+            <div class="header-right">
+                <button class="notification-btn" onclick="showToast('🔔 No new notifications', 'info')">
+                    <i class="fas fa-bell"></i>
+                    <span class="dot"></span>
+                </button>
+                <div class="user-profile">
+                    <img id="userAvatarImg" src="https://ui-avatars.com/api/?name=A&background=f5a623&color=fff&size=36" alt="Admin">
+                    <div class="user-info">
+                        <div class="name" id="userNameText">Admin</div>
+                        <div class="role">Super Admin</div>
+                    </div>
+                    <i class="fas fa-chevron-down" style="font-size:12px;color:#6b7280;"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- DASHBOARD -->
+        <div id="section-dashboard" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue"><i class="fas fa-users"></i></div>
+                    <div class="stat-number" id="totalStudents">0</div>
+                    <div class="stat-label">Total Students</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green"><i class="fas fa-user-tie"></i></div>
+                    <div class="stat-number" id="totalLandlords">0</div>
+                    <div class="stat-label">Total Landlords</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange"><i class="fas fa-building"></i></div>
+                    <div class="stat-number" id="totalProperties">0</div>
+                    <div class="stat-label">Total Properties</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon purple"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-number" id="verifiedProperties">0</div>
+                    <div class="stat-label">Verified Properties</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon teal"><i class="fas fa-door-open"></i></div>
+                    <div class="stat-number" id="availableSpaces">0</div>
+                    <div class="stat-label">Available Spaces</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon red"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="stat-number" id="pendingVerification">0</div>
+                    <div class="stat-label">Pending Verification</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon pink"><i class="fas fa-credit-card"></i></div>
+                    <div class="stat-number" id="activeSubscriptions">0</div>
+                    <div class="stat-label">Active Subscriptions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon blue"><i class="fas fa-flag"></i></div>
+                    <div class="stat-number" id="totalReports">0</div>
+                    <div class="stat-label">Reports</div>
+                </div>
+            </div>
+
+            <div class="section-header">
+                <h3>📋 All Properties</h3>
+                <a class="view-all" onclick="showSection('properties')">View All →</a>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Property</th><th>Landlord</th><th>Price</th><th>Status</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="dashboardPropsTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PROPERTIES -->
+        <div id="section-properties" class="tab-content">
+            <div class="section-header"><h3>🏢 All Properties</h3></div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Property</th><th>Landlord</th><th>Price</th><th>Spaces</th><th>Status</th><th>Verification</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="propertiesTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- STUDENTS -->
+        <div id="section-students" class="tab-content">
+            <div class="section-header"><h3>🎓 Students</h3></div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Name</th><th>Email</th><th>Phone</th><th>University</th><th>Status</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="studentsTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- LANDLORDS -->
+        <div id="section-landlords" class="tab-content">
+            <div class="section-header"><h3>👔 Landlords</h3></div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Name</th><th>Email</th><th>Phone</th><th>Properties</th><th>Status</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="landlordsTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- VERIFICATION -->
+        <div id="section-verification" class="tab-content">
+            <div class="section-header"><h3>✅ Pending Verification</h3></div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Property</th><th>Landlord</th><th>Price</th><th>Status</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="verificationTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SUBSCRIPTIONS -->
+        <div id="section-subscriptions" class="tab-content">
+            <div class="section-header"><h3>💳 Subscriptions</h3></div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Landlord</th><th>Plan</th><th>Price</th><th>Expiry</th><th>Status</th></tr>
+                    </thead>
+                    <tbody id="subscriptionsTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- REPORTS -->
+        <div id="section-reports" class="tab-content">
+            <div class="section-header"><h3>🚨 Reports</h3></div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Reported By</th><th>Property</th><th>Type</th><th>Status</th></tr>
+                    </thead>
+                    <tbody id="reportsTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ANALYTICS -->
+        <div id="section-analytics" class="tab-content">
+            <div class="section-header"><h3>📊 Analytics</h3></div>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-number">1,248</div><div class="stat-label">Total Views</div></div>
+                <div class="stat-card"><div class="stat-number">86</div><div class="stat-label">Total Saves</div></div>
+                <div class="stat-card"><div class="stat-number">42</div><div class="stat-label">Total Inquiries</div></div>
+                <div class="stat-card"><div class="stat-number">K8,400</div><div class="stat-label">Revenue</div></div>
+            </div>
+        </div>        <!--  SERVICE ENGINE  -->
+        <div id="section-services" class="tab-content">
+            <div class="section-header"><h3> Service Engine</h3></div>
+
+            <!-- Metrics -->
+            <div class="stats-grid" id="serviceMetrics" style="margin-bottom:24px;">
+                <div class="stat-card"><div class="stat-number" id="metricTotalOrders">0</div><div class="stat-label">Total Orders</div></div>
+                <div class="stat-card"><div class="stat-number" id="metricActiveOrders">0</div><div class="stat-label">Active Orders</div></div>
+                <div class="stat-card"><div class="stat-number" id="metricCompleted">0</div><div class="stat-label">Completed</div></div>
+                <div class="stat-card"><div class="stat-number" id="metricGMV">K0</div><div class="stat-label">Total GMV</div></div>
+                <div class="stat-card"><div class="stat-number" id="metricCommission">K0</div><div class="stat-label">Commission</div></div>
+                <div class="stat-card"><div class="stat-number" id="metricProviders">0</div><div class="stat-label">Providers</div></div>
+            </div>
+
+            <!-- Tabs -->
+            <div style="display:flex;gap:8px;background:#f8f9fa;padding:6px;border-radius:12px;margin-bottom:20px;flex-wrap:wrap;">
+                <button class="svc-tab active" data-tab="providers" onclick="switchSvcTab('providers')" style="padding:10px 20px;border:none;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit;background:#f5a623;color:white;">Providers</button>
+                <button class="svc-tab" data-tab="orders" onclick="switchSvcTab('orders')" style="padding:10px 20px;border:none;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit;background:transparent;color:#6b7280;">Orders</button>
+                <button class="svc-tab" data-tab="wallet" onclick="switchSvcTab('wallet')" style="padding:10px 20px;border:none;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit;background:transparent;color:#6b7280;">Wallet Ledger</button>
+                <button class="svc-tab" data-tab="config" onclick="switchSvcTab('config')" style="padding:10px 20px;border:none;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit;background:transparent;color:#6b7280;">Config</button>
+            </div>
+
+            <!-- Providers tab -->
+            <div id="svcTab-providers" class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Provider</th><th>Code</th><th>Phone</th><th>Services</th><th>Status</th><th>Welcome Credit</th><th>Wallet</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="svcProvidersTable"></tbody>
+                </table>
+            </div>
+
+            <!-- Orders tab -->
+            <div id="svcTab-orders" class="table-container" style="display:none;">
+                <table>
+                    <thead>
+                        <tr><th>Order #</th><th>Service</th><th>Customer</th><th>Provider</th><th>Price</th><th>Commission</th><th>Status</th><th>Code</th></tr>
+                    </thead>
+                    <tbody id="svcOrdersTable"></tbody>
+                </table>
+            </div>
+
+            <!-- Wallet tab -->
+            <div id="svcTab-wallet" style="display:none;">
+                <div class="table-container" style="padding:20px;">
+                    <label style="display:block;font-weight:700;font-size:13px;margin-bottom:8px;">Select Provider</label>
+                    <select id="walletProviderSelect" onchange="loadProviderLedger()" style="width:100%;padding:12px;border:1.5px solid #eef2f6;border-radius:12px;font-family:inherit;font-size:14px;">
+                        <option value="">Choose a provider</option>
+                    </select>
+                </div>
+                <div id="walletLedger" style="margin-top:20px;"></div>
+            </div>
+
+            <!-- Config tab -->
+            <div id="svcTab-config" style="display:none;">
+                <div style="background:white;padding:24px;border-radius:16px;border:1px solid #e4e7ec;">
+                    <h3 style="margin-bottom:16px;"> Service Engine Configuration</h3>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                        <div>
+                            <label style="display:block;font-weight:600;font-size:13px;margin-bottom:6px;">Welcome Credit (K)</label>
+                            <input type="number" id="cfgWelcomeCredit" value="60" style="width:100%;padding:12px;border:1.5px solid #eef2f6;border-radius:12px;font-family:inherit;">
+                        </div>
+                        <div>
+                            <label style="display:block;font-weight:600;font-size:13px;margin-bottom:6px;">Commission Rate (%)</label>
+                            <input type="number" id="cfgCommission" value="20" style="width:100%;padding:12px;border:1.5px solid #eef2f6;border-radius:12px;font-family:inherit;">
+                        </div>
+                        <div>
+                            <label style="display:block;font-weight:600;font-size:13px;margin-bottom:6px;">Wheelbarrow Base Price (K)</label>
+                            <input type="number" id="cfgWBBase" value="15" style="width:100%;padding:12px;border:1.5px solid #eef2f6;border-radius:12px;font-family:inherit;">
+                        </div>
+                        <div>
+                            <label style="display:block;font-weight:600;font-size:13px;margin-bottom:6px;">Wheelbarrow Per KM (K)</label>
+                            <input type="number" id="cfgWBPerKm" value="5" style="width:100%;padding:12px;border:1.5px solid #eef2f6;border-radius:12px;font-family:inherit;">
+                        </div>
+                    </div>
+                    <button onclick="saveServiceConfig()" style="margin-top:20px;padding:12px 32px;background:#f5a623;color:white;border:none;border-radius:12px;font-weight:700;cursor:pointer;font-family:inherit;">Save Config</button>
+                </div>
+            </div>
+        </div>
+
+
+    </main>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ═══════════════════════════════════════════════
+        // SESSION GUARD
+        // ═══════════════════════════════════════════════
+        (function() {
+            const token = localStorage.getItem('token');
+            const user  = JSON.parse(localStorage.getItem('user') || 'null');
+
+            if (!token || !user) {
+                window.location.href = '/login';
+                return;
+            }
+
+            if (user.user_type !== 'admin') {
+                if (user.user_type === 'student') window.location.href = '/student';
+                else if (user.user_type === 'landlord') window.location.href = '/landlord';
+                else window.location.href = '/login';
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const userName  = document.getElementById('userNameText');
+                const avatarImg = document.getElementById('userAvatarImg');
+                if (userName) userName.textContent = user.full_name || 'Admin';
+                if (avatarImg) avatarImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.full_name || 'Admin')}&background=f5a623&color=fff&size=36`;
+            });
+        })();
+
+        // ═══════════════════════════════════════════════
+        // TOAST
+        // ═══════════════════════════════════════════════
+        function showToast(msg, type = 'success') {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast ' + type;
+            t.classList.add('show');
+            clearTimeout(t._hide);
+            t._hide = setTimeout(() => t.classList.remove('show'), 2800);
+        }
+
+        function fmt(amount) { return 'K' + Number(amount).toLocaleString(); }
+
+        // ═══════════════════════════════════════════════
+        // NAVIGATION
+        // ═══════════════════════════════════════════════
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function showSection(section) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            const target = document.getElementById('section-' + section);
+            if (target) target.classList.add('active');
+
+            document.querySelectorAll('.sidebar-nav a').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.sidebar-nav a[data-section="' + section + '"]').forEach(el => el.classList.add('active'));
+
+            const titles = {
+                dashboard: 'Dashboard',
+                properties: 'Properties',
+                students: 'Students',
+                landlords: 'Landlords',
+                verification: 'Verification',
+                subscriptions: 'Subscriptions',
+                reports: 'Reports',
+                analytics: 'Analytics'
+            };
+            document.getElementById('pageTitle').textContent = titles[section] || 'Dashboard';
+            document.getElementById('pageSubtitle').textContent = 'Manage ' + (titles[section] || '');
+            document.getElementById('sidebar').classList.remove('open');
+
+            if (section === 'properties') renderProperties();
+            else if (section === 'students') renderStudents();
+            else if (section === 'landlords') renderLandlords();
+            else if (section === 'verification') renderVerification();
+            else if (section === 'subscriptions') renderSubscriptions();
+            else if (section === 'reports') renderReports();
+        }
+
+        document.querySelectorAll('.sidebar-nav a[data-section]').forEach(el => {
+            el.addEventListener('click', () => showSection(el.dataset.section));
+        });
+
+        // ═══════════════════════════════════════════════
+        // LOAD DATA
+        // ═══════════════════════════════════════════════
+        let allProperties = [];
+
+        async function loadDashboard() {
+            try {
+                const res = await fetch('/api/properties');
+                const data = await res.json();
+                if (data.status === 'success') allProperties = data.data || [];
+            } catch (e) { allProperties = []; }
+
+            document.getElementById('totalProperties').textContent = allProperties.length;
+            document.getElementById('verifiedProperties').textContent = allProperties.filter(p => p.is_verified).length;
+            document.getElementById('availableSpaces').textContent = allProperties.reduce((s, p) => s + (p.available_spaces || 0), 0);
+            document.getElementById('pendingVerification').textContent = allProperties.filter(p => p.verification_status === 'pending').length;
+            document.getElementById('totalStudents').textContent = 1;
+            document.getElementById('totalLandlords').textContent = 1;
+            document.getElementById('activeSubscriptions').textContent = allProperties.length;
+            document.getElementById('totalReports').textContent = 3;
+            document.getElementById('propertyBadge').textContent = allProperties.length;
+            document.getElementById('verifyBadge').textContent = allProperties.filter(p => p.verification_status === 'pending').length;
+
+            renderPropsTable('dashboardPropsTable', allProperties.slice(0, 5));
+        }
+
+        function renderPropsTable(tbodyId, list) {
+            const tbody = document.getElementById(tbodyId);
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            if (!list.length) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:#6b7280;">No properties</td></tr>';
+                return;
+            }
+            list.forEach(p => {
+                const st = p.verification_status || 'pending';
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${p.property_name}</strong></td>
+                    <td>${p.landlord?.name || 'Unknown'}</td>
+                    <td>${fmt(p.monthly_price)}</td>
+                    <td><span class="status-tag ${st}">${st.charAt(0).toUpperCase() + st.slice(1)}</span></td>
+                    <td>
+                        ${!p.is_verified ? `<button class="action-btn verify" onclick="verifyProperty(${p.property_id})"><i class="fas fa-check"></i> Verify</button>` : ''}
+                        <button class="action-btn suspend" onclick="suspendProperty(${p.property_id})"><i class="fas fa-ban"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderProperties() {
+            const tbody = document.getElementById('propertiesTable');
+            tbody.innerHTML = '';
+            allProperties.forEach(p => {
+                const st = p.verification_status || 'pending';
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${p.property_name}</strong></td>
+                    <td>${p.landlord?.name || 'Unknown'}</td>
+                    <td>${fmt(p.monthly_price)}</td>
+                    <td>${p.available_spaces || 0}</td>
+                    <td><span class="status-tag ${p.status || 'pending'}">${(p.status || 'pending').charAt(0).toUpperCase() + (p.status || 'pending').slice(1)}</span></td>
+                    <td><span class="status-tag ${st}">${st.charAt(0).toUpperCase() + st.slice(1)}</span></td>
+                    <td>
+                        ${!p.is_verified ? `<button class="action-btn verify" onclick="verifyProperty(${p.property_id})"><i class="fas fa-check"></i> Verify</button>` : ''}
+                        <button class="action-btn suspend" onclick="suspendProperty(${p.property_id})"><i class="fas fa-ban"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderStudents() {
+            const students = [
+                { name: 'Francis Chilsa', email: 'francis@example.com', phone: '+260975123456', university: 'Eden University', status: 'active' }
+            ];
+            const tbody = document.getElementById('studentsTable');
+            tbody.innerHTML = '';
+            students.forEach(s => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${s.name}</strong></td>
+                    <td>${s.email}</td>
+                    <td>${s.phone}</td>
+                    <td>${s.university}</td>
+                    <td><span class="status-tag ${s.status}">${s.status.charAt(0).toUpperCase() + s.status.slice(1)}</span></td>
+                    <td><button class="action-btn view" onclick="showToast('👁️ Viewing ${s.name}', 'info')"><i class="fas fa-eye"></i></button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderLandlords() {
+            const landlords = [
+                { name: 'Mr. Banda', email: 'banda@euponkala.com', phone: '+260971234567', properties: allProperties.length, status: 'verified' }
+            ];
+            const tbody = document.getElementById('landlordsTable');
+            tbody.innerHTML = '';
+            landlords.forEach(l => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${l.name}</strong></td>
+                    <td>${l.email}</td>
+                    <td>${l.phone}</td>
+                    <td>${l.properties}</td>
+                    <td><span class="status-tag ${l.status}">${l.status.charAt(0).toUpperCase() + l.status.slice(1)}</span></td>
+                    <td><button class="action-btn view" onclick="showToast('👁️ Viewing ${l.name}', 'info')"><i class="fas fa-eye"></i></button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderVerification() {
+            const pending = allProperties.filter(p => p.verification_status === 'pending');
+            const tbody = document.getElementById('verificationTable');
+            tbody.innerHTML = '';
+            if (!pending.length) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:#6b7280;">No pending verifications</td></tr>';
+                return;
+            }
+            pending.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${p.property_name}</strong></td>
+                    <td>${p.landlord?.name || 'Unknown'}</td>
+                    <td>${fmt(p.monthly_price)}</td>
+                    <td><span class="status-tag pending">Pending</span></td>
+                    <td>
+                        <button class="action-btn verify" onclick="verifyProperty(${p.property_id})"><i class="fas fa-check"></i> Approve</button>
+                        <button class="action-btn suspend" onclick="suspendProperty(${p.property_id})"><i class="fas fa-times"></i> Reject</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderSubscriptions() {
+            const subs = [
+                { landlord: 'Mr. Banda', plan: 'Standard', price: 'K300', expiry: '2026-12-08', status: 'active' }
+            ];
+            const tbody = document.getElementById('subscriptionsTable');
+            tbody.innerHTML = '';
+            subs.forEach(s => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${s.landlord}</strong></td>
+                    <td>${s.plan}</td>
+                    <td>${s.price}</td>
+                    <td>${s.expiry}</td>
+                    <td><span class="status-tag ${s.status}">${s.status.charAt(0).toUpperCase() + s.status.slice(1)}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderReports() {
+            const reports = [
+                { by: 'Francis Chilsa', property: 'Zeworld Boarding House', type: 'False Availability', status: 'pending' },
+                { by: 'Mary Mwansa', property: 'Big Brother', type: 'Wrong Location', status: 'active' },
+                { by: 'John Banda', property: 'Liseli', type: 'Misleading Photos', status: 'verified' }
+            ];
+            const tbody = document.getElementById('reportsTable');
+            tbody.innerHTML = '';
+            reports.forEach(r => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${r.by}</td>
+                    <td>${r.property}</td>
+                    <td>${r.type}</td>
+                    <td><span class="status-tag ${r.status}">${r.status.charAt(0).toUpperCase() + r.status.slice(1)}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // ═══════════════════════════════════════════════
+        // ACTIONS
+        // ═══════════════════════════════════════════════
+        async function verifyProperty(id) {
+            if (!confirm('Verify this property?')) return;
+            try {
+                await fetch(`/api/admin/verify-property/${id}`, { method: 'PUT' });
+                showToast('✅ Property verified!', 'success');
+                await loadDashboard();
+                showSection('properties');
+            } catch (e) {
+                showToast('❌ Failed to verify', 'error');
+            }
+        }
+
+        async function suspendProperty(id) {
+            if (!confirm('Suspend this property?')) return;
+            try {
+                await fetch(`/api/admin/suspend-property/${id}`, { method: 'PUT' });
+                showToast('🚫 Property suspended', 'warning');
+                await loadDashboard();
+                showSection('properties');
+            } catch (e) {
+                showToast('❌ Failed to suspend', 'error');
+            }
+        }
+
+        function logout() {
+            if (confirm('Logout?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/login';
+            }
+        }
+
+        // ═══════════════════════════════════════════════
+        // INIT
+        // ═══════════════════════════════════════════════
+        document.addEventListener('DOMContentLoaded', loadDashboard);
+
+        document.addEventListener('click', (e) => {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.mobile-toggle');
+            if (window.innerWidth <= 768 && !sidebar.contains(e.target) && !toggle?.contains(e.target)) {
+                sidebar.classList.remove('open');
+            }
+        });
+    </script>
+
+    <!-- ═══ EU PONKALA Chat Widget ═══ -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/shared/chat.js"></script>
+    <script>
+        (function() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            if (user && user.user_id && window.EU_CHAT) {
+                EU_CHAT.init({ userId: user.user_id, userType: 'admin' });
+            }
+        })();
+        // 
+        // SERVICE ENGINE  Admin Tab
+        // 
+        function switchSvcTab(tab) {
+            document.querySelectorAll('.svc-tab').forEach(t => {
+                t.style.background = 'transparent';
+                t.style.color = '#6b7280';
+                t.classList.remove('active');
+            });
+            const active = document.querySelector('.svc-tab[data-tab="' + tab + '"]');
+            if (active) {
+                active.style.background = '#f5a623';
+                active.style.color = 'white';
+                active.classList.add('active');
+            }
+            ['providers','orders','wallet','config'].forEach(t => {
+                const el = document.getElementById('svcTab-' + t);
+                if (el) el.style.display = (t === tab) ? '' : 'none';
+            });
+            if (tab === 'providers') loadServiceProviders();
+            else if (tab === 'orders') loadServiceOrders();
+            else if (tab === 'wallet') populateWalletProviderList();
+        }
+
+        async function loadServiceMetrics() {
+            try {
+                const res = await fetch('/api/admin/service-metrics');
+                const data = await res.json();
+                if (data.status !== 'success') return;
+                const m = data.data;
+                document.getElementById('metricTotalOrders').textContent = m.orders.total;
+                document.getElementById('metricActiveOrders').textContent = m.orders.active;
+                document.getElementById('metricCompleted').textContent = m.orders.completed;
+                document.getElementById('metricGMV').textContent = 'K' + Number(m.revenue.gmv).toFixed(0);
+                document.getElementById('metricCommission').textContent = 'K' + Number(m.revenue.commission).toFixed(0);
+                document.getElementById('metricProviders').textContent = m.providers.total;
+            } catch (e) { console.error(e); }
+        }
+
+        async function loadServiceProviders() {
+            try {
+                const res = await fetch('/api/admin/service-providers');
+                const data = await res.json();
+                const tbody = document.getElementById('svcProvidersTable');
+                if (!tbody) return;
+                tbody.innerHTML = '';
+                (data.data || []).forEach(p => {
+                    const svcList = (p.services || []).map(s => s.service_type).join(', ');
+                    const totalCredit = (p.services || []).reduce((sum, s) => sum + (s.welcome_credit || 0), 0);
+                    const totalWallet = (p.services || []).reduce((sum, s) => sum + (s.wallet_balance || 0), 0);
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>${p.full_name}</strong></td>
+                        <td><code style="font-size:12px;">${p.provider_code}</code></td>
+                        <td>${p.phone}</td>
+                        <td>${svcList || ''}</td>
+                        <td><span class="status-tag ${p.verification_status}">${p.verification_status}</span></td>
+                        <td>K${totalCredit.toFixed(0)}</td>
+                        <td>K${totalWallet.toFixed(0)}</td>
+                        <td>
+                            ${p.verification_status !== 'verified' ? `<button class="action-btn verify" onclick="approveProvider(${p.id})"><i class="fas fa-check"></i> Verify</button>` : ''}
+                            <button class="action-btn suspend" onclick="suspendProvider(${p.id})"><i class="fas fa-ban"></i> Suspend</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (e) { console.error(e); }
+        }
+
+        async function loadServiceOrders() {
+            try {
+                const res = await fetch('/api/admin/service-orders');
+                const data = await res.json();
+                const tbody = document.getElementById('svcOrdersTable');
+                if (!tbody) return;
+                tbody.innerHTML = '';
+                (data.data || []).slice(0, 50).forEach(o => {
+                    const statusCls = o.order_status === 'completed' ? 'verified'
+                                    : o.order_status === 'cancelled' ? 'suspended'
+                                    : 'pending';
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><code style="font-size:12px;">${o.order_number}</code></td>
+                        <td><span class="status-tag active" style="text-transform:capitalize;">${o.service_type}</span></td>
+                        <td>${o.customer_name || ''}<br><small>${o.customer_phone || ''}</small></td>
+                        <td>${o.provider_name || ''}<br><small>${o.provider_phone || ''}</small></td>
+                        <td>K${Number(o.price).toFixed(0)}</td>
+                        <td>K${Number(o.commission).toFixed(0)}</td>
+                        <td><span class="status-tag ${statusCls}">${o.order_status.replace(/_/g, ' ')}</span></td>
+                        <td><code>${o.completion_code || ''}</code></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (e) { console.error(e); }
+        }
+
+        async function populateWalletProviderList() {
+            try {
+                const res = await fetch('/api/admin/service-providers');
+                const data = await res.json();
+                const sel = document.getElementById('walletProviderSelect');
+                if (!sel) return;
+                sel.innerHTML = '<option value="">Choose a provider</option>';
+                (data.data || []).forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = p.id;
+                    opt.textContent = p.full_name + ' (' + p.provider_code + ')';
+                    sel.appendChild(opt);
+                });
+            } catch (e) { console.error(e); }
+        }
+
+        async function loadProviderLedger() {
+            const id = document.getElementById('walletProviderSelect').value;
+            if (!id) return;
+            try {
+                const res = await fetch('/api/laundry/admin/wallet/' + id);
+                const data = await res.json();
+                const container = document.getElementById('walletLedger');
+                if (!container) return;
+                const rows = (data.data && data.data.ledger) || [];
+                const p = data.data.provider;
+                container.innerHTML = `
+                    <div style="background:white;border-radius:16px;padding:20px;border:1px solid #e4e7ec;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                            <div>
+                                <div style="font-weight:800;font-size:16px;">${p.full_name}</div>
+                                <div style="font-size:12px;color:#6b7280;">${p.provider_code}  ${p.phone}</div>
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="font-size:11px;color:#6b7280;">Wallet</div>
+                                <div style="font-size:22px;font-weight:900;color:#f5a623;">K${Number(p.wallet_balance || 0).toFixed(2)}</div>
+                            </div>
+                        </div>
+                        <table style="width:100%;border-collapse:collapse;">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:left;padding:8px 0;font-size:11px;color:#6b7280;text-transform:uppercase;">Type</th>
+                                    <th style="text-align:left;padding:8px 0;font-size:11px;color:#6b7280;text-transform:uppercase;">Amount</th>
+                                    <th style="text-align:left;padding:8px 0;font-size:11px;color:#6b7280;text-transform:uppercase;">Before</th>
+                                    <th style="text-align:left;padding:8px 0;font-size:11px;color:#6b7280;text-transform:uppercase;">After</th>
+                                    <th style="text-align:left;padding:8px 0;font-size:11px;color:#6b7280;text-transform:uppercase;">Reference</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${rows.map(r => `
+                                    <tr style="border-top:1px solid #f0f2f5;">
+                                        <td style="padding:10px 0;font-weight:600;">${r.transaction_type}</td>
+                                        <td style="padding:10px 0;color:${r.amount < 0 ? '#dc2626' : '#059669'};font-weight:700;">${r.amount > 0 ? '+' : ''}K${Math.abs(r.amount).toFixed(2)}</td>
+                                        <td style="padding:10px 0;color:#6b7280;">K${Number(r.balance_before).toFixed(2)}</td>
+                                        <td style="padding:10px 0;color:#6b7280;">K${Number(r.balance_after).toFixed(2)}</td>
+                                        <td style="padding:10px 0;font-size:12px;color:#6b7280;">${r.reference || ''}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } catch (e) { console.error(e); }
+        }
+
+        async function approveProvider(id) {
+            if (!confirm('Approve this provider?')) return;
+            await fetch('/api/admin/service-providers/' + id, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ verification_status: 'verified', account_status: 'active' })
+            });
+            showToast(' Provider approved');
+            loadServiceProviders();
+        }
+
+        async function suspendProvider(id) {
+            if (!confirm('Suspend this provider?')) return;
+            await fetch('/api/admin/service-providers/' + id, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ account_status: 'suspended' })
+            });
+            showToast(' Provider suspended', 'warn');
+            loadServiceProviders();
+        }
+
+        function saveServiceConfig() {
+            const base = document.getElementById('cfgWBBase').value;
+            const perkm = document.getElementById('cfgWBPerKm').value;
+
+            fetch('/api/admin/wheelbarrow/pricing', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ base_price: parseFloat(base), per_km_price: parseFloat(perkm) })
+            }).then(() => showToast(' Config saved'));
+        }
+
+        // Hook into showSection to auto-load metrics when Service Engine opens
+        (function() {
+            const origShowSection = window.showSection;
+            if (typeof origShowSection === 'function') {
+                window.showSection = function(section) {
+                    origShowSection(section);
+                    if (section === 'services') {
+                        loadServiceMetrics();
+                        loadServiceProviders();
+                    }
+                };
+            }
+        })();
+
+    </script>
+
+<!-- ============================================================ -->
+<!-- ENGINE ADMIN SHIM  adds engine sections to legacy admin      -->
+<!-- ============================================================ -->
+<script>
+(function(){
+    'use strict';
+    var ENGINE = '/api/engine';
+
+    function el(id){ return document.getElementById(id); }
+    function toast(m, t){
+        var e = document.getElementById('engToast');
+        if (!e) {
+            e = document.createElement('div');
+            e.id = 'engToast';
+            e.style.cssText = 'position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-100px);background:#1a1a2e;color:white;padding:14px 24px;border-radius:14px;font-size:14px;font-weight:700;z-index:99999;transition:transform 0.3s;';
+            document.body.appendChild(e);
+        }
+        e.textContent = m;
+        e.className = t || '';
+        e.style.background = t === 'success' ? 'linear-gradient(135deg,#065f46,#059669)' : t === 'error' ? 'linear-gradient(135deg,#991b1b,#dc2626)' : '#1a1a2e';
+        e.style.transform = 'translateX(-50%) translateY(0)';
+        setTimeout(function(){ e.style.transform = 'translateX(-50%) translateY(-100px)'; }, 3500);
+    }
+    function esc(s){ if (s == null) return ''; return String(s).replace(/[&<>"]/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); }
+
+    // ---------- ADD NEW SIDEBAR LINKS ----------
+    var sidebar = document.querySelector('.sidebar-nav') || document.querySelector('aside nav') || document.querySelector('nav');
+    if (sidebar && !document.getElementById('engSideNav')) {
+        var divider = document.createElement('div');
+        divider.id = 'engSideNav';
+        divider.innerHTML = '<div style="height:1px;background:rgba(255,255,255,0.1);margin:12px 16px;"></div>' +
+            '<a data-section="engine-providers" style="cursor:pointer;"><i class="fas fa-user-tie"></i> Providers</a>' +
+            '<a data-section="engine-orders" style="cursor:pointer;"><i class="fas fa-box"></i> Service Orders</a>' +
+            '<a data-section="engine-disputes" style="cursor:pointer;"><i class="fas fa-flag"></i> Disputes</a>' +
+            '<a data-section="engine-penalties" style="cursor:pointer;"><i class="fas fa-gavel"></i> Penalties</a>' +
+            '<a data-section="engine-items" style="cursor:pointer;"><i class="fas fa-tshirt"></i> Laundry Items</a>' +
+            '<a data-section="engine-config" style="cursor:pointer;"><i class="fas fa-cog"></i> Config</a>' +
+            '<a data-section="engine-audit" style="cursor:pointer;"><i class="fas fa-history"></i> Audit Log</a>
+            <a data-section="engine-inquiries" style="cursor:pointer;"><i class="fas fa-envelope"></i> Inquiries</a>
+            <a data-section="engine-topups" style="cursor:pointer;"><i class="fas fa-arrow-up"></i> Topups</a>
+            <a data-section="engine-sms" style="cursor:pointer;"><i class="fas fa-sms"></i> SMS Log</a>
+            <a data-section="engine-users" style="cursor:pointer;"><i class="fas fa-users-cog"></i> All Users</a>';
+        sidebar.appendChild(divider);
+
+        // Hook clicks
+        divider.querySelectorAll('a').forEach(function(a){
+            a.onclick = function(){
+                var section = a.dataset.section;
+                document.querySelectorAll('.sidebar-nav a, nav a, aside a').forEach(function(x){ x.classList.remove('active'); });
+                a.classList.add('active');
+                // Hide all sections, show ours
+                showEngineSection(section);
+            };
+        });
+    }
+
+    // ---------- ENGINE SECTION CONTAINER ----------
+    function ensureContainer(){
+        var c = document.getElementById('engSectionContainer');
+        if (!c) {
+            c = document.createElement('div');
+            c.id = 'engSectionContainer';
+            c.style.cssText = 'display:none;padding:24px;';
+            var main = document.querySelector('.main-content') || document.querySelector('main') || document.querySelector('.content');
+            if (main) main.appendChild(c);
+            else document.body.appendChild(c);
+        }
+        return c;
+    }
+
+    function showEngineSection(section){
+        // Hide original sections (only those managed by original page JS)
+        var main = document.querySelector('.main-content') || document.querySelector('main') || document.querySelector('.content');
+        if (main) {
+            Array.prototype.forEach.call(main.children, function(c){
+                if (c.id !== 'engSectionContainer') c.style.visibility = 'hidden';
+            });
+        }
+        var container = ensureContainer();
+        container.style.display = 'block';
+        container.style.visibility = 'visible';
+
+        var titles = {
+            'engine-providers': 'Providers',
+            'engine-orders': 'Service Orders',
+            'engine-disputes': 'Open Disputes',
+            'engine-penalties': 'Penalties',
+            'engine-items': 'Laundry Items',
+            'engine-config': 'Configuration',
+            'engine-audit': 'Audit Log',
+            'engine-inquiries': 'Student Inquiries',
+            'engine-topups': 'Provider Topups',
+            'engine-sms': 'SMS Log',
+            'engine-users': 'All Users'
+        };
+        container.innerHTML = '<h1 style="font-size:24px;font-weight:900;margin-bottom:20px;">' + (titles[section] || section) + '</h1><div id="engContent"><div style="text-align:center;padding:40px;color:#9ca3af;">Loading...</div></div>';
+
+        var loaders = {
+            'engine-providers': loadProviders,
+            'engine-orders': loadOrders,
+            'engine-disputes': loadDisputes,
+            'engine-penalties': loadPenalties,
+            'engine-items': loadItems,
+            'engine-config': loadConfig,
+            'engine-audit': loadAudit,
+            'engine-inquiries': loadInquiries,
+            'engine-topups': loadTopups,
+            'engine-sms': loadSmsLog,
+            'engine-users': loadAllUsers
+        };
+        if (loaders[section]) loaders[section]();
+    }
+
+    // ---------- DATA LOADERS ----------
+    function loadProviders(){
+        fetch(ENGINE + '/admin/providers?limit=200').then(function(r){ return r.json(); }).then(function(res){
+            var list = res.data || [];
+            var html = '<table style="width:100%;border-collapse:collapse;"><thead><tr style="background:#f8f9fa;"><th style="padding:10px;text-align:left;font-size:11px;text-transform:uppercase;color:#6b7280;">Code</th><th style="padding:10px;text-align:left;font-size:11px;text-transform:uppercase;color:#6b7280;">Name</th><th style="padding:10px;text-align:left;font-size:11px;text-transform:uppercase;color:#6b7280;">Phone</th><th style="padding:10px;text-align:left;font-size:11px;text-transform:uppercase;color:#6b7280;">Status</th><th style="padding:10px;text-align:left;font-size:11px;text-transform:uppercase;color:#6b7280;">Verified</th><th style="padding:10px;text-align:left;font-size:11px;text-transform:uppercase;color:#6b7280;">Actions</th></tr></thead><tbody>';
+            list.forEach(function(p){
+                var accPill = p.account_status === 'active' ? '<span style="background:#d1fae5;color:#065f46;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:800;">ACTIVE</span>' : '<span style="background:#fee2e2;color:#991b1b;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:800;">' + esc(p.account_status) + '</span>';
+                var verPill = p.verification_status === 'verified' ? '<span style="background:#d1fae5;color:#065f46;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:800;">VERIFIED</span>' : '<span style="background:#fef3c7;color:#92400e;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:800;">' + esc(p.verification_status) + '</span>';
+                var acts = '';
+                if (p.verification_status !== 'verified') acts += '<button data-appr="' + p.id + '" style="padding:6px 10px;border:none;border-radius:8px;background:#065f46;color:white;font-weight:700;font-size:11px;cursor:pointer;margin-right:4px;">Approve</button>';
+                if (p.account_status === 'active') acts += '<button data-susp="' + p.id + '" style="padding:6px 10px;border:none;border-radius:8px;background:#dc2626;color:white;font-weight:700;font-size:11px;cursor:pointer;">Suspend</button>';
+                else acts += '<button data-reac="' + p.id + '" style="padding:6px 10px;border:none;border-radius:8px;background:#f5a623;color:white;font-weight:700;font-size:11px;cursor:pointer;">Reactivate</button>';
+                html += '<tr style="border-bottom:1px solid #f0f2f5;"><td style="padding:10px;font-family:monospace;font-size:11px;">' + esc(p.provider_code) + '</td><td style="padding:10px;font-weight:700;">' + esc(p.full_name) + '</td><td style="padding:10px;">' + esc(p.phone) + '</td><td style="padding:10px;">' + accPill + '</td><td style="padding:10px;">' + verPill + '</td><td style="padding:10px;">' + acts + '</td></tr>';
+            });
+            html += '</tbody></table>';
+            el('engContent').innerHTML = list.length ? html : '<div style="text-align:center;padding:40px;color:#9ca3af;">No providers yet</div>';
+        });
+    }
+
+    function loadOrders(){
+        fetch(ENGINE + '/admin/service-orders').then(function(r){ return r.json(); }).catch(function(){ return {data:[]}; }).then(function(res){
+            var list = res.data || [];
+            var html = '<table style="width:100%;border-collapse:collapse;"><thead><tr style="background:#f8f9fa;"><th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Code</th><th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Service</th><th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Status</th><th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Price</th><th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Created</th></tr></thead><tbody>';
+            list.slice(0, 100).forEach(function(o){
+                html += '<tr style="border-bottom:1px solid #f0f2f5;"><td style="padding:10px;font-family:monospace;font-size:12px;">' + esc(o.order_code || o.order_number) + '</td><td style="padding:10px;">' + esc(o.service_type) + '</td><td style="padding:10px;"><span style="background:#dbeafe;color:#1e40af;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:800;">' + esc(o.order_status) + '</span></td><td style="padding:10px;font-weight:700;">K' + (o.price || 0) + '</td><td style="padding:10px;font-size:11px;color:#9ca3af;">' + esc(o.created_at) + '</td></tr>';
+            });
+            html += '</tbody></table>';
+            el('engContent').innerHTML = list.length ? html : '<div style="text-align:center;padding:40px;color:#9ca3af;">No orders</div>';
+        });
+    }
+
+    function loadDisputes(){
+        fetch(ENGINE + '/disputes/open').then(function(r){ return r.json(); }).then(function(res){
+            var list = res.data || [];
+            el('engContent').innerHTML = list.length ? list.map(function(d){
+                return '<div style="padding:14px;background:#fff;border:1px solid #eef2f6;border-radius:12px;margin-bottom:10px;"><b>' + esc(d.order_code) + '</b>  ' + esc(d.reason) + '<br><span style="font-size:12px;color:#6b7280;">Raised by ' + esc(d.raised_by) + '  ' + esc(d.status) + '</span><br><button data-rslv="' + d.dispute_id + '" data-act="PAY_PROVIDER" style="margin-top:8px;padding:6px 10px;border:none;border-radius:8px;background:#065f46;color:white;font-weight:700;font-size:11px;cursor:pointer;margin-right:4px;">Pay Provider</button><button data-rslv="' + d.dispute_id + '" data-act="REFUND_STUDENT" style="padding:6px 10px;border:none;border-radius:8px;background:#dc2626;color:white;font-weight:700;font-size:11px;cursor:pointer;">Refund Student</button></div>';
+            }).join('') : '<div style="text-align:center;padding:40px;color:#9ca3af;">No open disputes</div>';
+        });
+    }
+
+    function loadPenalties(){
+        Promise.all([
+            fetch(ENGINE + '/penalties/recent').then(function(r){ return r.json(); }),
+            fetch(ENGINE + '/penalties/suspended').then(function(r){ return r.json(); })
+        ]).then(function(arr){
+            var recent = arr[0].data || [];
+            var susp = arr[1].data || [];
+            var html = '<h3 style="font-size:14px;font-weight:800;margin-bottom:12px;">Suspended (' + susp.length + ')</h3>';
+            html += susp.length ? susp.map(function(s){ return '<div style="padding:10px;background:#fff;border:1px solid #eef2f6;border-radius:8px;margin-bottom:8px;"><b>' + esc(s.subject_type) + ' #' + s.subject_id + '</b>  Level ' + s.level + (s.is_banned ? '  BANNED' : '') + '</div>'; }).join('') : '<div style="color:#9ca3af;padding:12px;">None</div>';
+            html += '<h3 style="font-size:14px;font-weight:800;margin:20px 0 12px;">Recent</h3>';
+            html += recent.length ? recent.slice(0, 30).map(function(p){ return '<div style="padding:10px;background:#fff;border:1px solid #eef2f6;border-radius:8px;margin-bottom:8px;"><b>' + esc(p.subject_type) + ' #' + p.subject_id + '</b>  ' + esc(p.offense_type) + ' (Level ' + p.level + ')</div>'; }).join('') : '<div style="color:#9ca3af;padding:12px;">None</div>';
+            el('engContent').innerHTML = html;
+        });
+    }
+
+    function loadItems(){
+        fetch(ENGINE + '/laundry/catalog?all=1').then(function(r){ return r.json(); }).then(function(res){
+            var list = res.data || [];
+            var html = '<table style="width:100%;border-collapse:collapse;"><thead><tr style="background:#f8f9fa;"><th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Code</th><th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Label</th><th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Price</th><th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Action</th></tr></thead><tbody>';
+            list.forEach(function(it){
+                html += '<tr style="border-bottom:1px solid #f0f2f5;"><td style="padding:10px;font-family:monospace;">' + esc(it.item_code) + '</td><td style="padding:10px;font-weight:700;">' + esc(it.item_label) + '</td><td style="padding:10px;"><input type="number" data-prc="' + it.item_id + '" value="' + it.unit_price + '" style="width:80px;padding:6px;border:1px solid #eef2f6;border-radius:6px;font-family:inherit;"></td><td style="padding:10px;"><button data-svitm="' + it.item_id + '" style="padding:6px 10px;border:none;border-radius:8px;background:#f5a623;color:white;font-weight:700;font-size:11px;cursor:pointer;">Save</button></td></tr>';
+            });
+            html += '</tbody></table>';
+            el('engContent').innerHTML = html;
+        });
+    }
+
+    function loadConfig(){
+        fetch(ENGINE + '/config').then(function(r){ return r.json(); }).then(function(res){
+            var data = res.data || {};
+            var keys = Object.keys(data).sort();
+            var html = '<table style="width:100%;border-collapse:collapse;"><thead><tr style="background:#f8f9fa;"><th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Key</th><th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Value</th><th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Action</th></tr></thead><tbody>';
+            keys.forEach(function(k){
+                html += '<tr style="border-bottom:1px solid #f0f2f5;"><td style="padding:10px;font-family:monospace;font-size:12px;">' + esc(k) + '</td><td style="padding:10px;"><input type="text" data-cfg="' + esc(k) + '" value="' + esc(data[k]) + '" style="width:180px;padding:6px;border:1px solid #eef2f6;border-radius:6px;font-family:inherit;"></td><td style="padding:10px;"><button data-svcfg="' + esc(k) + '" style="padding:6px 10px;border:none;border-radius:8px;background:#f5a623;color:white;font-weight:700;font-size:11px;cursor:pointer;">Save</button></td></tr>';
+            });
+            html += '</tbody></table>';
+            el('engContent').innerHTML = html;
+        });
+    }
+
+    function loadAudit(){
+        fetch(ENGINE + '/admin/audit/recent?limit=100').then(function(r){ return r.json(); }).then(function(res){
+            var list = res.data || [];
+            var html = '<table style="width:100%;border-collapse:collapse;"><thead><tr style="background:#f8f9fa;"><th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">#</th><th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Action</th><th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Entity</th><th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">When</th></tr></thead><tbody>';
+            list.forEach(function(a){
+                html += '<tr style="border-bottom:1px solid #f0f2f5;"><td style="padding:10px;">#' + a.log_id + '</td><td style="padding:10px;"><span style="background:#dbeafe;color:#1e40af;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:800;">' + esc(a.action) + '</span></td><td style="padding:10px;">' + esc(a.entity_type || '') + '#' + (a.entity_id || '') + '</td><td style="padding:10px;font-size:11px;color:#9ca3af;">' + esc(a.created_at) + '</td></tr>';
+            });
+            html += '</tbody></table>';
+            el('engContent').innerHTML = list.length ? html : '<div style="text-align:center;padding:40px;color:#9ca3af;">No audit entries</div>';
+        });
+    }
+
+    // ---------- ACTION HANDLERS ----------
+    document.addEventListener('click', function(ev){
+        var t = ev.target.closest('[data-appr],[data-susp],[data-reac],[data-rslv],[data-svitm],[data-svcfg]');
+        if (!t) return;
+        if (t.dataset.appr) {
+            fetch(ENGINE + '/provider/verify/approve/' + t.dataset.appr, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ admin_user_id: 1, notes: 'Approved' }) }).then(function(r){ return r.json(); }).then(function(){ toast('Approved', 'success'); loadProviders(); });
+        } else if (t.dataset.susp) {
+            var r = prompt('Suspend reason:');
+            if (!r) return;
+            fetch('/api/engine/admin/providers/' + t.dataset.susp + '/suspend', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ admin_user_id: 1, reason: r }) }).then(function(){ toast('Suspended', 'success'); loadProviders(); });
+        } else if (t.dataset.reac) {
+            fetch('/api/engine/admin/providers/' + t.dataset.reac + '/reactivate', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ admin_user_id: 1, notes: 'Reactivated' }) }).then(function(){ toast('Reactivated', 'success'); loadProviders(); });
+        } else if (t.dataset.rslv) {
+            fetch(ENGINE + '/disputes/' + t.dataset.rslv + '/resolve', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ admin_user_id: 1, resolution: t.dataset.act, notes: 'Resolved' }) }).then(function(){ toast('Resolved', 'success'); loadDisputes(); });
+        } else if (t.dataset.svitm) {
+            var inp = document.querySelector('[data-prc="' + t.dataset.svitm + '"]');
+            fetch(ENGINE + '/laundry/catalog/items/' + t.dataset.svitm, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ unit_price: Number(inp.value) }) }).then(function(){ toast('Saved', 'success'); });
+        } else if (t.dataset.svcfg) {
+            var inp2 = document.querySelector('[data-cfg="' + t.dataset.svcfg + '"]');
+            var raw = inp2.value;
+            var val = raw === 'true' ? true : raw === 'false' ? false : (isNaN(raw) ? raw : Number(raw));
+            fetch(ENGINE + '/config/' + t.dataset.svcfg, { method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ value: val, admin_user_id: 1 }) }).then(function(){ toast('Config saved', 'success'); });
+        }
+    });
+
+
+    // ---------- HOOK ORIGINAL SECTION CLICKS ----------
+    function hideEngineContainer(){
+        var c = document.getElementById('engSectionContainer');
+        if (c) { c.style.display = 'none'; }
+        // Restore visibility of original sections
+        var main = document.querySelector('.main-content') || document.querySelector('main') || document.querySelector('.content');
+        if (main) {
+            Array.prototype.forEach.call(main.children, function(ch){
+                if (ch.id !== 'engSectionContainer') ch.style.visibility = 'visible';
+            });
+        }
+    }
+
+    // Watch for clicks on original sidebar links
+    document.addEventListener('click', function(ev){
+        var t = ev.target.closest('a[data-section]');
+        if (!t) return;
+        var section = t.dataset.section;
+        // If it's an engine section, the shim handles it. Otherwise hide the engine container.
+        if (section.indexOf('engine-') !== 0) {
+            hideEngineContainer();
+        }
+    }, true);
+
+
+    // 
+    // LOAD: Inquiries
+    // 
+    function loadInquiries() {
+        fetch(ENGINE + '/admin/inquiries').then(function(r){ return r.json(); }).then(function(res){
+            var list = res.data || [];
+            if (!list.length) { el('engContent').innerHTML = '<div class="empty">No inquiries yet</div>'; return; }
+            var html = '<table style="width:100%;border-collapse:collapse;"><thead><tr style="background:#f8f9fa;">' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">#</th>' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Student</th>' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Phone</th>' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Property</th>' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Message</th>' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Status</th></tr></thead><tbody>';
+            list.forEach(function(i){
+                var statusColor = i.status === 'new' ? 'yellow' : i.status === 'replied' ? 'green' : 'gray';
+                html += '<tr style="border-bottom:1px solid #f0f2f5;">' +
+                    '<td style="padding:10px;">#' + i.inquiry_id + '</td>' +
+                    '<td style="padding:10px;font-weight:700;">' + esc(i.student_name || '?') + '</td>' +
+                    '<td style="padding:10px;">' + esc(i.student_phone || '-') + '</td>' +
+                    '<td style="padding:10px;">' + esc(i.property_name || '-') + '</td>' +
+                    '<td style="padding:10px;font-size:12px;max-width:280px;">' + esc((i.message || '').slice(0, 80)) + '</td>' +
+                    '<td style="padding:10px;"><span style="background:#f3f4f6;padding:3px 8px;border-radius:10px;font-size:11px;font-weight:700;">' + esc(i.status) + '</span></td>' +
+                    '</tr>';
+            });
+            html += '</tbody></table>';
+            el('engContent').innerHTML = html;
+        }).catch(function(e){ el('engContent').innerHTML = '<div class="empty">Failed: ' + esc(e.message) + '</div>'; });
+    }
+
+    // 
+    // LOAD: Topups
+    // 
+    function loadTopups() {
+        fetch(ENGINE + '/admin/topups').then(function(r){ return r.json(); }).then(function(res){
+            var list = res.data || [];
+            if (!list.length) { el('engContent').innerHTML = '<div class="empty">No topups yet</div>'; return; }
+            var html = '<table style="width:100%;border-collapse:collapse;"><thead><tr style="background:#f8f9fa;">' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">#</th>' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Provider</th>' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Phone</th>' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Amount</th>' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Status</th>' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Date</th></tr></thead><tbody>';
+            list.forEach(function(t){
+                var statusColor = t.status === 'completed' ? 'green' : t.status === 'failed' ? 'red' : 'yellow';
+                var bg = statusColor === 'green' ? '#d1fae5' : statusColor === 'red' ? '#fee2e2' : '#fef3c7';
+                var fg = statusColor === 'green' ? '#065f46' : statusColor === 'red' ? '#991b1b' : '#92400e';
+                html += '<tr style="border-bottom:1px solid #f0f2f5;">' +
+                    '<td style="padding:10px;">#' + t.id + '</td>' +
+                    '<td style="padding:10px;font-weight:700;">' + esc(t.provider_name || '?') + '</td>' +
+                    '<td style="padding:10px;">' + esc(t.provider_phone || '-') + '</td>' +
+                    '<td style="padding:10px;font-weight:800;color:#f5a623;">K' + t.amount + '</td>' +
+                    '<td style="padding:10px;"><span style="background:' + bg + ';color:' + fg + ';padding:3px 8px;border-radius:10px;font-size:11px;font-weight:700;">' + esc(t.status) + '</span></td>' +
+                    '<td style="padding:10px;font-size:11px;color:#9ca3af;">' + esc(t.created_at) + '</td>' +
+                    '</tr>';
+            });
+            html += '</tbody></table>';
+            el('engContent').innerHTML = html;
+        }).catch(function(e){ el('engContent').innerHTML = '<div class="empty">Failed: ' + esc(e.message) + '</div>'; });
+    }
+
+    // 
+    // LOAD: SMS Log
+    // 
+    function loadSmsLog() {
+        fetch(ENGINE + '/admin/sms-log').then(function(r){ return r.json(); }).then(function(res){
+            var list = res.data || [];
+            if (!list.length) { el('engContent').innerHTML = '<div class="empty">No SMS yet</div>'; return; }
+            var html = '<table style="width:100%;border-collapse:collapse;"><thead><tr style="background:#f8f9fa;">' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">#</th>' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Dir</th>' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Phone</th>' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Message</th>' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Date</th></tr></thead><tbody>';
+            list.forEach(function(s){
+                var arrow = s.direction === 'IN' ? 'IN' : 'OUT';
+                var color = s.direction === 'IN' ? '#1e40af' : '#065f46';
+                html += '<tr style="border-bottom:1px solid #f0f2f5;">' +
+                    '<td style="padding:10px;">#' + s.sms_id + '</td>' +
+                    '<td style="padding:10px;font-weight:800;color:' + color + ';">' + arrow + '</td>' +
+                    '<td style="padding:10px;font-family:monospace;font-size:12px;">' + esc(s.phone) + '</td>' +
+                    '<td style="padding:10px;font-size:12px;max-width:340px;">' + esc((s.body || '').slice(0, 100)) + '</td>' +
+                    '<td style="padding:10px;font-size:11px;color:#9ca3af;">' + esc(s.created_at) + '</td>' +
+                    '</tr>';
+            });
+            html += '</tbody></table>';
+            el('engContent').innerHTML = html;
+        }).catch(function(e){ el('engContent').innerHTML = '<div class="empty">Failed: ' + esc(e.message) + '</div>'; });
+    }
+
+    // 
+    // LOAD: All Users
+    // 
+    function loadAllUsers() {
+        fetch(ENGINE + '/admin/all-users').then(function(r){ return r.json(); }).then(function(res){
+            var d = res.data || {};
+            var html = '';
+            html += '<h3 style="font-size:14px;font-weight:800;color:#6b7280;text-transform:uppercase;margin-bottom:12px;">Users (' + (d.users||[]).length + ')</h3>';
+            html += '<table style="width:100%;border-collapse:collapse;margin-bottom:28px;"><thead><tr style="background:#f8f9fa;">' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">ID</th>' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Name</th>' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Email</th>' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Type</th>' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Active</th></tr></thead><tbody>';
+            (d.users || []).forEach(function(u){
+                html += '<tr style="border-bottom:1px solid #f0f2f5;">' +
+                    '<td style="padding:10px;">' + u.user_id + '</td>' +
+                    '<td style="padding:10px;font-weight:700;">' + esc(u.full_name) + '</td>' +
+                    '<td style="padding:10px;font-size:12px;">' + esc(u.email || '-') + '</td>' +
+                    '<td style="padding:10px;text-transform:uppercase;font-size:11px;font-weight:700;color:#6b7280;">' + esc(u.user_type) + '</td>' +
+                    '<td style="padding:10px;">' + (u.is_active ? '<span style="background:#d1fae5;color:#065f46;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:800;">YES</span>' : '<span style="background:#fee2e2;color:#991b1b;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:800;">NO</span>') + '</td>' +
+                    '</tr>';
+            });
+            html += '</tbody></table>';
+
+            html += '<h3 style="font-size:14px;font-weight:800;color:#6b7280;text-transform:uppercase;margin-bottom:12px;">Providers (' + (d.providers||[]).length + ')</h3>';
+            html += '<table style="width:100%;border-collapse:collapse;"><thead><tr style="background:#f8f9fa;">' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">ID</th>' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Code</th>' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Name</th>' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Phone</th>' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Verified</th>' +
+                '<th style="padding:10px;text-align:left;font-size:11px;color:#6b7280;">Account</th></tr></thead><tbody>';
+            (d.providers || []).forEach(function(p){
+                var verBg = p.verification_status === 'verified' ? '#d1fae5' : '#fef3c7';
+                var verFg = p.verification_status === 'verified' ? '#065f46' : '#92400e';
+                html += '<tr style="border-bottom:1px solid #f0f2f5;">' +
+                    '<td style="padding:10px;">' + p.id + '</td>' +
+                    '<td style="padding:10px;font-family:monospace;font-size:11px;">' + esc(p.provider_code) + '</td>' +
+                    '<td style="padding:10px;font-weight:700;">' + esc(p.full_name) + '</td>' +
+                    '<td style="padding:10px;">' + esc(p.phone) + '</td>' +
+                    '<td style="padding:10px;"><span style="background:' + verBg + ';color:' + verFg + ';padding:3px 8px;border-radius:10px;font-size:10px;font-weight:800;">' + esc(p.verification_status) + '</span></td>' +
+                    '<td style="padding:10px;font-size:11px;">' + esc(p.account_status) + '</td>' +
+                    '</tr>';
+            });
+            html += '</tbody></table>';
+            el('engContent').innerHTML = html;
+        }).catch(function(e){ el('engContent').innerHTML = '<div class="empty">Failed: ' + esc(e.message) + '</div>'; });
+    }
+})();
+</script>
+<!-- END ENGINE ADMIN SHIM -->
+</body>
+</html>
+
+

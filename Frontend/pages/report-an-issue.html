@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EU PONKALA - Report an Issue</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link rel="stylesheet" href="/pages/_shared.css"/>
+</head>
+<body>
+
+    <nav class="page-nav">
+        <div class="inner">
+            <a href="/" class="logo">EU <span>PONKALA</span></a>
+            <a href="/" class="back"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        </div>
+    </nav>
+
+    <div class="page-wrap">
+        <div class="page-hero">
+            <div class="badge">Help Us Keep It Safe</div>
+            <h1>Report an <span>Issue</span></h1>
+            <p>Let us know about inaccurate listings, safety concerns, or technical problems.</p>
+        </div>
+
+        <div class="content-card">
+            <h2>What can you report?</h2>
+            <ul>
+                <li><strong>False availability</strong> — listing shows available but is actually full.</li>
+                <li><strong>Incorrect price</strong> — displayed price differs from what the landlord charges.</li>
+                <li><strong>Fake property</strong> — property doesn't exist or is not for rent.</li>
+                <li><strong>Wrong location</strong> — GPS coordinates or address are incorrect.</li>
+                <li><strong>Misleading photos</strong> — photos don't match the actual property.</li>
+                <li><strong>Suspicious landlord</strong> — suspicious behavior or scam attempts.</li>
+                <li><strong>Safety concern</strong> — anything unsafe about the property or area.</li>
+                <li><strong>Other</strong> — anything else you think we should know.</li>
+            </ul>
+            <p>Every report is reviewed by our admin team. Serious reports may result in the property being suspended or the landlord being investigated.</p>
+        </div>
+
+        <div class="content-card">
+            <h2>Submit a report</h2>
+            <form id="reportForm" style="margin-top:16px;">
+                <div style="margin-bottom:14px;">
+                    <label style="display:block;font-weight:600;font-size:14px;margin-bottom:6px;">Property Name</label>
+                    <input type="text" id="rProperty" required style="width:100%;padding:12px 16px;border:1px solid #eef2f6;border-radius:12px;font-size:15px;font-family:inherit;background:#f8f9fa;" placeholder="e.g. Zeworld Boarding House">
+                </div>
+                <div style="margin-bottom:14px;">
+                    <label style="display:block;font-weight:600;font-size:14px;margin-bottom:6px;">Issue Type</label>
+                    <select id="rType" required style="width:100%;padding:12px 16px;border:1px solid #eef2f6;border-radius:12px;font-size:15px;font-family:inherit;background:#f8f9fa;">
+                        <option value="">Select an issue</option>
+                        <option>False availability</option>
+                        <option>Incorrect price</option>
+                        <option>Fake property</option>
+                        <option>Wrong location</option>
+                        <option>Misleading photos</option>
+                        <option>Suspicious landlord</option>
+                        <option>Safety concern</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div style="margin-bottom:20px;">
+                    <label style="display:block;font-weight:600;font-size:14px;margin-bottom:6px;">Description</label>
+                    <textarea id="rDesc" required rows="5" style="width:100%;padding:12px 16px;border:1px solid #eef2f6;border-radius:12px;font-size:15px;font-family:inherit;background:#f8f9fa;resize:vertical;" placeholder="Please describe the issue in detail..."></textarea>
+                </div>
+                <button type="submit" style="background:#dc2626;color:white;border:none;padding:14px 32px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;font-family:inherit;">
+                    <i class="fas fa-flag"></i> Submit Report
+                </button>
+            </form>
+        </div>
+
+        <div class="content-card">
+            <h2>Urgent safety concerns?</h2>
+            <p>If you feel unsafe, contact local authorities immediately. You can also reach us directly:</p>
+            <ul>
+                <li><strong>WhatsApp:</strong> <a href="https://wa.me/260976590619" style="color:#f5a623;">+260 976 590 619</a></li>
+                <li><strong>Call:</strong> <a href="tel:+260966659069" style="color:#f5a623;">+260 966 659 069</a></li>
+                <li><strong>Call:</strong> <a href="tel:+260976590619" style="color:#f5a623;">+260 976 590 619</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <footer class="page-footer">
+        <div class="inner">
+            <div>
+                <div style="font-size:20px;font-weight:900;color:white;margin-bottom:8px;">EU <span style="color:#f5a623;">PONKALA</span></div>
+                <p style="font-size:13px;line-height:1.7;">Find Your Place. Find Your Community.<br/>The trusted student accommodation marketplace for Eden University.</p>
+            </div>
+            <div>
+                <h4>Platform</h4>
+                <a href="/pages/student-dashboard.html">Student Dashboard</a>
+                <a href="/pages/landlord-dashboard.html">Landlord Dashboard</a>
+                <a href="/pages/admin-dashboard.html">Admin Dashboard</a>
+                <a href="/pages/features.html">Features</a>
+            </div>
+            <div>
+                <h4>Support</h4>
+                <a href="/pages/help-center.html">Help Center</a>
+                <a href="/pages/faq.html">FAQ</a>
+                <a href="/pages/contact-us.html">Contact Us</a>
+                <a href="/pages/report-an-issue.html">Report an Issue</a>
+            </div>
+            <div>
+                <h4>Company</h4>
+                <a href="/pages/about-us.html">About Us</a>
+                <a href="/pages/terms-of-service.html">Terms of Service</a>
+                <a href="/pages/privacy-policy.html">Privacy Policy</a>
+                <a href="/pages/cookie-policy.html">Cookie Policy</a>
+            </div>
+        </div>
+        <div class="bottom">
+            &copy; 2026 EU PONKALA. All rights reserved. Made with &hearts; in Lusaka, Zambia.
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('reportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const toast = document.createElement('div');
+            toast.innerHTML = '<i class="fas fa-flag"></i> Report submitted. Our team will review it shortly.';
+            toast.style.cssText = 'position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:#dc2626;color:white;padding:14px 28px;border-radius:14px;font-weight:600;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.15);font-size:14px;';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+            this.reset();
+        });
+    </script>
+
+</body>
+</html>

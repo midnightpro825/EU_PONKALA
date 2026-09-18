@@ -1,0 +1,501 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>EU PONKALA - Wheelbarrow Transport</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Inter,sans-serif;background:#f0f2f7;color:#1a1a2e;min-height:100vh;padding-bottom:60px}
+.topnav{background:white;border-bottom:1px solid #eef2f6;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,0.04)}
+.topnav-inner{max-width:1280px;margin:0 auto;padding:16px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.logo{font-size:20px;font-weight:900;letter-spacing:-0.5px}
+.logo span{color:#3b82f6}
+.navlinks{display:flex;gap:26px;font-size:14px;font-weight:600}
+.navlinks a{color:#6b7280;text-decoration:none;transition:color 0.15s}
+.navlinks a:hover{color:#1a1a2e}
+.navlinks a.active{color:#3b82f6}
+.navright{display:flex;align-items:center;gap:14px}
+.bell{position:relative;width:40px;height:40px;border-radius:12px;background:#f8f9fa;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#6b7280;font-size:16px;border:none;transition:all 0.15s}
+.bell:hover{background:#eef2f6;color:#1a1a2e}
+.bell .badge{position:absolute;top:-4px;right:-4px;background:#dc2626;color:white;font-size:10px;font-weight:900;padding:2px 6px;border-radius:10px;min-width:18px}
+.avatar{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;cursor:pointer;border:none}
+.container{max-width:1280px;margin:0 auto;padding:28px 32px;display:grid;grid-template-columns:1fr 400px;gap:28px}
+@media (max-width:1024px){.container{grid-template-columns:1fr}}
+.hero{background:linear-gradient(135deg,#3b82f6 0%,#1d4ed8 100%);border-radius:24px;padding:32px 36px;color:white;margin-bottom:24px;box-shadow:0 20px 50px rgba(59,130,246,0.25);position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;background:rgba(255,255,255,0.08);border-radius:50%}
+.hero h1{font-size:28px;font-weight:900;margin-bottom:6px;letter-spacing:-0.5px}
+.hero p{font-size:15px;opacity:0.95;max-width:520px;line-height:1.5}
+.hero-badges{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.hero-badges span{background:rgba(255,255,255,0.22);padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;backdrop-filter:blur(10px)}
+.card{background:white;border-radius:20px;padding:26px;margin-bottom:20px;border:1px solid #eef2f6;box-shadow:0 2px 10px rgba(0,0,0,0.03)}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.card-title{font-size:16px;font-weight:800;display:flex;align-items:center;gap:10px}
+.card-title i{color:#3b82f6;font-size:18px}
+.card-sub{font-size:12px;color:#9ca3af;font-weight:600}
+label{font-size:11px;font-weight:800;color:#6b7280;display:block;margin-bottom:7px;text-transform:uppercase;letter-spacing:0.5px}
+select,input,textarea{width:100%;padding:13px 16px;border:1.5px solid #eef2f6;border-radius:12px;font-family:inherit;font-size:14px;background:#f8f9fa;color:#1a1a2e;font-weight:500}
+select:focus,input:focus,textarea:focus{outline:none;border-color:#3b82f6;background:white;box-shadow:0 0 0 4px rgba(59,130,246,0.1)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.grid-3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:14px;margin-bottom:14px}
+@media (max-width:640px){.grid-2,.grid-3{grid-template-columns:1fr}}
+.quote-box{background:#dbeafe;border:2px dashed #3b82f6;border-radius:14px;padding:20px;margin-bottom:16px;text-align:center}
+.quote-box .label{font-size:11px;font-weight:800;color:#1e40af;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.quote-box .amount{font-size:36px;font-weight:900;color:#1e3a8a;letter-spacing:-1px}
+.quote-box .breakdown{font-size:11px;color:#1e40af;margin-top:6px;font-weight:600}
+.cart{background:white;border-radius:20px;padding:24px;border:1px solid #eef2f6;position:sticky;top:100px;box-shadow:0 2px 10px rgba(0,0,0,0.03)}
+.cart-title{font-size:16px;font-weight:800;margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.cart-title i{color:#3b82f6}
+.quote-line{display:flex;justify-content:space-between;padding:10px 0;font-size:13px;border-bottom:1px dashed #eef2f6}
+.quote-line:last-of-type{border-bottom:none}
+.quote-line .lbl{color:#6b7280;font-weight:600}
+.quote-line .val{font-weight:800;color:#1a1a2e}
+.cart-total{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:2px solid #3b82f6}
+.cart-total-label{font-size:12px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px}
+.cart-total-value{font-size:28px;font-weight:900;color:#3b82f6}
+.place-btn{width:100%;margin-top:16px;padding:16px;border:none;border-radius:14px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:white;font-weight:800;cursor:pointer;font-family:inherit;font-size:15px;box-shadow:0 10px 24px rgba(59,130,246,0.35);transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.place-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 14px 30px rgba(59,130,246,0.45)}
+.place-btn:disabled{opacity:0.5;cursor:not-allowed}
+.order{background:#fafbfc;border-radius:18px;padding:20px;margin-bottom:14px;border:1px solid #eef2f6;transition:all 0.15s}
+.order:hover{border-color:#3b82f6;background:white;box-shadow:0 4px 16px rgba(0,0,0,0.05)}
+.order-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:12px;flex-wrap:wrap}
+.order-code{font-size:16px;font-weight:900;letter-spacing:0.3px}
+.order-time{font-size:11px;color:#9ca3af;margin-top:3px;font-weight:600}
+.order-status{font-size:11px;font-weight:800;padding:6px 14px;border-radius:20px;text-transform:uppercase;letter-spacing:0.3px;white-space:nowrap}
+.order-status.waiting{background:#fef3c7;color:#92400e}
+.order-status.assigned{background:#dbeafe;color:#1e40af}
+.order-status.progress{background:#fce7f3;color:#9f1239}
+.order-status.completed{background:#d1fae5;color:#065f46}
+.order-status.cancelled{background:#fee2e2;color:#991b1b}
+.order-info{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;font-size:13px}
+.order-info .row{display:flex;justify-content:space-between;padding:8px 12px;background:white;border-radius:10px;border:1px solid #f0f2f5}
+.order-info .row span:first-child{color:#9ca3af;font-weight:600}
+.order-info .row span:last-child{color:#1a1a2e;font-weight:800}
+.provider-box{background:white;border-radius:12px;padding:14px 16px;margin-bottom:14px;border:1px solid #f0f2f5;display:flex;align-items:center;gap:14px}
+.provider-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:white;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;flex-shrink:0}
+.provider-info{flex:1}
+.provider-info .name{font-weight:800;font-size:14px;margin-bottom:2px}
+.provider-info .meta{font-size:12px;color:#6b7280;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.provider-info .rating{color:#f5a623;font-weight:800}
+.call-btn{width:44px;height:44px;border-radius:50%;background:#065f46;color:white;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;font-size:16px;flex-shrink:0;text-decoration:none;transition:transform 0.15s}
+.call-btn:hover{transform:scale(1.08)}
+.code-box{background:#fef3c7;border:2px dashed #f5a623;border-radius:14px;padding:16px;text-align:center;margin-bottom:14px}
+.code-box .label{font-size:11px;font-weight:800;color:#92400e;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.code-box .code{font-size:32px;font-weight:900;color:#78350f;letter-spacing:8px;font-family:monospace}
+.order-actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{padding:10px 18px;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px;transition:all 0.15s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:#3b82f6;color:white;box-shadow:0 4px 12px rgba(59,130,246,0.3)}
+.btn-danger{background:#fee2e2;color:#991b1b}
+.btn-success{background:#d1fae5;color:#065f46}
+.btn-outline{background:white;color:#6b7280;border:1.5px solid #eef2f6}
+.orders-empty{text-align:center;padding:40px 20px;color:#9ca3af;font-size:14px}
+.orders-empty i{font-size:48px;color:#e5e7eb;display:block;margin-bottom:12px}
+.toast{position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-100px);background:#1a1a2e;color:white;padding:14px 24px;border-radius:14px;font-size:14px;font-weight:700;z-index:9999;transition:transform 0.3s;box-shadow:0 20px 50px rgba(0,0,0,0.3)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{background:linear-gradient(135deg,#065f46,#059669)}
+.toast.error{background:linear-gradient(135deg,#991b1b,#dc2626)}
+.modal-bg{position:fixed;inset:0;background:rgba(15,12,41,0.7);backdrop-filter:blur(6px);z-index:9998;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-bg.show{display:flex}
+.modal{background:white;border-radius:20px;padding:28px;max-width:420px;width:100%}
+.modal h3{font-size:20px;font-weight:900;margin-bottom:8px}
+.modal p{font-size:14px;color:#6b7280;margin-bottom:20px}
+.modal textarea{min-height:100px;resize:vertical;margin-bottom:16px}
+.modal-actions{display:flex;gap:10px}
+.modal-actions .btn{flex:1;justify-content:center;padding:14px}
+.loading{text-align:center;padding:60px 20px;color:#9ca3af}
+.loading i{font-size:32px;color:#3b82f6;animation:spin 1s linear infinite;display:block;margin-bottom:14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="topnav-inner">
+    <div class="logo">EU <span>PONKALA</span></div>
+    <nav class="navlinks">
+      <a href="/student">Home</a>
+      <a href="/search">Search</a>
+      <a href="/saved">Saved</a>
+      <a href="/laundry">Laundry</a>
+      <a href="/wheelbarrow" class="active">Wheelbarrow</a>
+    </nav>
+    <div class="navright">
+      <button class="bell" id="bellBtn" title="Notifications"><i class="fas fa-bell"></i><span class="badge" id="bellBadge" style="display:none;">0</span></button>
+      <button class="avatar" id="avatarBtn">?</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="left">
+
+    <div class="hero">
+      <h1>Wheelbarrow Transport</h1>
+      <p>Book a wheelbarrow to move your load. Verified providers, cash on delivery.</p>
+      <div class="hero-badges">
+        <span><i class="fas fa-truck"></i> Base K20</span>
+        <span><i class="fas fa-map-marker-alt"></i> Per zone K10</span>
+        <span><i class="fas fa-box"></i> Load multiplier applies</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title"><i class="fas fa-route"></i> Trip Details</div>
+        <div class="card-sub">Where to and from</div>
+      </div>
+
+      <label>Where should we collect from?</label>
+      <input id="pickupLocation" type="text" placeholder="e.g. Zeworld Boarding House, Room 12" autocomplete="off" style="margin-bottom:6px;" />
+      <input id="pickupLandmarkText" type="text" placeholder="Nearest landmark (optional)" autocomplete="off" style="margin-bottom:12px;font-size:13px;" />
+
+      <label>Where should we deliver to?</label>
+      <input id="destLocation" type="text" placeholder="e.g. UNZA Great East Road Campus" autocomplete="off" style="margin-bottom:6px;" />
+      <input id="destLandmarkText" type="text" placeholder="Nearest landmark (optional)" autocomplete="off" style="margin-bottom:12px;font-size:13px;" />
+
+      <button id="getLocationBtn" type="button" style="width:100%;padding:10px;border:1.5px dashed #3b82f6;border-radius:10px;background:#eff6ff;color:#1e40af;font-weight:800;cursor:pointer;font-family:inherit;font-size:12px;margin-bottom:12px;">
+        Use my current GPS location for pickup
+      </button>
+      <div class="grid-3">
+        <div><label>Load size</label>
+          <select id="loadSize">
+            <option value="SMALL">Small (1.0x)</option>
+            <option value="MEDIUM" selected>Medium (1.5x)</option>
+            <option value="LARGE">Large (2.0x)</option>
+          </select>
+        </div>
+        <div><label>Wheelbarrows</label><input id="count" type="number" min="1" value="1" /></div>
+        <div><label>Waiting (min)</label><input id="waiting" type="number" min="0" value="0" /></div>
+      </div>
+
+      <div class="quote-box" id="quoteBox">
+        <div class="label">Estimated Quote</div>
+        <div class="amount" id="quoteAmount">K0</div>
+        <div class="breakdown" id="quoteBreakdown">Adjust details to see price</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title"><i class="fas fa-receipt"></i> My Transport Orders</div>
+        <div class="card-sub" id="ordersCount">0 orders</div>
+      </div>
+      <div id="ordersList">
+        <div class="orders-empty"><i class="fas fa-inbox"></i>No orders yet. Book your first transport above.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="right">
+    <div class="cart">
+      <div class="cart-title"><i class="fas fa-file-invoice"></i> Booking Summary</div>
+      <div id="cartContent">
+        <div style="text-align:center;padding:36px 0;color:#9ca3af;font-size:13px;">
+          <i class="fas fa-truck" style="font-size:42px;color:#e5e7eb;display:block;margin-bottom:10px;"></i>
+          Fill trip details to see your quote
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="disputeModal">
+  <div class="modal">
+    <h3>Raise a Dispute</h3>
+    <p>Tell us what went wrong. Our team will review and respond.</p>
+    <label>Reason</label>
+    <select id="disputeReason" style="margin-bottom:12px;">
+      <option value="DAMAGED_ITEMS">Damaged items</option>
+      <option value="MISSING_ITEMS">Missing items</option>
+      <option value="LATE_SERVICE">Late service</option>
+      <option value="OTHER">Other</option>
+    </select>
+    <label>Details</label>
+    <textarea id="disputeDetails" placeholder="Describe the issue..."></textarea>
+    <div class="modal-actions">
+      <button class="btn btn-outline" id="disputeCancel">Cancel</button>
+      <button class="btn btn-primary" id="disputeSubmit">Submit</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+'use strict';
+var API = '/api/engine/wheelbarrow';
+var ORDERS_API = '/api/engine/orders';
+var CANC_API = '/api/engine/cancellations/order';
+var DISP_API = '/api/engine/disputes/order';
+var RATE_API = '/api/engine/ratings/order';
+var NOTIF_API = '/api/engine/notifications';
+
+var user = null; try { user = JSON.parse(localStorage.getItem('user') || 'null'); } catch(e){}
+var userId = user && (user.user_id || user.id);
+var zones = [];
+var quote = null;
+var orders = [];
+
+function $(s){ return document.querySelector(s); }
+function el(id){ return document.getElementById(id); }
+function toast(m, t){ var e = el('toast'); e.textContent = m; e.className = 'toast show ' + (t||''); setTimeout(function(){ e.className = 'toast'; }, 3500); }
+function fmtK(n){ return 'K' + Number(n || 0).toFixed(2).replace(/\.00$/, ''); }
+function initials(name){ if(!name) return '?'; var p = name.trim().split(' '); return (p[0][0] + (p[1] ? p[1][0] : '')).toUpperCase(); }
+function api(path, opts){ return fetch(API + path, Object.assign({ headers: { 'Content-Type': 'application/json' } }, opts || {})).then(function(r){ return r.json(); }); }
+
+if(userId){ el('avatarBtn').textContent = (user.full_name || 'U').charAt(0).toUpperCase(); el('avatarBtn').onclick = function(){ if(confirm('Sign out?')){ localStorage.removeItem('user'); location.href = '/login'; } }; }
+
+// ---------- NOTIFICATIONS ----------
+function loadNotifs(){
+  if(!userId) return;
+  return fetch(NOTIF_API + '/' + userId).then(function(r){ return r.json(); }).then(function(res){
+    if(res.status !== 'success') return;
+    var n = res.data.unread || 0;
+    var b = el('bellBadge');
+    if(n > 0){ b.style.display = 'block'; b.textContent = n > 99 ? '99+' : n; }
+    else b.style.display = 'none';
+  });
+}
+el('bellBtn').onclick = function(){
+  if(!userId) return;
+  fetch(NOTIF_API + '/' + userId + '?all=1').then(function(r){ return r.json(); }).then(function(res){
+    if(res.status !== 'success' || !res.data.items.length){ toast('No notifications'); return; }
+    var txt = res.data.items.slice(0, 10).map(function(n){ return ' ' + n.title + (n.body ? '  ' + n.body : ''); }).join('\n');
+    alert('Notifications:\n\n' + txt);
+    return fetch(NOTIF_API + '/' + userId + '/read-all', { method: 'POST' });
+  }).then(function(){ loadNotifs(); });
+};
+
+// ---------- ZONES ----------
+var DEFAULT_ZONE_ID = 1;
+var gpsCoords = null;
+
+function getAddress(){ var e = el('pickupLocation'); return e ? (e.value || '').trim() : ''; }
+function getPickupLandmark(){ var e = el('pickupLandmarkText'); return e ? (e.value || '').trim() : ''; }
+function getDestAddress(){ var e = el('destLocation'); return e ? (e.value || '').trim() : ''; }
+function getDestLandmark(){ var e = el('destLandmarkText'); return e ? (e.value || '').trim() : ''; }
+
+function useGps(){
+  if (!navigator.geolocation) { alert('GPS not available'); return; }
+  var btn = el('getLocationBtn');
+  if (!btn) return;
+  btn.innerHTML = 'Getting location...';
+  navigator.geolocation.getCurrentPosition(function(pos){
+    gpsCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+    btn.innerHTML = 'GPS attached';
+    btn.style.background = '#d1fae5';
+  }, function(err){
+    btn.innerHTML = 'Use my current GPS location for pickup';
+    alert('Could not get location: ' + err.message);
+  }, { timeout: 10000, enableHighAccuracy: true });
+}
+
+function loadZones(){
+  ['pickupLocation','pickupLandmarkText','destLocation','destLandmarkText','loadSize','count','waiting'].forEach(function(id){
+    var e = el(id);
+    if (!e) return;
+    e.addEventListener('change', computeQuote);
+    e.addEventListener('input', computeQuote);
+  });
+  var g = el('getLocationBtn');
+  if (g) g.onclick = useGps;
+  computeQuote();
+}
+
+// ---------- QUOTE ----------
+function computeQuote(){
+  var body = {
+    pickup_zone_id: DEFAULT_ZONE_ID,
+    destination_zone_id: DEFAULT_ZONE_ID + 1,
+    load_size: el('loadSize').value,
+    wheelbarrow_count: Number(el('count').value) || 1,
+    waiting_minutes: Number(el('waiting').value) || 0
+  };
+  return api('/quote', { method: 'POST', body: JSON.stringify(body) }).then(function(res){
+    if(res.status !== 'success') return;
+    quote = res.data;
+    el('quoteAmount').textContent = fmtK(quote.total);
+    el('quoteBreakdown').textContent = 'base ' + fmtK(quote.breakdown.base_price) + ' + distance ' + fmtK(quote.breakdown.distance_charge) + ' + wheelbarrows ' + fmtK(quote.breakdown.wheelbarrow_charge) + ' (load x' + quote.breakdown.load_multiplier + ')';
+    renderCart();
+  });
+}
+
+function renderCart(){
+  if(!quote){ el('cartContent').innerHTML = '<div style="text-align:center;padding:36px 0;color:#9ca3af;font-size:13px;"><i class="fas fa-truck" style="font-size:42px;color:#e5e7eb;display:block;margin-bottom:10px;"></i>Fill trip details to see your quote</div>'; return; }
+  var html = '';
+  html += '<div class="quote-line"><span class="lbl">From</span><span class="val">Zone ' + quote.pickup_zone_id + '</span></div>';
+  html += '<div class="quote-line"><span class="lbl">To</span><span class="val">Zone ' + quote.destination_zone_id + '</span></div>';
+  html += '<div class="quote-line"><span class="lbl">Distance</span><span class="val">' + quote.zone_hops + ' hops</span></div>';
+  html += '<div class="quote-line"><span class="lbl">Load size</span><span class="val">' + quote.load_size + '</span></div>';
+  html += '<div class="quote-line"><span class="lbl">Wheelbarrows</span><span class="val">' + quote.wheelbarrow_count + '</span></div>';
+  if(quote.waiting_minutes) html += '<div class="quote-line"><span class="lbl">Waiting</span><span class="val">' + quote.waiting_minutes + ' min</span></div>';
+  html += '<div class="cart-total"><div><div class="cart-total-label">Total</div></div><div class="cart-total-value">' + fmtK(quote.total) + '</div></div>';
+  html += '<button class="place-btn" id="placeOrderBtn"><i class="fas fa-check"></i> Request Transport</button>';
+  el('cartContent').innerHTML = html;
+}
+
+// ---------- PLACE ORDER ----------
+function placeOrder(){
+  if(!quote){ toast('Waiting for quote...', 'error'); return; }
+  var btn = el('placeOrderBtn'); btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Requesting...';
+  var pickupAddr = getAddress();
+    var destAddr = getDestAddress();
+    if (!pickupAddr) { alert('Please enter pickup location'); return; }
+    if (!destAddr) { alert('Please enter destination'); return; }
+
+    api('/order', {
+    method: 'POST',
+    body: JSON.stringify({
+      user_id: userId,
+      pickup_zone_id: DEFAULT_ZONE_ID,
+      destination_zone_id: DEFAULT_ZONE_ID + 1,
+      pickup_address_text: pickupAddr,
+      pickup_landmark_text: getPickupLandmark(),
+      pickup_gps_lat: gpsCoords ? gpsCoords.lat : null,
+      pickup_gps_lng: gpsCoords ? gpsCoords.lng : null,
+      destination_address_text: destAddr,
+      destination_landmark_text: getDestLandmark(),
+      load_size: el('loadSize').value,
+      wheelbarrow_count: Number(el('count').value) || 1,
+      waiting_minutes: Number(el('waiting').value) || 0,
+      instructions: 'Web order'
+    })
+  }).then(function(res){
+    if(res.status === 'success'){ toast('Order ' + res.data.order_code + ' placed (' + fmtK(res.data.price) + ')', 'success'); setTimeout(function(){ location.reload(); }, 1500); }
+    else { toast('Failed: ' + res.message, 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Request Transport'; }
+  }).catch(function(e){ toast('Error: ' + e.message, 'error'); btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Request Transport'; });
+}
+
+// ---------- ORDERS ----------
+function loadOrders(){
+  return fetch(ORDERS_API + '/user-enriched/' + userId).then(function(r){ return r.json(); }).then(function(res){
+    if(res.status !== 'success') return;
+    orders = (res.data || []).filter(function(o){ return o.service_type === 'WHEELBARROW'; });
+    renderOrders();
+  });
+}
+function statusClass(s){
+  if(s === 'REQUESTED' || s === 'PAYMENT_PENDING' || s === 'PAYMENT_CONFIRMED' || s === 'PROVIDER_SEARCHING') return 'waiting';
+  if(s === 'PROVIDER_ASSIGNED' || s === 'PROVIDER_CONTACTED') return 'assigned';
+  if(s === 'PROVIDER_ON_THE_WAY' || s === 'PROVIDER_ARRIVED' || s === 'LOADING' || s === 'TRANSPORTING' || s === 'ARRIVED_AT_DESTINATION' || s === 'COMPLETION_PENDING') return 'progress';
+  if(s === 'COMPLETED') return 'completed';
+  if(s === 'CANCELLED') return 'cancelled';
+  return 'waiting';
+}
+function studentLabel(s){
+  var M = {
+    'REQUESTED': 'Waiting for payment',
+    'PAYMENT_PENDING': 'Waiting for payment',
+    'PAYMENT_CONFIRMED': 'Finding a provider',
+    'PROVIDER_SEARCHING': 'Finding a provider',
+    'PROVIDER_ASSIGNED': 'Provider assigned',
+    'PROVIDER_CONTACTED': 'Provider assigned',
+    'PROVIDER_ON_THE_WAY': 'Provider on the way',
+    'PROVIDER_ARRIVED': 'Provider arrived',
+    'LOADING': 'Loading',
+    'TRANSPORTING': 'Transporting',
+    'ARRIVED_AT_DESTINATION': 'At destination',
+    'COMPLETION_PENDING': 'Enter completion code',
+    'COMPLETED': 'Completed',
+    'CANCELLED': 'Cancelled',
+    'DISPUTED': 'Under review'
+  };
+  return M[s] || s;
+}
+function renderOrders(){
+  el('ordersCount').textContent = orders.length + ' order' + (orders.length === 1 ? '' : 's');
+  if(!orders.length){ el('ordersList').innerHTML = '<div class="orders-empty"><i class="fas fa-inbox"></i>No orders yet. Book your first transport above.</div>'; return; }
+  el('ordersList').innerHTML = orders.slice(0, 30).map(function(o){
+    var cls = statusClass(o.order_status);
+    var d = new Date(o.created_at);
+    var time = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    var html = '<div class="order">';
+    html += '<div class="order-head"><div><div class="order-code">' + o.order_code + '</div><div class="order-time">' + time + '</div></div><div class="order-status ' + cls + '">' + studentLabel(o.order_status) + '</div></div>';
+    html += '<div class="order-info"><div class="row"><span>Price</span><span>K' + o.price + '</span></div><div class="row"><span>Load</span><span>' + (o.load_size || '') + '</span></div></div>';
+    if(o.provider_id && o.provider_name){
+      var phone = (o.provider_phone_visible && o.provider_phone) ? '<a class="call-btn" href="tel:' + o.provider_phone + '"><i class="fas fa-phone"></i></a>' : '<span style="width:44px;height:44px;border-radius:50%;background:#e5e7eb;color:#9ca3af;display:flex;align-items:center;justify-content:center;"><i class="fas fa-clock"></i></span>';
+      html += '<div class="provider-box"><div class="provider-avatar">' + initials(o.provider_name) + '</div><div class="provider-info"><div class="name">' + o.provider_name + (o.provider_phone_visible ? ' <span style="color:#065f46;font-size:11px;font-weight:700;">CONFIRMED</span>' : ' <span style="color:#d97706;font-size:11px;font-weight:700;">WAITING</span>') + '</div><div class="meta"><span>' + (o.provider_code || '') + '</span>' + (o.provider_rating ? '<span class="rating"><i class="fas fa-star"></i> ' + Number(o.provider_rating).toFixed(1) + '</span>' : '') + '</div></div>' + phone + '</div>';
+    }
+    if(o.order_status === 'COMPLETION_PENDING' && o.completion_code){
+      html += '<div class="code-box"><div class="label">Give this code to your provider</div><div class="code">' + o.completion_code + '</div></div>';
+    }
+    if(o.dispute_info){
+      html += '<div style="background:#ede9fe;padding:12px;border-radius:10px;font-size:12px;color:#5b21b6;margin-bottom:14px;font-weight:600;"><i class="fas fa-exclamation-circle"></i> ' + o.dispute_info + '</div>';
+    }
+    html += '<div class="order-actions">';
+    if(o.order_status === 'COMPLETION_PENDING'){
+      html += '<button class="btn btn-primary" data-code-for="' + o.id + '"><i class="fas fa-check"></i> Confirm with code</button>';
+    }
+    if(['REQUESTED','PAYMENT_PENDING','PAYMENT_CONFIRMED','PROVIDER_SEARCHING','PROVIDER_ASSIGNED','PROVIDER_CONTACTED'].indexOf(o.order_status) >= 0){
+      html += '<button class="btn btn-danger" data-cancel="' + o.id + '"><i class="fas fa-times"></i> Cancel</button>';
+    }
+    if(o.order_status === 'COMPLETED' && !o.dispute_info){
+      html += '<button class="btn btn-outline" data-rate="' + o.id + '"><i class="fas fa-star"></i> Rate</button>';
+      html += '<button class="btn btn-outline" data-dispute="' + o.id + '"><i class="fas fa-flag"></i> Dispute</button>';
+    }
+    html += '</div></div>';
+    return html;
+  }).join('');
+}
+
+// ---------- ACTIONS ----------
+function cancelOrder(id){
+  if(!confirm('Cancel this order?')) return;
+  fetch(CANC_API + '/' + id, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ cancelled_by: 'STUDENT', reason: 'Cancelled' }) }).then(function(r){ return r.json(); }).then(function(res){
+    if(res.status === 'success'){ toast('Cancelled', 'success'); setTimeout(loadOrders, 600); }
+    else toast('Failed: ' + res.message, 'error');
+  });
+}
+function rateOrder(id){
+  var s = Number(prompt('Rate 1-5:'));
+  if(!s || s < 1 || s > 5){ toast('Enter 1-5', 'error'); return; }
+  var c = prompt('Comment (optional):') || null;
+  fetch(RATE_API + '/' + id, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ student_user_id: userId, stars: s, comment: c }) }).then(function(r){ return r.json(); }).then(function(res){
+    if(res.status === 'success'){ toast('Thanks!', 'success'); setTimeout(loadOrders, 600); }
+    else toast('Failed: ' + res.message, 'error');
+  });
+}
+var disputeOrderId = null;
+function openDispute(id){ disputeOrderId = id; el('disputeModal').classList.add('show'); }
+el('disputeCancel').onclick = function(){ el('disputeModal').classList.remove('show'); };
+el('disputeSubmit').onclick = function(){
+  var reason = el('disputeReason').value, details = el('disputeDetails').value || '';
+  fetch(DISP_API + '/' + disputeOrderId, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ raised_by: 'STUDENT', reason: reason, description: details }) }).then(function(r){ return r.json(); }).then(function(res){
+    el('disputeModal').classList.remove('show');
+    if(res.status === 'success'){ toast('Dispute submitted', 'success'); setTimeout(loadOrders, 600); }
+    else toast('Failed: ' + res.message, 'error');
+  });
+};
+function confirmWithCode(id){
+  var code = prompt('Enter the 4-digit completion code:');
+  if(!code) return;
+  fetch('/api/engine/completion/' + id + '/verify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: code }) }).then(function(r){ return r.json(); }).then(function(res){
+    if(res.status === 'success'){ toast('Confirmed!', 'success'); setTimeout(loadOrders, 600); }
+    else toast('Failed: ' + res.message, 'error');
+  });
+}
+
+document.addEventListener('click', function(ev){
+  var t = ev.target.closest('[data-cancel],[data-rate],[data-dispute],[data-code-for],[id="placeOrderBtn"]');
+  if(!t) return;
+  if(t.id === 'placeOrderBtn'){ placeOrder(); return; }
+  if(t.dataset.cancel) cancelOrder(Number(t.dataset.cancel));
+  if(t.dataset.rate) rateOrder(Number(t.dataset.rate));
+  if(t.dataset.dispute) openDispute(Number(t.dataset.dispute));
+  if(t.dataset.codeFor) confirmWithCode(Number(t.dataset.codeFor));
+});
+
+// ---------- BOOT ----------
+if(!userId){ location.href = '/login'; return; }
+Promise.all([loadZones(), loadOrders(), loadNotifs()]).catch(function(e){ console.error('[wb]', e); });
+setInterval(function(){ loadOrders().catch(function(){}); loadNotifs().catch(function(){}); }, 15000);
+
+})();
+</script>
+</body>
+</html>

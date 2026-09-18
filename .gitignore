@@ -1,0 +1,56 @@
+﻿# ================= DEPENDENCIES =================
+node_modules/
+
+# ================= ENVIRONMENT / SECRETS =================
+.env
+.env.*
+!.env.example
+
+# ================= DATABASES =================
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.db-wal
+Backend/Database/
+Data/*.db
+Data/*.sqlite*
+
+# ================= LOGS =================
+*.log
+*.log.part*.txt
+Logs/
+SCAN_*.log*
+SCAN_*.log.part*.txt
+
+# ================= BACKUPS (all of them) =================
+*.bak
+*.bak.*
+*.v1bak
+*.backup
+*.prepush.bak
+
+# ================= WINDOWS DEV SCRIPTS =================
+*.ps1
+
+# ================= TEST / SEED / DIAGNOSTIC SCRIPTS =================
+Backend/Server/test-*.js
+Backend/Server/seed-*.js
+Backend/Server/check-db.js
+Backend/Server/diagnose-*.js
+Backend/Server/inspect-*.js
+Backend/Server/cleanup-test-data.js
+Backend/Server/final-e2e-test.js
+Backend/Server/engine-laundry-patch.js
+Backend/Server/assign-job.js
+Backend/Server/setup-db.js
+
+# ================= UPLOADS (runtime-generated) =================
+Backend/Server/uploads/*
+!Backend/Server/uploads/.gitkeep
+
+# ================= OS / EDITOR =================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

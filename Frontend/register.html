@@ -1,0 +1,398 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EU PONKALA - Register</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f7fb;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .register-container {
+            background: white;
+            border-radius: 24px;
+            padding: 40px 36px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+            border: 1px solid #eef2f6;
+            max-height: 95vh;
+            overflow-y: auto;
+        }
+        .register-container .logo {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 4px;
+        }
+        .register-container .logo span { color: #f5a623; }
+        .register-container .subtitle {
+            text-align: center;
+            color: #6b7280;
+            font-size: 15px;
+            margin-bottom: 28px;
+        }
+        .register-container .form-group { margin-bottom: 14px; }
+        .register-container .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+        .register-container .form-group input,
+        .register-container .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #eef2f6;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: 0.2s;
+            background: #f8f9fa;
+        }
+        .register-container .form-group input:focus,
+        .register-container .form-group select:focus {
+            outline: none;
+            border-color: #f5a623;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(245,166,35,0.08);
+        }
+        .register-container .form-group .input-group { position: relative; }
+        .register-container .form-group .input-group input { padding-right: 48px; }
+        .register-container .form-group .input-group .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .register-container .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .register-container .btn-register {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: #f5a623;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+            margin-top: 8px;
+        }
+        .register-container .btn-register:hover {
+            background: #d4951f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(245,166,35,0.3);
+        }
+        .register-container .btn-register:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .register-container .login-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+        .register-container .login-link a {
+            color: #f5a623;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .register-container .login-link a:hover { text-decoration: underline; }
+        .register-container .error-msg {
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 14px;
+            display: none;
+        }
+        .register-container .error-msg.show { display: block; }
+        .register-container .success-msg {
+            background: #d1fae5;
+            color: #059669;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 14px;
+            display: none;
+        }
+        .register-container .success-msg.show { display: block; }
+        .register-container .terms {
+            font-size: 13px;
+            color: #6b7280;
+            margin: 12px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        .register-container .terms input { margin-top: 2px; }
+        .register-container .terms a { color: #f5a623; text-decoration: none; }
+        .register-container .terms a:hover { text-decoration: underline; }
+        @media (max-width: 480px) {
+            .register-container { padding: 24px 16px; }
+            .register-container .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="register-container">
+        <div class="logo">EU <span>PONKALA</span></div>
+        <p class="subtitle">Create your account to get started.</p>
+
+        <div id="errorMsg" class="error-msg"></div>
+        <div id="successMsg" class="success-msg"></div>
+
+        <form id="registerForm" onsubmit="handleRegister(event)">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="fullName" placeholder="Enter your full name" required />
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="email" placeholder="your@email.com" required />
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="phone" placeholder="+260 971 234 567" required />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-group">
+                        <input type="password" id="password" placeholder="Create password" required />
+                        <button type="button" class="toggle-password" onclick="togglePassword('password')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <div class="input-group">
+                        <input type="password" id="confirmPassword" placeholder="Confirm password" required />
+                        <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>I am a...</label>
+                <select id="userType" required>
+                    <option value="student">Student</option>
+                    <option value="landlord">Landlord</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="studentFields">
+                <label>University</label>
+                <select id="university">
+                    <option value="1">Eden University</option>
+                    <option value="2">University of Zambia</option>
+                    <option value="3">Zambia Open University</option>
+                </select>
+            </div>
+
+            <div class="form-row" id="studentFields2">
+                <div class="form-group">
+                    <label>Course</label>
+                    <input type="text" id="course" placeholder="e.g. Computer Science" />
+                </div>
+                <div class="form-group">
+                    <label>Year of Study</label>
+                    <select id="yearOfStudy">
+                        <option value="1">Year 1</option>
+                        <option value="2" selected>Year 2</option>
+                        <option value="3">Year 3</option>
+                        <option value="4">Year 4</option>
+                        <option value="5">Year 5+</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group" id="landlordFields" style="display:none;">
+                <label>Business Name</label>
+                <input type="text" id="businessName" placeholder="e.g. Banda Properties" />
+            </div>
+
+            <div class="terms">
+                <input type="checkbox" id="termsCheck" required />
+                <label for="termsCheck">
+                    I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                </label>
+            </div>
+
+            <button type="submit" class="btn-register" id="registerBtn">
+                Create Account
+            </button>
+        </form>
+
+        <p class="login-link">
+            Already have an account? <a href="/login">Sign in</a>
+        </p>
+    </div>
+
+    <script>
+        // ─── SESSION GUARD: if already logged in, redirect to correct dashboard ───
+        (function() {
+            const token = localStorage.getItem('token');
+            const user  = JSON.parse(localStorage.getItem('user') || 'null');
+            if (token && user) {
+                if (user.user_type === 'student')      window.location.href = '/student';
+                else if (user.user_type === 'landlord') window.location.href = '/landlord';
+                else if (user.user_type === 'admin')    window.location.href = '/admin';
+            }
+        })();
+
+        // ─── TOGGLE PASSWORD ───
+        function togglePassword(id) {
+            const input = document.getElementById(id);
+            const icon = input.parentElement.querySelector('.toggle-password i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+
+        // ─── SHOW/HIDE FIELDS BASED ON USER TYPE ───
+        document.getElementById('userType').addEventListener('change', function() {
+            const isLandlord = this.value === 'landlord';
+            document.getElementById('studentFields').style.display  = isLandlord ? 'none' : 'block';
+            document.getElementById('studentFields2').style.display = isLandlord ? 'none' : 'grid';
+            document.getElementById('landlordFields').style.display = isLandlord ? 'block' : 'none';
+        });
+
+        // ─── MESSAGES ───
+        function showError(msg) {
+            const el = document.getElementById('errorMsg');
+            el.textContent = msg;
+            el.className = 'error-msg show';
+            setTimeout(() => el.className = 'error-msg', 5000);
+        }
+        function showSuccess(msg) {
+            const el = document.getElementById('successMsg');
+            el.textContent = msg;
+            el.className = 'success-msg show';
+            setTimeout(() => el.className = 'success-msg', 5000);
+        }
+
+        // ─── HANDLE REGISTER ───
+        async function handleRegister(e) {
+            e.preventDefault();
+
+            const fullName = document.getElementById('fullName').value.trim();
+            const email    = document.getElementById('email').value.trim();
+            const phone    = document.getElementById('phone').value.trim();
+            const password = document.getElementById('password').value;
+            const confirm  = document.getElementById('confirmPassword').value;
+            const userType = document.getElementById('userType').value;
+            const terms    = document.getElementById('termsCheck').checked;
+
+            if (!fullName || !email || !phone || !password || !confirm) {
+                showError('Please fill in all required fields');
+                return;
+            }
+            if (password.length < 6) {
+                showError('Password must be at least 6 characters');
+                return;
+            }
+            if (password !== confirm) {
+                showError('Passwords do not match');
+                return;
+            }
+            if (!terms) {
+                showError('Please agree to the Terms of Service');
+                return;
+            }
+
+            const btn = document.getElementById('registerBtn');
+            btn.disabled = true;
+            btn.textContent = 'Creating account...';
+
+            const data = {
+                full_name: fullName,
+                email, phone, password,
+                user_type: userType
+            };
+
+            if (userType === 'student') {
+                data.university_id = parseInt(document.getElementById('university').value);
+                data.course        = document.getElementById('course').value;
+                data.year_of_study = parseInt(document.getElementById('yearOfStudy').value);
+            } else {
+                data.business_name = document.getElementById('businessName').value;
+            }
+
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    const token = result.data?.token || result.token;
+                    const user  = result.data?.user  || result.user;
+
+                    localStorage.setItem('token', token);
+                    localStorage.setItem('user', JSON.stringify(user));
+
+                    showSuccess('Account created! Redirecting...');
+
+                    setTimeout(() => {
+                        if (user.user_type === 'student')      window.location.href = '/student';
+                        else if (user.user_type === 'landlord') window.location.href = '/landlord';
+                        else if (user.user_type === 'admin')    window.location.href = '/admin';
+                        else                                    window.location.href = '/';
+                    }, 1200);
+
+                } else {
+                    showError(result.message || 'Registration failed');
+                    btn.disabled = false;
+                    btn.textContent = 'Create Account';
+                }
+
+            } catch (error) {
+                console.error('Register error:', error);
+                showError('Network error. Please check your connection.');
+                btn.disabled = false;
+                btn.textContent = 'Create Account';
+            }
+        }
+    </script>
+
+</body>
+</html>

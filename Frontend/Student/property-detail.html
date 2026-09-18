@@ -1,0 +1,1602 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EU PONKALA - Zeworld Boarding House</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f7fb;
+            color: #1a1a2e;
+            padding-bottom: 80px;
+        }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #f0f2f5; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+
+        /* ─── HEADER ─── */
+        .top-header {
+            background: white;
+            padding: 12px 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+            background: rgba(255,255,255,0.92);
+        }
+        .top-header .inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .top-header .back-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #1a1a2e;
+            cursor: pointer;
+            padding: 8px;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: inherit;
+            font-weight: 500;
+        }
+        .top-header .back-btn:hover { color: #f5a623; }
+        .top-header .logo {
+            font-size: 20px;
+            font-weight: 900;
+        }
+        .top-header .logo span { color: #f5a623; }
+        .top-header .actions { display: flex; gap: 12px; }
+        .top-header .actions .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .top-header .actions .btn-save {
+            background: #fef2f2;
+            color: #ef4444;
+        }
+        .top-header .actions .btn-save:hover { background: #fee2e2; }
+        .top-header .actions .btn-share {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+        .top-header .actions .btn-share:hover { background: #e5e7eb; }
+
+        /* ─── MAIN ─── */
+        .main-wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 20px 0;
+        }
+
+        /* ─── BREADCRUMB ─── */
+        .breadcrumb {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 16px;
+        }
+        .breadcrumb span { color: #f5a623; cursor: pointer; }
+        .breadcrumb span:hover { text-decoration: underline; }
+
+        /* ─── PROPERTY HEADER ─── */
+        .property-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .property-header .left h1 {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        .property-header .left .location {
+            font-size: 15px;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 2px;
+        }
+        .property-header .left .badges {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        .property-header .left .badges .badge {
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .property-header .left .badges .badge-verified {
+            background: #d1fae5;
+            color: #059669;
+        }
+        .property-header .left .badges .badge-available {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+        .property-header .right .price {
+            font-size: 32px;
+            font-weight: 800;
+            color: #f5a623;
+        }
+        .property-header .right .price small {
+            font-size: 16px;
+            font-weight: 400;
+            color: #6b7280;
+        }
+        .property-header .right .spaces {
+            text-align: right;
+            font-size: 14px;
+            color: #6b7280;
+        }
+        .property-header .right .spaces strong { color: #1a1a2e; }
+
+        /* ─── PHOTO GALLERY ─── */
+        .gallery {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            grid-template-rows: 200px 200px;
+            gap: 8px;
+            border-radius: 18px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+        .gallery .gallery-item {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            background: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: #9ca3af;
+            transition: 0.3s;
+        }
+        .gallery .gallery-item:hover { transform: scale(1.02); z-index: 2; }
+        .gallery .gallery-item:first-child {
+            grid-row: 1 / 3;
+            font-size: 72px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: rgba(255,255,255,0.3);
+        }
+        .gallery .gallery-item .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            opacity: 0;
+            transition: 0.3s;
+        }
+        .gallery .gallery-item:hover .overlay { opacity: 1; }
+        .gallery .gallery-item .tag {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            backdrop-filter: blur(4px);
+        }
+        .gallery .gallery-item .play-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            font-size: 24px;
+            color: #1a1a2e;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .gallery .gallery-item .play-btn:hover { transform: translate(-50%, -50%) scale(1.1); }
+
+        /* ─── CONTENT GRID ─── */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 28px;
+            margin-bottom: 32px;
+        }
+
+        /* ─── LEFT COLUMN ─── */
+        .left-col { }
+
+        /* ─── DESCRIPTION ─── */
+        .desc-section {
+            background: white;
+            border-radius: 18px;
+            padding: 24px;
+            border: 1px solid #eef2f6;
+            margin-bottom: 20px;
+        }
+        .desc-section h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .desc-section p {
+            color: #4b5563;
+            line-height: 1.7;
+            font-size: 15px;
+        }
+        .desc-section .updated {
+            margin-top: 12px;
+            font-size: 13px;
+            color: #6b7280;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .desc-section .updated i { color: #059669; }
+
+        /* ─── FACILITIES ─── */
+        .facilities-section {
+            background: white;
+            border-radius: 18px;
+            padding: 24px;
+            border: 1px solid #eef2f6;
+            margin-bottom: 20px;
+        }
+        .facilities-section h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+        .facilities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+        }
+        .facilities-grid .facility {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #4b5563;
+        }
+        .facilities-grid .facility i { color: #f5a623; font-size: 16px; }
+
+        /* ─── ROOMS SECTION ─── */
+        .rooms-section {
+            background: white;
+            border-radius: 18px;
+            padding: 24px;
+            border: 1px solid #eef2f6;
+            margin-bottom: 20px;
+        }
+        .rooms-section h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+        .room-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        .room-card:hover { background: #f0f2f5; transform: translateX(4px); }
+        .room-card .room-info .name {
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .room-card .room-info .detail {
+            font-size: 13px;
+            color: #6b7280;
+        }
+        .room-card .room-status {
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .room-card .room-status.available { background: #d1fae5; color: #059669; }
+        .room-card .room-status.full { background: #fee2e2; color: #dc2626; }
+        .room-card .room-status.pending { background: #fef3c7; color: #d97706; }
+        .room-card .room-photos-btn {
+            background: none;
+            border: none;
+            color: #f5a623;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 4px 8px;
+            transition: 0.2s;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .room-card .room-photos-btn:hover { color: #d4951f; }
+
+        /* ─── RIGHT COLUMN ─── */
+        .right-col { }
+
+        /* ─── LANDLORD PROFILE ─── */
+        .landlord-card {
+            background: white;
+            border-radius: 18px;
+            padding: 24px;
+            border: 1px solid #eef2f6;
+            margin-bottom: 20px;
+        }
+        .landlord-card .landlord-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .landlord-card .landlord-header .avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f5a623, #e8951e);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .landlord-card .landlord-header .info .name {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        .landlord-card .landlord-header .info .verified {
+            font-size: 13px;
+            color: #059669;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .landlord-card .landlord-header .info .since {
+            font-size: 13px;
+            color: #6b7280;
+        }
+        .landlord-card .landlord-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .landlord-card .landlord-details .detail {
+            padding: 10px 14px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        .landlord-card .landlord-details .detail .label {
+            font-size: 11px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        .landlord-card .landlord-details .detail .value {
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+        .landlord-card .contact-btns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .landlord-card .contact-btns .btn {
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .landlord-card .contact-btns .btn-call { background: #dbeafe; color: #2563eb; }
+        .landlord-card .contact-btns .btn-call:hover { background: #2563eb; color: white; }
+        .landlord-card .contact-btns .btn-chat { background: #f5a623; color: white; }
+        .landlord-card .contact-btns .btn-chat:hover { background: #d4951f; }
+        .landlord-card .contact-btns .btn-wa { background: #25D366; color: white; }
+        .landlord-card .contact-btns .btn-wa:hover { background: #1da851; }
+        .landlord-card .contact-btns .btn-dir { background: #f3f4f6; color: #6b7280; }
+        .landlord-card .contact-btns .btn-dir:hover { background: #e5e7eb; }
+
+        /* ─── PROPERTY INFO CARD ─── */
+        .info-card {
+            background: white;
+            border-radius: 18px;
+            padding: 20px 24px;
+            border: 1px solid #eef2f6;
+            margin-bottom: 20px;
+        }
+        .info-card .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f3f6;
+        }
+        .info-card .info-row:last-child { border-bottom: none; }
+        .info-card .info-row .label { color: #6b7280; font-size: 14px; }
+        .info-card .info-row .value { font-weight: 600; font-size: 14px; }
+
+        /* ─── VIDEO SECTION ─── */
+        .video-section {
+            background: white;
+            border-radius: 18px;
+            padding: 24px;
+            border: 1px solid #eef2f6;
+            margin-top: 20px;
+        }
+        .video-section h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+        .video-placeholder {
+            background: #1a1a2e;
+            border-radius: 12px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            position: relative;
+            transition: 0.3s;
+        }
+        .video-placeholder:hover { opacity: 0.9; }
+        .video-placeholder .play-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        .video-placeholder .video-label {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.6);
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* ─── ROOM GALLERY MODAL ─── */
+        .room-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .room-modal.open { display: flex; }
+        .room-modal .modal-content {
+            background: white;
+            border-radius: 24px;
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalIn 0.3s ease;
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .room-modal .modal-header {
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid #f1f3f6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .room-modal .modal-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .room-modal .modal-header .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #6b7280;
+            cursor: pointer;
+            transition: 0.2s;
+            padding: 4px 8px;
+        }
+        .room-modal .modal-header .close-btn:hover { color: #1a1a2e; }
+        .room-modal .modal-body { padding: 20px 24px 24px; }
+        .room-modal .modal-body .room-detail {
+            display: flex;
+            gap: 16px;
+            background: #f8f9fa;
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+        .room-modal .modal-body .room-detail .item {
+            font-size: 14px;
+        }
+        .room-modal .modal-body .room-detail .item .label {
+            color: #6b7280;
+            font-size: 12px;
+            display: block;
+        }
+        .room-modal .modal-body .room-detail .item .value {
+            font-weight: 600;
+        }
+        .room-modal .modal-body .room-photos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+        }
+        .room-modal .modal-body .room-photos .photo {
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 1;
+            background: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: #9ca3af;
+            transition: 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+        .room-modal .modal-body .room-photos .photo:hover { transform: scale(1.04); }
+        .room-modal .modal-body .room-photos .photo .photo-label {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+        .room-modal .modal-body .room-photos .photo.main-photo {
+            grid-column: 1 / -1;
+            aspect-ratio: 16/9;
+            font-size: 48px;
+        }
+
+        /* ─── FULLSCREEN PHOTO VIEWER ─── */
+        .photo-viewer {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .photo-viewer.open { display: flex; }
+        .photo-viewer .viewer-content {
+            max-width: 90vw;
+            max-height: 90vh;
+            position: relative;
+        }
+        .photo-viewer .viewer-content .viewer-image {
+            width: 100%;
+            height: auto;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 12px;
+            background: #1a1a2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 120px;
+            color: rgba(255,255,255,0.3);
+            min-height: 300px;
+        }
+        .photo-viewer .viewer-content .viewer-close {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 32px;
+            cursor: pointer;
+            transition: 0.2s;
+            padding: 8px;
+        }
+        .photo-viewer .viewer-content .viewer-close:hover { color: #f5a623; }
+        .photo-viewer .viewer-content .viewer-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            font-size: 32px;
+            padding: 16px 20px;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: 0.2s;
+            backdrop-filter: blur(4px);
+        }
+        .photo-viewer .viewer-content .viewer-nav:hover { background: rgba(255,255,255,0.2); }
+        .photo-viewer .viewer-content .viewer-nav.prev { left: -60px; }
+        .photo-viewer .viewer-content .viewer-nav.next { right: -60px; }
+        .photo-viewer .viewer-content .viewer-counter {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255,255,255,0.6);
+            font-size: 14px;
+        }
+
+        /* ─── TOAST ─── */
+        .toast {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 28px;
+            border-radius: 14px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            z-index: 10001;
+            opacity: 0;
+            transition: 0.4s ease;
+            max-width: 92%;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            font-family: inherit;
+            pointer-events: none;
+        }
+        .toast.show { opacity: 1; }
+        .toast.success { background: #059669; }
+        .toast.error { background: #dc2626; }
+        .toast.warning { background: #d97706; }
+        .toast.info { background: #2563eb; }
+
+        /* ─── BOTTOM NAV ─── */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(0,0,0,0.04);
+            display: flex;
+            justify-content: space-around;
+            padding: 6px 0 14px;
+            z-index: 1000;
+        }
+        .bottom-nav .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #9ca3af;
+            font-size: 10px;
+            font-weight: 600;
+            transition: 0.2s;
+            padding: 4px 12px;
+            font-family: inherit;
+        }
+        .bottom-nav .nav-item i { font-size: 20px; transition: 0.2s; }
+        .bottom-nav .nav-item:hover { color: #f5a623; }
+        .bottom-nav .nav-item.active { color: #f5a623; }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 768px) {
+            .main-wrap { padding: 12px 12px 0; }
+            .gallery {
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: 160px 120px 120px;
+            }
+            .gallery .gallery-item:first-child { grid-row: 1 / 2; grid-column: 1 / 3; }
+            .content-grid { grid-template-columns: 1fr; }
+            .property-header .left h1 { font-size: 22px; }
+            .property-header .right .price { font-size: 24px; }
+            .landlord-card .contact-btns { grid-template-columns: 1fr 1fr; }
+            .landlord-card .landlord-details { grid-template-columns: 1fr 1fr; }
+            .top-header .logo { font-size: 16px; }
+            .top-header .back-btn span { display: none; }
+            .facilities-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+            .room-modal .modal-body .room-photos { grid-template-columns: 1fr 1fr; }
+            .photo-viewer .viewer-content .viewer-nav.prev { left: 10px; }
+            .photo-viewer .viewer-content .viewer-nav.next { right: 10px; }
+        }
+
+        @media (max-width: 480px) {
+            .gallery {
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: 140px 100px 100px;
+            }
+            .landlord-card .landlord-details { grid-template-columns: 1fr; }
+            .room-modal .modal-body .room-photos { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══ HEADER ═══ -->
+    <header class="top-header">
+        <div class="inner">
+            <button class="back-btn" onclick="history.back()">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back</span>
+            </button>
+            <div class="logo">EU <span>PONKALA</span></div>
+            <div class="actions">
+                <button class="btn btn-save" onclick="toggleSave()">
+                    <i class="fas fa-heart"></i> Save
+                </button>
+                <button class="btn btn-share" onclick="showToast('📋 Link copied!', 'success')">
+                    <i class="fas fa-share-alt"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ═══ MAIN ═══ -->
+    <main class="main-wrap">
+
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <span onclick="history.back()">Home</span> /
+            <span onclick="history.back()">Properties</span> /
+            <span style="color:#1a1a2e;">Zeworld Boarding House</span>
+        </div>
+
+        <!-- Property Header -->
+        <div class="property-header">
+            <div class="left">
+                <h1>Zeworld Boarding House</h1>
+                <div class="location">
+                    <i class="fas fa-map-marker-alt" style="color:#f5a623;"></i>
+                    0.8 km from Eden University • Chelstone, Lusaka
+                </div>
+                <div class="badges">
+                    <span class="badge badge-verified"><i class="fas fa-check-circle"></i> EU PONKALA VERIFIED</span>
+                    <span class="badge badge-available"><i class="fas fa-circle" style="color:#059669;font-size:10px;"></i> 3 Spaces Available</span>
+                </div>
+            </div>
+            <div class="right">
+                <div class="price">K1,500 <small>/month</small></div>
+                <div class="spaces">Last updated <strong>12 minutes ago</strong></div>
+            </div>
+        </div>
+
+        <!-- ═══ GALLERY ═══ -->
+        <div class="gallery" id="propertyGallery">
+            <div class="gallery-item" onclick="openGallery(0)"><span class="tag">Exterior</span>
+                <div class="overlay"><i class="fas fa-expand"></i></div>
+            </div>
+            <div class="gallery-item" onclick="openGallery(1)" style="background:linear-gradient(135deg,#f093fb,#f5576c);"><span class="tag">Bedroom</span>
+                <div class="overlay"><i class="fas fa-expand"></i></div>
+            </div>
+            <div class="gallery-item" onclick="openGallery(2)" style="background:linear-gradient(135deg,#4facfe,#00f2fe);"><span class="tag">Bathroom</span>
+                <div class="overlay"><i class="fas fa-expand"></i></div>
+            </div>
+            <div class="gallery-item" onclick="openGallery(3)" style="background:linear-gradient(135deg,#43e97b,#38f9d7);"><span class="tag">Kitchen</span>
+                <div class="overlay"><i class="fas fa-expand"></i></div>
+            </div>
+            <div class="gallery-item" onclick="openGallery(4)" style="background:linear-gradient(135deg,#fa709a,#fee140);"><span class="tag">Compound</span>
+                <div class="overlay"><i class="fas fa-expand"></i></div>
+            </div>
+            <div class="gallery-item" onclick="playVideo()" style="background:linear-gradient(135deg,#a18cd1,#fbc2eb);">
+                <div class="play-btn"><i class="fas fa-play"></i></div>
+                <span class="tag">Video Tour</span>
+                <div class="overlay"><i class="fas fa-play-circle"></i></div>
+            </div>
+        </div>
+
+        <!-- ═══ CONTENT GRID ═══ -->
+        <div class="content-grid">
+
+            <!-- ─── LEFT COLUMN ─── -->
+            <div class="left-col">
+
+                <!-- Description -->
+                <div class="desc-section">
+                    <h3>About This Property</h3>
+                    <p>
+                        Zeworld Boarding House is a spacious and well-maintained boarding house located just
+                        0.8 km from Eden University. Perfect for students looking for comfortable, affordable,
+                        and secure accommodation close to campus.
+                    </p>
+                    <p style="margin-top:10px;">
+                        The property features modern amenities including high-speed Wi-Fi, 24/7 electricity,
+                        reliable water supply, and professional security. Each room is furnished with a bed,
+                        study desk, and wardrobe. Common areas include a fully equipped kitchen, laundry
+                        facilities, and a peaceful study area.
+                    </p>
+                    <div class="updated">
+                        <i class="fas fa-clock"></i> Availability updated 12 minutes ago by Mr. Banda
+                    </div>
+                </div>
+
+                <!-- Facilities -->
+                <div class="facilities-section">
+                    <h3>Facilities & Amenities</h3>
+                    <div class="facilities-grid">
+                        <div class="facility"><i class="fas fa-wifi"></i> Wi-Fi</div>
+                        <div class="facility"><i class="fas fa-bolt"></i> Electricity</div>
+                        <div class="facility"><i class="fas fa-water"></i> Water</div>
+                        <div class="facility"><i class="fas fa-shield-alt"></i> Security</div>
+                        <div class="facility"><i class="fas fa-parking"></i> Parking</div>
+                        <div class="facility"><i class="fas fa-utensils"></i> Kitchen</div>
+                        <div class="facility"><i class="fas fa-tshirt"></i> Laundry</div>
+                        <div class="facility"><i class="fas fa-bed"></i> Furnished</div>
+                        <div class="facility"><i class="fas fa-book"></i> Study Area</div>
+                        <div class="facility"><i class="fas fa-tree"></i> Garden</div>
+                    </div>
+                </div>
+
+                <!-- Rooms -->
+                <div class="rooms-section">
+                    <h3>Rooms & Spaces <span style="font-size:13px;font-weight:400;color:#6b7280;">(click a room to see photos)</span></h3>
+                    
+                    <!-- Room 1 -->
+                    <div class="room-card" onclick="openRoomGallery('Room 1', 'Double', '2 students per room', '1 of 2 occupied', 'available', [' Room 1 - Bed Area', '🪑 Room 1 - Study Desk', '🪟 Room 1 - Window View', '🚪 Room 1 - Entrance', '🧹 Room 1 - Cleaned'])">
+                        <div class="room-info">
+                            <div class="name">Room 1</div>
+                            <div class="detail">Double • 2 students per room • 1 of 2 occupied</div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <span class="room-status available">Available</span>
+                            <button class="room-photos-btn" onclick="event.stopPropagation();openRoomGallery('Room 1', 'Double', '2 students per room', '1 of 2 occupied', 'available', [' Room 1 - Bed Area', '🪑 Room 1 - Study Desk', '🪟 Room 1 - Window View', '🚪 Room 1 - Entrance', '🧹 Room 1 - Cleaned'])">
+                                <i class="fas fa-images"></i> Photos
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Room 2 -->
+                    <div class="room-card" onclick="openRoomGallery('Room 2', 'Double', '2 students per room', 'Full', 'full', [' Room 2 - Bed Area', '🪑 Room 2 - Study Desk', '🪟 Room 2 - Window View', '🚪 Room 2 - Entrance', '📦 Room 2 - Storage'])">
+                        <div class="room-info">
+                            <div class="name">Room 2</div>
+                            <div class="detail">Double • 2 students per room • Full</div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <span class="room-status full">Full</span>
+                            <button class="room-photos-btn" onclick="event.stopPropagation();openRoomGallery('Room 2', 'Double', '2 students per room', 'Full', 'full', [' Room 2 - Bed Area', '🪑 Room 2 - Study Desk', '🪟 Room 2 - Window View', '🚪 Room 2 - Entrance', '📦 Room 2 - Storage'])">
+                                <i class="fas fa-images"></i> Photos
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Room 3 -->
+                    <div class="room-card" onclick="openRoomGallery('Room 3', 'Shared', '2 students per room', '1 space being taken', 'pending', [' Room 3 - Bed Area', '🪑 Room 3 - Study Desk', '🪟 Room 3 - Window View', '🚪 Room 3 - Entrance', '🧹 Room 3 - Cleaned'])">
+                        <div class="room-info">
+                            <div class="name">Room 3</div>
+                            <div class="detail">Shared • 2 students per room • 1 space being taken</div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <span class="room-status pending">Pending</span>
+                            <button class="room-photos-btn" onclick="event.stopPropagation();openRoomGallery('Room 3', 'Shared', '2 students per room', '1 space being taken', 'pending', [' Room 3 - Bed Area', '🪑 Room 3 - Study Desk', '🪟 Room 3 - Window View', '🚪 Room 3 - Entrance', '🧹 Room 3 - Cleaned'])">
+                                <i class="fas fa-images"></i> Photos
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Room 4 -->
+                    <div class="room-card" onclick="openRoomGallery('Room 4', 'Single', '1 student per room', 'Available', 'available', [' Room 4 - Bed Area', '🪑 Room 4 - Study Desk', '🪟 Room 4 - Window View', '🚪 Room 4 - Entrance', '🧹 Room 4 - Cleaned', '🪞 Room 4 - Mirror'])">
+                        <div class="room-info">
+                            <div class="name">Room 4</div>
+                            <div class="detail">Single • 1 student per room • Available</div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <span class="room-status available">Available</span>
+                            <button class="room-photos-btn" onclick="event.stopPropagation();openRoomGallery('Room 4', 'Single', '1 student per room', 'Available', 'available', [' Room 4 - Bed Area', '🪑 Room 4 - Study Desk', '🪟 Room 4 - Window View', '🚪 Room 4 - Entrance', '🧹 Room 4 - Cleaned', '🪞 Room 4 - Mirror'])">
+                                <i class="fas fa-images"></i> Photos
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Tour -->
+                <div class="video-section">
+                    <h3>🎬 Video Tour</h3>
+                    <div class="video-placeholder" onclick="playVideo()">
+                        <div class="play-icon"><i class="fas fa-play"></i></div>
+                        <span class="video-label">Click to play video tour</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ─── RIGHT COLUMN ─── -->
+            <div class="right-col">
+
+                <!-- Landlord Profile -->
+                <div class="landlord-card">
+                    <div class="landlord-header">
+                        <div class="avatar">B</div>
+                        <div class="info">
+                            <div class="name">Mr. Banda</div>
+                            <div class="verified"><i class="fas fa-check-circle"></i> Verified Landlord</div>
+                            <div class="since">Member since 2026</div>
+                        </div>
+                    </div>
+
+                    <div class="landlord-details">
+                        <div class="detail">
+                            <div class="label">Properties</div>
+                            <div class="value">4 Properties</div>
+                        </div>
+                        <div class="detail">
+                            <div class="label">Response Time</div>
+                            <div class="value">~ 2 hours</div>
+                        </div>
+                        <div class="detail">
+                            <div class="label">Member Since</div>
+                            <div class="value">January 2026</div>
+                        </div>
+                        <div class="detail">
+                            <div class="label">Verification</div>
+                            <div class="value" style="color:#059669;">✅ Verified</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom:12px;font-size:13px;color:#6b7280;">
+                        <i class="fas fa-phone" style="color:#f5a623;"></i> +260 971 234 567
+                        <span style="margin-left:12px;"><i class="fab fa-whatsapp" style="color:#25D366;"></i> +260 971 234 567</span>
+                    </div>
+
+                    <div class="contact-btns">
+                        <button class="btn btn-call" onclick="contactCall()">
+                            <i class="fas fa-phone"></i> Call
+                        </button>
+                        <button class="btn btn-chat" onclick="contactMessage()">
+                            <i class="fas fa-comment"></i> Message
+                        </button>
+                        <button class="btn btn-wa" onclick="contactWhatsApp()">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </button>
+                        <button class="btn btn-dir" onclick="getDirections()">
+                            <i class="fas fa-directions"></i> Directions
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Property Info -->
+                <div class="info-card">
+                    <div class="info-row">
+                        <span class="label">Property Type</span>
+                        <span class="value">Boarding House</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Monthly Price</span>
+                        <span class="value">K1,500</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Deposit</span>
+                        <span class="value">K500</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Total Rooms</span>
+                        <span class="value">4</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Available Spaces</span>
+                        <span class="value" style="color:#059669;">3</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Status</span>
+                        <span class="value" style="color:#059669;">Available</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Verified</span>
+                        <span class="value" style="color:#059669;">✅ Verified</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Caretaker</span>
+                        <span class="value">Ms. Chanda</span>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="info-card" style="background:#f8f9fa;">
+                    <div class="info-row">
+                        <span class="label"><i class="fas fa-eye"></i> Views</span>
+                        <span class="value">1,248</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label"><i class="fas fa-heart"></i> Saves</span>
+                        <span class="value">86</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label"><i class="fas fa-envelope"></i> Inquiries</span>
+                        <span class="value">42</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label"><i class="fas fa-clock"></i> Last Updated</span>
+                        <span class="value">12 minutes ago</span>
+                    </div>
+                </div>
+
+                <!-- Report Button -->
+                <button style="width:100%;padding:12px;border:1px solid #fee2e2;border-radius:12px;background:#fef2f2;color:#dc2626;font-weight:600;font-size:14px;cursor:pointer;font-family:inherit;transition:0.2s;" onclick="showToast('🚨 Report submitted! We will review it.', 'warning')">
+                    <i class="fas fa-flag"></i> Report Issue
+                </button>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ═══ BOTTOM NAV ═══ -->
+    <nav class="bottom-nav">
+    <button class="nav-item" onclick="history.back()">
+        <i class="fas fa-arrow-left"></i><span>Back</span>
+    </button>
+    <button class="nav-item" onclick="goStudent('home')">
+        <i class="fas fa-home"></i><span>Home</span>
+    </button>
+    <button class="nav-item" onclick="goStudent('saved')">
+        <i class="fas fa-heart"></i><span>Saved</span>
+    </button>
+    <button class="nav-item" onclick="navContact()">
+        <i class="fas fa-comment"></i><span>Contact</span>
+    </button>
+    <button class="nav-item" onclick="goStudent('profile')">
+        <i class="fas fa-user"></i><span>Profile</span>
+    </button>
+</nav>
+
+    <!-- ═══ TOAST ═══ -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ═══ ROOM GALLERY MODAL ═══ -->
+    <div class="room-modal" id="roomModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="roomModalTitle">Room 1</h2>
+                <button class="close-btn" onclick="closeRoomGallery()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="room-detail" id="roomDetail">
+                    <div class="item"><span class="label">Type</span><span class="value" id="roomType">Double</span></div>
+                    <div class="item"><span class="label">Capacity</span><span class="value" id="roomCapacity">2 students</span></div>
+                    <div class="item"><span class="label">Occupied</span><span class="value" id="roomOccupied">1 of 2</span></div>
+                    <div class="item"><span class="label">Status</span><span class="value" id="roomStatus" style="color:#059669;">Available</span></div>
+                </div>
+                <div class="room-photos" id="roomPhotos">
+                    <!-- Photos will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ FULLSCREEN PHOTO VIEWER ═══ -->
+    <div class="photo-viewer" id="photoViewer">
+        <div class="viewer-content">
+            <button class="viewer-close" onclick="closePhotoViewer()"><i class="fas fa-times"></i></button>
+            <button class="viewer-nav prev" onclick="navigatePhoto(-1)"><i class="fas fa-chevron-left"></i></button>
+            <div class="viewer-image" id="viewerImage">🖼️</div>
+            <button class="viewer-nav next" onclick="navigatePhoto(1)"><i class="fas fa-chevron-right"></i></button>
+            <div class="viewer-counter" id="viewerCounter">1 / 5</div>
+        </div>
+    </div>
+
+    <!-- ═══ CHAT MODAL ═══ -->
+    <div class="modal-overlay" id="chatModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);backdrop-filter:blur(4px);z-index:9999;justify-content:center;align-items:center;padding:20px;">
+        <div style="background:white;border-radius:24px;padding:32px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;animation:modalIn 0.25s ease;">
+            <h2 style="font-size:22px;font-weight:700;margin-bottom:4px;">Message Mr. Banda</h2>
+            <p style="color:#6b7280;font-size:14px;margin-bottom:18px;">Zeworld Boarding House</p>
+            <div style="margin-bottom:16px;">
+                <label style="display:block;font-weight:600;font-size:14px;margin-bottom:4px;">Your Message</label>
+                <textarea id="chatMsg" rows="4" style="width:100%;padding:12px 14px;border:1px solid #eef2f6;border-radius:12px;font-size:14px;font-family:inherit;resize:vertical;min-height:100px;transition:0.2s;">Hello Mr. Banda, I found your property "Zeworld Boarding House" on EU PONKALA. I am interested in the available accommodation. Is the space still available?</textarea>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 18px;">
+                <button style="padding:8px 18px;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;transition:0.2s;font-family:inherit;display:flex;align-items:center;gap:6px;background:#dbeafe;color:#2563eb;" onclick="contactCall()"><i class="fas fa-phone"></i> Call</button>
+                <button style="padding:8px 18px;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;transition:0.2s;font-family:inherit;display:flex;align-items:center;gap:6px;background:#25D366;color:white;" onclick="contactWhatsApp()"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                <button style="padding:8px 18px;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;transition:0.2s;font-family:inherit;display:flex;align-items:center;gap:6px;background:#f3f4f6;color:#6b7280;" onclick="getDirections()"><i class="fas fa-directions"></i> Directions</button>
+            </div>
+            <div style="display:flex;gap:12px;justify-content:flex-end;">
+                <button onclick="closeChat()" style="padding:10px 24px;border:none;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;transition:0.2s;font-family:inherit;background:#f3f4f6;color:#6b7280;">Cancel</button>
+                <button onclick="sendChatMessage()" style="padding:10px 24px;border:none;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;transition:0.2s;font-family:inherit;background:#f5a623;color:white;">Send Message</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .modal-overlay { display: none; }
+        .modal-overlay.open { display: flex; }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.96) translateY(12px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+    </style>
+
+    <script>
+        // ─── TOAST ────────────────────────────────────────────
+        function showToast(msg, type='success') {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast ' + type;
+            t.classList.add('show');
+            clearTimeout(t._hide);
+            t._hide = setTimeout(() => t.classList.remove('show'), 2800);
+        }
+
+        // ─── SAVE ──────────────────────────────────────────────
+        let isSaved = false;
+        function toggleSave() {
+            isSaved = !isSaved;
+            const btn = document.querySelector('.btn-save');
+            if (isSaved) {
+                btn.innerHTML = '<i class="fas fa-heart"></i> Saved';
+                btn.style.background = '#fef2f2';
+                btn.style.color = '#ef4444';
+                showToast('❤️ Added to favourites!', 'success');
+            } else {
+                btn.innerHTML = '<i class="fas fa-heart"></i> Save';
+                btn.style.background = '#fef2f2';
+                btn.style.color = '#ef4444';
+                showToast('💔 Removed from favourites', 'info');
+            }
+        }
+
+        // ─── GALLERY ──────────────────────────────────────────
+        function openGallery(index) {
+            const names = ['Exterior', 'Bedroom', 'Bathroom', 'Kitchen', 'Compound'];
+            showToast(`📸 Viewing ${names[index] || 'photo'}`, 'info');
+        }
+
+        // ─── VIDEO ─────────────────────────────────────────────
+        function playVideo() {
+            showToast('🎬 Playing video tour...', 'info');
+        }
+
+        // ─── ROOM GALLERY ──────────────────────────────────────
+        let currentRoomPhotos = [];
+        let currentPhotoIndex = 0;
+
+        async function openRoomGallery(roomName, roomType, capacity, occupied, status, placeholder) {
+            // Find the room id in currentRooms (set when the property loads)
+            let room = null;
+            if (window.__property && window.__property.rooms) {
+                room = window.__property.rooms.find(r => r.room_name === roomName);
+            }
+
+            // Update modal header
+            document.getElementById('roomModalTitle').textContent = roomName || 'Room';
+            document.getElementById('roomType').textContent = roomType || '—';
+            document.getElementById('roomCapacity').textContent = capacity || '—';
+            document.getElementById('roomOccupied').textContent = occupied || '—';
+            const statusEl = document.getElementById('roomStatus');
+            if (statusEl) {
+                statusEl.textContent = (status || 'available').charAt(0).toUpperCase() + (status || 'available').slice(1);
+                statusEl.style.color = status === 'available' ? '#059669' : status === 'full' ? '#dc2626' : '#d97706';
+            }
+
+            // Fill photo grid
+            const grid = document.getElementById('roomPhotos');
+            grid.innerHTML = '<p style="color:#9ca3af;padding:20px;grid-column:1/-1;text-align:center;">Loading photos…</p>';
+
+            try {
+                // Fetch room photos from API
+                let photos = [];
+                if (room && room.room_id) {
+                    const res = await fetch('/api/photos?room_id=' + room.room_id);
+                    const data = await res.json();
+                    photos = data.data || [];
+                }
+
+                if (!photos.length) {
+                    grid.innerHTML = '<p style="color:#9ca3af;padding:20px;grid-column:1/-1;text-align:center;">No photos for this room yet</p>';
+                    return;
+                }
+
+                grid.innerHTML = '';
+                photos.forEach((ph, idx) => {
+                    const div = document.createElement('div');
+                    div.className = 'photo' + (idx === 0 ? ' main-photo' : '');
+                    div.style.backgroundImage = "url('" + ph.url + "')";
+                    div.style.backgroundSize = 'cover';
+                    div.style.backgroundPosition = 'center';
+                    div.style.cursor = 'pointer';
+                    div.innerHTML = '<span class="photo-label">' + (idx === 0 ? 'Main' : 'Photo ' + (idx + 1)) + '</span>';
+                    div.onclick = () => window.open(ph.url, '_blank');
+                    grid.appendChild(div);
+                });
+            } catch (e) {
+                console.error(e);
+                grid.innerHTML = '<p style="color:#dc2626;padding:20px;grid-column:1/-1;">Failed to load photos</p>';
+            }
+
+            // Show modal
+            document.getElementById('roomModal').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeRoomGallery() {
+            document.getElementById('roomModal').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        // ─── FULLSCREEN PHOTO VIEWER ──────────────────────────
+        function openPhotoViewer(index) {
+            currentPhotoIndex = index;
+            updateViewer();
+            document.getElementById('photoViewer').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePhotoViewer() {
+            document.getElementById('photoViewer').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        function navigatePhoto(direction) {
+            const newIndex = currentPhotoIndex + direction;
+            if (newIndex >= 0 && newIndex < currentRoomPhotos.length) {
+                currentPhotoIndex = newIndex;
+                updateViewer();
+            }
+        }
+
+        function updateViewer() {
+            const viewer = document.getElementById('viewerImage');
+            viewer.textContent = currentRoomPhotos[currentPhotoIndex] || '🖼️';
+            document.getElementById('viewerCounter').textContent =
+                `${currentPhotoIndex + 1} / ${currentRoomPhotos.length}`;
+        }
+
+        // ─── KEYBOARD NAVIGATION ──────────────────────────────
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('photoViewer').classList.contains('open')) {
+                if (e.key === 'ArrowLeft') navigatePhoto(-1);
+                else if (e.key === 'ArrowRight') navigatePhoto(1);
+                else if (e.key === 'Escape') closePhotoViewer();
+            }
+            if (document.getElementById('roomModal').classList.contains('open')) {
+                if (e.key === 'Escape') closeRoomGallery();
+            }
+        });
+
+        // ─── CHAT ──────────────────────────────────────────────
+        function openChat() {
+            document.getElementById('chatModal').classList.add('open');
+        }
+
+        function closeChat() {
+            document.getElementById('chatModal').classList.remove('open');
+        }
+
+        function sendChatMessage() {
+            const msg = document.getElementById('chatMsg').value;
+            if (msg.trim()) {
+                showToast('💬 Message sent to Mr. Banda!', 'success');
+                closeChat();
+            } else {
+                showToast('⚠️ Please enter a message', 'error');
+            }
+        }
+
+        // ─── CLOSE MODALS ON OVERLAY CLICK ────────────────────
+        document.getElementById('roomModal').addEventListener('click', function(e) {
+            if (e.target === this) closeRoomGallery();
+        });
+
+        document.getElementById('chatModal').addEventListener('click', function(e) {
+            if (e.target === this) closeChat();
+        });
+
+        document.getElementById('photoViewer').addEventListener('click', function(e) {
+            if (e.target === this) closePhotoViewer();
+        });
+        // ═══════════════════════════════════════════════
+        // LOAD REAL PROPERTY DATA + PHOTOS
+        // ═══════════════════════════════════════════════
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id') || 1;
+
+            try {
+                const res = await fetch('/api/properties/' + id);
+                const data = await res.json();
+                if (data.status !== 'success') { console.warn('Property not found'); return; }
+
+                const p = data.data;
+
+                // Update page title + header
+                document.title = 'EU PONKALA - ' + p.property_name;
+                const h1 = document.querySelector('.property-header .left h1');
+                if (h1) h1.textContent = p.property_name;
+
+                const loc = document.querySelector('.property-header .left .location');
+                if (loc) loc.innerHTML = '<i class="fas fa-map-marker-alt" style="color:#f5a623;"></i> ' +
+                    (p.area || 'Lusaka') + ' • ' + (p.university_name || 'Eden University') + ', Lusaka';
+
+                const price = document.querySelector('.property-header .right .price');
+                if (price) price.innerHTML = 'K' + Number(p.monthly_price).toLocaleString() + ' <small>/month</small>';
+
+                const spacesBadge = document.querySelector('.badge-available');
+                if (spacesBadge) spacesBadge.innerHTML = '<i class="fas fa-circle" style="color:#059669;font-size:10px;"></i> ' +
+                    (p.available_spaces || 0) + ' Spaces Available';
+
+                // ─── Fill the gallery ───
+                const gallery = document.getElementById('propertyGallery');
+                if (gallery && p.photos && p.photos.length) {
+                    // Sort: primary first
+                    const photos = [...p.photos].sort((a, b) => (b.is_primary || 0) - (a.is_primary || 0)).slice(0, 6);
+
+                    gallery.innerHTML = '';
+                    photos.forEach((ph, idx) => {
+                        const item = document.createElement('div');
+                        item.className = 'gallery-item';
+                        item.style.backgroundImage = "url('" + ph.url + "')";
+                        item.style.backgroundSize = 'cover';
+                        item.style.backgroundPosition = 'center';
+                        item.style.cursor = 'pointer';
+                        if (idx === 0) item.style.gridRow = '1 / 3';
+
+                        const cat = (ph.category || 'photo').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                        item.innerHTML = '<span class="tag">' + cat + '</span><div class="overlay"><i class="fas fa-expand"></i></div>';
+
+                        item.onclick = () => window.open(ph.url, '_blank');
+                        gallery.appendChild(item);
+                    });
+                } else if (gallery) {
+                    gallery.innerHTML = '<div style="grid-column:1/-1;padding:40px;text-align:center;color:#9ca3af;background:#f8f9fa;border-radius:16px;">No photos yet</div>';
+                }
+
+                // ─── Landlord card ───
+                if (p.landlord) {
+                    const landlordName = document.querySelector('.landlord-card .info .name');
+                    if (landlordName) landlordName.textContent = p.landlord.name || 'Landlord';
+                    const landlordPhone = document.querySelector('.landlord-card [data-phone]');
+                    if (landlordPhone && p.landlord.phone) landlordPhone.textContent = p.landlord.phone;
+                    const landlordWa = document.querySelector('.landlord-card [data-whatsapp]');
+                    if (landlordWa && p.landlord.whatsapp) landlordWa.textContent = p.landlord.whatsapp;
+
+                    // Store for chat/contact
+                    window.__property = p;
+                }
+
+                // ─── Rooms section (if you have one) ───
+                const roomsEl = document.getElementById('roomsList');
+                if (roomsEl && p.rooms && p.rooms.length) {
+                    roomsEl.innerHTML = '';
+                    p.rooms.forEach(r => {
+                        const row = document.createElement('div');
+                        row.className = 'room-card';
+                        const st = r.status || 'available';
+                        row.innerHTML = `
+                            <div class="room-info">
+                                <div class="name">${r.room_name}</div>
+                                <div class="detail">${r.room_type} • capacity ${r.capacity} • ${r.occupied} occupied</div>
+                            </div>
+                            <span class="room-status ${st}">${st.charAt(0).toUpperCase() + st.slice(1)}</span>
+                        `;
+                        roomsEl.appendChild(row);
+                    });
+                }
+
+            } catch (e) {
+                console.error('Failed to load property data:', e);
+            }
+        });
+        // ═══════════════════════════════════════════════
+        // REAL DIRECTIONS
+        // ═══════════════════════════════════════════════
+        function getDirections() {
+            const p = window.__property;
+            if (!p) {
+                alert('Property not loaded yet — please wait a moment and try again.');
+                return;
+            }
+            // Use stored lat/lng, or fall back to Eden University
+            const lat = p.latitude || -15.3875;
+            const lng = p.longitude || 28.3228;
+            const label = encodeURIComponent(p.property_name || 'Property');
+
+            // Detect mobile to offer app-specific links
+            const isIOS     = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            const isAndroid = /Android/.test(navigator.userAgent);
+
+            // Build options
+            const googleUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`;
+            const appleUrl  = `https://maps.apple.com/?daddr=${lat},${lng}&dirflg=d`;
+            const wazeUrl   = `https://waze.com/ul?ll=${lat},${lng}&navigate=yes`;
+
+            // Show a small chooser modal
+            showDirectionsChooser({ googleUrl, appleUrl, wazeUrl, label: p.property_name, lat, lng });
+        }
+
+        function showDirectionsChooser(opts) {
+            // Remove any existing chooser
+            const old = document.getElementById('dirChooser');
+            if (old) old.remove();
+
+            const modal = document.createElement('div');
+            modal.id = 'dirChooser';
+            modal.style.cssText = `
+                position:fixed; inset:0; background:rgba(15,12,41,0.6);
+                backdrop-filter:blur(6px); z-index:10000;
+                display:flex; align-items:center; justify-content:center; padding:20px;
+            `;
+            modal.innerHTML = `
+                <div style="background:white;border-radius:20px;padding:28px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                        <div style="font-size:19px;font-weight:800;color:#0f0c29;">🧭 Get Directions</div>
+                        <button onclick="document.getElementById('dirChooser').remove()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#9ca3af;">✕</button>
+                    </div>
+                    <div style="font-size:14px;color:#6b7280;margin-bottom:20px;">${opts.label}<br>Coordinates: ${opts.lat.toFixed(4)}, ${opts.lng.toFixed(4)}</div>
+
+                    <a href="${opts.googleUrl}" target="_blank" rel="noopener"
+                       style="display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;background:#f8f9fa;text-decoration:none;color:#1a1a2e;font-weight:600;margin-bottom:10px;border:1px solid #eef2f6;transition:0.2s;">
+                        <span style="font-size:22px;">🗺️</span> Open in Google Maps
+                    </a>
+                    <a href="${opts.appleUrl}" target="_blank" rel="noopener"
+                       style="display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;background:#f8f9fa;text-decoration:none;color:#1a1a2e;font-weight:600;margin-bottom:10px;border:1px solid #eef2f6;transition:0.2s;">
+                        <span style="font-size:22px;">🍎</span> Open in Apple Maps
+                    </a>
+                    <a href="${opts.wazeUrl}" target="_blank" rel="noopener"
+                       style="display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;background:#f8f9fa;text-decoration:none;color:#1a1a2e;font-weight:600;margin-bottom:10px;border:1px solid #eef2f6;transition:0.2s;">
+                        <span style="font-size:22px;">🚗</span> Open in Waze
+                    </a>
+                    <button onclick="navigator.clipboard.writeText('${opts.lat}, ${opts.lng}');this.textContent='✅ Copied!';setTimeout(()=>this.textContent='📋 Copy Coordinates',1500);"
+                       style="width:100%;padding:14px 18px;border-radius:12px;background:#f8f9fa;border:1px solid #eef2f6;font-weight:600;font-family:inherit;font-size:14px;cursor:pointer;color:#1a1a2e;">
+                        📋 Copy Coordinates
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+        }
+        // ═══════════════════════════════════════════════
+        // CONTACT BUTTONS (Call / Message / WhatsApp / Directions)
+        // ═══════════════════════════════════════════════
+        function contactCall() {
+            const p = window.__property;
+            const phone = (p && p.landlord && p.landlord.phone) || '+260976590619';
+            window.location.href = 'tel:' + phone.replace(/\s+/g, '');
+        }
+
+        function contactWhatsApp() {
+            const p = window.__property;
+            const raw = (p && p.landlord && (p.landlord.whatsapp || p.landlord.phone)) || '+260976590619';
+            const num = raw.replace(/[^0-9]/g, '');
+            const msg = encodeURIComponent(
+                'Hello, I found your property "' +
+                (p ? p.property_name : 'on EU PONKALA') +
+                '" on EU PONKALA. I am interested in the available accommodation. Is the space still available?'
+            );
+            window.open('https://wa.me/' + num + '?text=' + msg, '_blank');
+        }
+
+        async function contactMessage() {
+            const p = window.__property;
+            if (!p || !p.landlord || !p.landlord.user_id) {
+                alert('Landlord contact is not available right now.');
+                return;
+            }
+
+            // Make sure the chat widget is loaded
+            if (!window.EU_CHAT) {
+                alert('Chat is still loading. Please try again in a moment.');
+                return;
+            }
+
+            // If EU_CHAT has the startConversation helper, use it (auto-creates + opens)
+            if (typeof EU_CHAT.startConversation === 'function') {
+                try {
+                    await EU_CHAT.startConversation(
+                        p.landlord.user_id,
+                        p.property_id,
+                        p.property_name
+                    );
+                    return;
+                } catch (e) {
+                    console.error('startConversation failed:', e);
+                }
+            }
+
+            // Fallback: open the chat panel
+            if (typeof EU_CHAT.toggle === 'function') EU_CHAT.toggle();
+        }
+        // ═══════════════════════════════════════════════
+        // BOTTOM NAVIGATION
+        // ═══════════════════════════════════════════════
+        function goStudent(section) {
+            // Navigate to student dashboard with a target section
+            window.location.href = '/student#' + section;
+        }
+
+        function navContact() {
+            // If the chat widget is available, open it
+            if (window.EU_CHAT && typeof EU_CHAT.toggle === 'function') {
+                EU_CHAT.toggle();
+                return;
+            }
+            // Fallback: scroll to the landlord card
+            const landlord = document.querySelector('.landlord-card');
+            if (landlord) landlord.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+

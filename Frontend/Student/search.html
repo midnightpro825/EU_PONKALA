@@ -1,0 +1,201 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EU PONKALA - Search</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f5f7fb; color: #1a1a2e; padding-bottom: 90px; }
+        .top-header { background: white; padding: 14px 24px; border-bottom: 1px solid rgba(0,0,0,0.04); position: sticky; top: 0; z-index: 100; }
+        .top-header .inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 22px; font-weight: 900; text-decoration: none; color: #1a1a2e; }
+        .logo span { color: #f5a623; }
+        .back-btn { background: #f5a623; color: white; padding: 8px 18px; border-radius: 10px; text-decoration: none; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+        .main-wrap { max-width: 1200px; margin: 0 auto; padding: 24px 24px 0; }
+        h1 { font-size: 28px; font-weight: 800; margin-bottom: 6px; }
+        .subtitle { color: #6b7280; font-size: 14px; margin-bottom: 24px; }
+        .search-bar { display: flex; align-items: center; background: white; border-radius: 16px; padding: 4px 4px 4px 18px; border: 1px solid #eef2f6; margin-bottom: 20px; }
+        .search-bar i { color: #9ca3af; }
+        .search-bar input { flex: 1; border: none; padding: 14px; font-size: 15px; font-family: inherit; outline: none; background: transparent; }
+        .search-bar button { background: #f5a623; color: white; border: none; padding: 12px 26px; border-radius: 12px; font-weight: 600; cursor: pointer; font-family: inherit; }
+        .filter-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; align-items: center; }
+        .filter-row .label { font-size: 13px; font-weight: 600; color: #6b7280; margin-right: 4px; }
+        .chip { padding: 6px 16px; border-radius: 50px; border: 1px solid #eef2f6; background: white; font-size: 13px; font-weight: 500; cursor: pointer; color: #6b7280; font-family: inherit; transition: 0.2s; }
+        .chip:hover { border-color: #f5a623; }
+        .chip.active { background: #f5a623; color: white; border-color: #f5a623; }
+        .results-header { display: flex; justify-content: space-between; align-items: center; margin: 24px 0 14px; }
+        .results-header h3 { font-size: 17px; font-weight: 700; }
+        .results-header span { font-size: 14px; color: #6b7280; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+        .prop-card { background: white; border-radius: 16px; overflow: hidden; border: 1px solid #eef2f6; transition: 0.3s; }
+        .prop-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+        .prop-card .img { height: 160px; background: linear-gradient(135deg, #667eea, #764ba2); background-size: cover; background-position: center; position: relative; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.4); font-size: 40px; }
+        .prop-card .img .badge { position: absolute; bottom: 12px; left: 12px; background: #059669; color: white; padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+        .prop-card .img .save { position: absolute; top: 12px; left: 12px; width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.92); border: none; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; color: #9ca3af; }
+        .prop-card .img .save.saved { color: #dc2626; }
+        .prop-card .body { padding: 16px 18px 18px; }
+        .prop-card .name { font-weight: 700; font-size: 15px; margin-bottom: 2px; }
+        .prop-card .loc { font-size: 12px; color: #6b7280; margin-bottom: 10px; }
+        .prop-card .meta { display: flex; justify-content: space-between; padding-top: 10px; border-top: 1px solid #f0f2f5; }
+        .prop-card .price { color: #f5a623; font-weight: 800; font-size: 16px; }
+        .prop-card .spaces { font-size: 12px; color: #6b7280; }
+        .empty { padding: 60px 20px; text-align: center; color: #6b7280; }
+        .empty i { font-size: 48px; color: #d1d5db; display: block; margin-bottom: 12px; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-top: 1px solid rgba(0,0,0,0.04); display: flex; justify-content: space-around; padding: 8px 0 14px; z-index: 1000; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; background: none; border: none; cursor: pointer; color: #9ca3af; font-size: 10px; font-weight: 600; font-family: inherit; padding: 4px 12px; text-decoration: none; }
+        .nav-item i { font-size: 20px; }
+        .nav-item.active { color: #f5a623; }
+    </style>
+</head>
+<body>
+
+<header class="top-header">
+    <div class="inner">
+        <a href="/student" class="logo">EU <span>PONKALA</span></a>
+        <a href="/student" class="back-btn"><i class="fas fa-arrow-left"></i> Back</a>
+    </div>
+</header>
+
+<main class="main-wrap">
+    <h1>🔍 Search Accommodation</h1>
+    <p class="subtitle">Find your perfect space near Eden University</p>
+
+    <div class="search-bar">
+        <i class="fas fa-search"></i>
+        <input type="text" id="q" placeholder="Search by name, area, or address…" onkeypress="if(event.key==='Enter')doSearch()">
+        <button onclick="doSearch()">Search</button>
+    </div>
+
+    <div class="filter-row">
+        <span class="label">💰 Price:</span>
+        <button class="chip active" data-price="all">All</button>
+        <button class="chip" data-price="under1000">Under K1,000</button>
+        <button class="chip" data-price="1000-1500">K1,000 – K1,500</button>
+        <button class="chip" data-price="1500-2000">K1,500 – K2,000</button>
+        <button class="chip" data-price="2000+">K2,000+</button>
+    </div>
+
+    <div class="filter-row">
+        <span class="label">🏠 Availability:</span>
+        <button class="chip active" data-avail="all">All</button>
+        <button class="chip" data-avail="available">Available only</button>
+    </div>
+
+    <div class="results-header">
+        <h3 id="resultTitle">All Properties</h3>
+        <span id="resultCount">Loading…</span>
+    </div>
+
+    <div class="grid" id="grid"></div>
+</main>
+
+<nav class="bottom-nav">
+    <a href="/student" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="/search" class="nav-item active"><i class="fas fa-search"></i><span>Search</span></a>
+    <a href="/saved" class="nav-item"><i class="fas fa-heart"></i><span>Saved</span></a>
+    <a href="/profile" class="nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
+</nav>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/shared/chat.js"></script>
+<script>
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    if (!localStorage.getItem('token')) window.location.href = '/login';
+    if (user && user.user_id && window.EU_CHAT) EU_CHAT.init({ userId: user.user_id, userType: 'student' });
+
+    let allProperties = [];
+    let currentPrice = 'all';
+    let currentAvail = 'all';
+
+    async function loadAll() {
+        try {
+            const res = await fetch('/api/properties');
+            const data = await res.json();
+            allProperties = data.data || [];
+        } catch (e) { allProperties = []; }
+        render();
+    }
+
+    async function doSearch() {
+        const q = document.getElementById('q').value.trim();
+        if (!q) { render(); return; }
+        try {
+            const res = await fetch('/api/properties/search?q=' + encodeURIComponent(q));
+            const data = await res.json();
+            render(data.data || [], q);
+        } catch (e) { render([], q); }
+    }
+
+    document.querySelectorAll('.chip[data-price]').forEach(c => c.onclick = () => {
+        document.querySelectorAll('.chip[data-price]').forEach(x => x.classList.remove('active'));
+        c.classList.add('active'); currentPrice = c.dataset.price; render();
+    });
+    document.querySelectorAll('.chip[data-avail]').forEach(c => c.onclick = () => {
+        document.querySelectorAll('.chip[data-avail]').forEach(x => x.classList.remove('active'));
+        c.classList.add('active'); currentAvail = c.dataset.avail; render();
+    });
+
+    function filtered(list) {
+        let r = [...list];
+        if (currentPrice !== 'all') {
+            r = r.filter(p => {
+                const price = Number(p.monthly_price);
+                if (currentPrice === 'under1000') return price < 1000;
+                if (currentPrice === '1000-1500') return price >= 1000 && price <= 1500;
+                if (currentPrice === '1500-2000') return price >= 1500 && price <= 2000;
+                if (currentPrice === '2000+') return price > 2000;
+                return true;
+            });
+        }
+        if (currentAvail === 'available') r = r.filter(p => (p.available_spaces || 0) > 0);
+        return r;
+    }
+
+    function render(override, label) {
+        const source = override !== undefined ? override : allProperties;
+        const list = filtered(source);
+        const grid = document.getElementById('grid');
+        document.getElementById('resultCount').textContent = list.length + ' result' + (list.length === 1 ? '' : 's');
+        document.getElementById('resultTitle').textContent = label ? 'Results for "' + label + '"' : 'All Properties';
+
+        if (!list.length) {
+            grid.innerHTML = '<div class="empty" style="grid-column:1/-1;"><i class="fas fa-home"></i><h3>No properties found</h3><p>Try changing your filters</p></div>';
+            return;
+        }
+
+        grid.innerHTML = '';
+        list.forEach(p => {
+            const photo = (p.photos && p.photos[0]) ? p.photos[0].url : '';
+            const card = document.createElement('div');
+            card.className = 'prop-card';
+            card.innerHTML = `
+                <div class="img" style="${photo ? "background-image:url('" + photo + "');" : ''}" onclick="location.href='/student/property?id=${p.property_id}'">
+                    ${!photo ? '🏠' : ''}
+                    ${p.is_verified ? '<span class="badge"><i class="fas fa-check-circle"></i> VERIFIED</span>' : ''}
+                    <button class="save ${p.saved ? 'saved' : ''}" onclick="event.stopPropagation();toggleSave(${p.property_id})"><i class="fas fa-heart"></i></button>
+                </div>
+                <div class="body" onclick="location.href='/student/property?id=${p.property_id}'" style="cursor:pointer;">
+                    <div class="name">${p.property_name}</div>
+                    <div class="loc"><i class="fas fa-map-marker-alt"></i> ${p.area || 'Lusaka'}</div>
+                    <div class="meta">
+                        <div class="price">K${Number(p.monthly_price).toLocaleString()}<small>/month</small></div>
+                        <div class="spaces"><strong>${p.available_spaces || 0}</strong> spaces</div>
+                    </div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    async function toggleSave(id) {
+        await fetch('/api/favourites/toggle', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ student_user_id: user.user_id, property_id: id }) });
+        loadAll();
+    }
+
+    document.addEventListener('DOMContentLoaded', loadAll);
+</script>
+</body>
+</html>

@@ -1,0 +1,1427 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EU PONKALA - Student</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f7fb;
+            color: #1a1a2e;
+            padding-bottom: 80px;
+        }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #f0f2f5; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+
+        /* ─── TOP HEADER ─── */
+        .top-header {
+            background: white;
+            padding: 14px 24px;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+            background: rgba(255,255,255,0.92);
+        }
+        .top-header .inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .top-header .logo { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; }
+        .top-header .logo span { color: #f5a623; }
+        .top-header .logo small {
+            display: block; font-size: 10px; font-weight: 400;
+            color: #6b7280; letter-spacing: 0.3px; margin-top: -2px;
+        }
+        .top-header .actions { display: flex; align-items: center; gap: 14px; }
+        .top-header .actions .bell {
+            width: 42px; height: 42px; border-radius: 50%;
+            background: #f8f9fa; border: none; font-size: 18px;
+            color: #1a1a2e; cursor: pointer; position: relative;
+            transition: 0.2s; display: flex; align-items: center; justify-content: center;
+        }
+        .top-header .actions .bell:hover { background: #f0f2f5; }
+        .top-header .actions .bell .dot {
+            position: absolute; top: 10px; right: 10px;
+            width: 8px; height: 8px; background: #ef4444;
+            border-radius: 50%; border: 2px solid white;
+        }
+        .top-header .actions .avatar {
+            width: 42px; height: 42px; border-radius: 50%;
+            background: linear-gradient(135deg, #f5a623, #e8951e);
+            color: white; display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 16px; cursor: pointer;
+            transition: 0.2s; box-shadow: 0 2px 8px rgba(245,166,35,0.3);
+        }
+        .top-header .actions .avatar:hover { transform: scale(1.04); }
+
+        /* ─── MAIN WRAP ─── */
+        .main-wrap { max-width: 1200px; margin: 0 auto; padding: 24px 24px 0; }
+
+        /* ─── WELCOME ─── */
+        .welcome { margin-bottom: 24px; }
+        .welcome h1 { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+        .welcome h1 span { color: #f5a623; }
+        .welcome p { color: #6b7280; font-size: 15px; margin-top: 2px; font-weight: 400; }
+
+        /* ─── SEARCH BAR ─── */
+        .search-wrap { margin-bottom: 24px; }
+        .search-bar {
+            display: flex; align-items: center; background: white;
+            border-radius: 16px; padding: 4px;
+            border: 1px solid #eef2f6;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            transition: 0.25s; max-width: 660px;
+        }
+        .search-bar:focus-within {
+            border-color: #f5a623;
+            box-shadow: 0 4px 16px rgba(245,166,35,0.10);
+        }
+        .search-bar i { color: #9ca3af; font-size: 16px; padding-left: 16px; }
+        .search-bar input {
+            flex: 1; border: none; padding: 13px 14px;
+            font-size: 15px; font-weight: 400; outline: none;
+            background: transparent; font-family: inherit;
+        }
+        .search-bar .location-tag {
+            background: #f8f9fa; padding: 6px 16px; border-radius: 10px;
+            font-size: 13px; color: #4b5563; display: flex;
+            align-items: center; gap: 6px; margin-right: 6px; white-space: nowrap;
+        }
+        .search-bar .location-tag i { padding: 0; font-size: 13px; }
+        .search-bar .search-btn {
+            background: #f5a623; border: none; color: white;
+            padding: 10px 28px; border-radius: 12px;
+            font-weight: 600; font-size: 14px; cursor: pointer;
+            transition: 0.2s; font-family: inherit;
+        }
+        .search-bar .search-btn:hover { background: #d4951f; }
+
+        /* ─── FILTER CHIPS ─── */
+        .filter-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+        .filter-chips .chip {
+            background: white; padding: 7px 18px; border-radius: 50px;
+            border: 1px solid #eef2f6; font-size: 13px; font-weight: 500;
+            cursor: pointer; transition: 0.2s; color: #6b7280;
+            font-family: inherit;
+        }
+        .filter-chips .chip:hover { border-color: #f5a623; color: #1a1a2e; }
+        .filter-chips .chip.active {
+            background: #f5a623; color: white; border-color: #f5a623;
+        }
+
+        /* ─── FILTER ROWS ─── */
+        .filter-row {
+            display: flex; flex-wrap: wrap; align-items: center;
+            gap: 6px 8px; margin-bottom: 10px;
+        }
+        .filter-row .label {
+            font-size: 13px; font-weight: 600;
+            color: #6b7280; margin-right: 4px;
+        }
+        .filter-row .opt {
+            padding: 4px 14px; border-radius: 50px;
+            border: 1px solid #eef2f6; font-size: 12px; font-weight: 500;
+            cursor: pointer; transition: 0.2s; background: white;
+            color: #6b7280; font-family: inherit;
+        }
+        .filter-row .opt:hover { border-color: #f5a623; color: #1a1a2e; }
+        .filter-row .opt.active {
+            background: #f5a623; color: white; border-color: #f5a623;
+        }
+        .filter-row .opt i { margin-right: 4px; font-size: 12px; }
+
+        /* ─── SECTION HEADER ─── */
+        .section-head {
+            display: flex; justify-content: space-between;
+            align-items: center; margin: 28px 0 14px;
+        }
+        .section-head h3 { font-size: 18px; font-weight: 700; }
+        .section-head .more {
+            color: #f5a623; font-size: 14px; font-weight: 500;
+            cursor: pointer; transition: 0.2s;
+            background: none; border: none; font-family: inherit;
+        }
+        .section-head .more:hover { color: #d4951f; }
+
+        /* ─── PROPERTY GRID ─── */
+        .prop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        /* ─── PROPERTY CARD ─── */
+        .prop-card {
+            background: white; border-radius: 18px; overflow: hidden;
+            border: 1px solid #eef2f6;
+            transition: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        .prop-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.07);
+            border-color: #f5a62320;
+        }
+        .prop-card .image img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; z-index:0; }
+        .prop-card .image .no-photo-fallback { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:48px; z-index:0; }
+        .prop-card .image .badge-verified, .prop-card .image .badge-status, .prop-card .image .btn-save { z-index:2; position:relative; }
+        .prop-card .image {
+            height: 180px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            position: relative; display: flex; align-items: center;
+            justify-content: center; font-size: 48px;
+            color: rgba(255,255,255,0.4);
+        }
+        .prop-card .image .badge-verified {
+            position: absolute; top: 14px; right: 14px;
+            background: #059669; color: white; padding: 4px 12px;
+            border-radius: 20px; font-size: 10px; font-weight: 700;
+            display: flex; align-items: center; gap: 4px; letter-spacing: 0.3px;
+        }
+        .prop-card .image .badge-status {
+            position: absolute; bottom: 14px; left: 14px;
+            padding: 4px 14px; border-radius: 20px;
+            font-size: 11px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.3px;
+        }
+        .prop-card .image .badge-status.available { background: #059669; color: white; }
+        .prop-card .image .badge-status.full { background: #dc2626; color: white; }
+        .prop-card .image .badge-status.pending { background: #f59e0b; color: #1a1a2e; }
+        .prop-card .image .btn-save {
+            position: absolute; top: 14px; left: 14px;
+            width: 38px; height: 38px; border-radius: 50%;
+            background: rgba(255,255,255,0.92); border: none;
+            font-size: 16px; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center;
+            color: #9ca3af; backdrop-filter: blur(4px);
+        }
+        .prop-card .image .btn-save:hover { transform: scale(1.08); background: white; }
+        .prop-card .image .btn-save.saved { color: #ef4444; background: #fef2f2; }
+
+        .prop-card .body { padding: 16px 18px 18px; }
+        .prop-card .body .name { font-size: 16px; font-weight: 700; margin-bottom: 2px; }
+        .prop-card .body .location {
+            font-size: 13px; color: #6b7280; margin-bottom: 10px;
+            display: flex; align-items: center; gap: 4px;
+        }
+        .prop-card .body .location i { font-size: 12px; color: #9ca3af; }
+        .prop-card .body .meta {
+            display: flex; justify-content: space-between;
+            align-items: center; padding-top: 12px;
+            border-top: 1px solid #f1f3f6;
+        }
+        .prop-card .body .meta .price {
+            font-size: 18px; font-weight: 800; color: #f5a623;
+        }
+        .prop-card .body .meta .price small {
+            font-size: 13px; font-weight: 400; color: #6b7280;
+        }
+        .prop-card .body .meta .spaces { font-size: 13px; color: #6b7280; }
+        .prop-card .body .meta .spaces strong { color: #1a1a2e; }
+
+        .prop-card .actions {
+            display: flex; gap: 8px; padding: 8px 18px 16px;
+            border-top: 1px solid #f1f3f6; flex-wrap: wrap;
+        }
+        .prop-card .actions .btn {
+            padding: 6px 14px; border: none; border-radius: 8px;
+            font-size: 12px; font-weight: 600; cursor: pointer;
+            transition: 0.2s; font-family: inherit;
+            display: flex; align-items: center; gap: 4px;
+        }
+        .prop-card .actions .btn-primary { background: #f5a623; color: white; }
+        .prop-card .actions .btn-primary:hover { background: #d4951f; }
+        .prop-card .actions .btn-success { background: #d1fae5; color: #059669; }
+        .prop-card .actions .btn-success:hover { background: #059669; color: white; }
+        .prop-card .actions .btn-outline {
+            background: transparent; border: 1px solid #eef2f6; color: #6b7280;
+        }
+        .prop-card .actions .btn-outline:hover { background: #f8f9fa; }
+        .prop-card .actions .btn-whatsapp { background: #25D366; color: white; }
+        .prop-card .actions .btn-whatsapp:hover { background: #1da851; }
+        .prop-card .actions .btn-phone { background: #3b82f6; color: white; }
+        .prop-card .actions .btn-phone:hover { background: #2563eb; }
+
+        /* ─── MAP BUTTON ─── */
+        .map-btn-wrap { text-align: center; margin: 32px 0 12px; }
+        .map-btn-wrap .map-btn {
+            padding: 14px 44px; border: none; border-radius: 14px;
+            background: #f5a623; color: white; font-size: 16px;
+            font-weight: 700; cursor: pointer; transition: 0.2s;
+            font-family: inherit;
+            box-shadow: 0 4px 16px rgba(245,166,35,0.25);
+            display: inline-flex; align-items: center; gap: 10px;
+        }
+        .map-btn-wrap .map-btn:hover {
+            background: #d4951f; transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(245,166,35,0.3);
+        }
+
+        /* ─── BOTTOM NAV ─── */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(0,0,0,0.04);
+            display: flex; justify-content: space-around;
+            padding: 6px 0 14px; z-index: 1000;
+        }
+        .bottom-nav .nav-item {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 2px; background: none; border: none; cursor: pointer;
+            color: #9ca3af; font-size: 10px; font-weight: 600;
+            transition: 0.2s; padding: 4px 12px;
+            font-family: inherit; letter-spacing: 0.2px;
+        }
+        .bottom-nav .nav-item i { font-size: 20px; transition: 0.2s; }
+        .bottom-nav .nav-item:hover { color: #f5a623; }
+        .bottom-nav .nav-item.active { color: #f5a623; }
+        .bottom-nav .nav-item .badge {
+            background: #ef4444; color: white; font-size: 9px;
+            font-weight: 700; padding: 1px 8px;
+            border-radius: 20px; margin-top: -4px;
+        }
+
+        /* ─── MODAL ─── */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+            z-index: 9999; justify-content: center;
+            align-items: center; padding: 20px;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-box {
+            background: white; border-radius: 24px; padding: 32px;
+            max-width: 520px; width: 100%; max-height: 90vh;
+            overflow-y: auto; animation: modalIn 0.25s ease;
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.96) translateY(12px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .modal-box h2 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+        .modal-box .sub { color: #6b7280; font-size: 14px; margin-bottom: 18px; }
+        .modal-box .form-group { margin-bottom: 16px; }
+        .modal-box .form-group label {
+            display: block; font-weight: 600; font-size: 14px; margin-bottom: 4px;
+        }
+        .modal-box .form-group textarea {
+            width: 100%; padding: 12px 14px;
+            border: 1px solid #eef2f6; border-radius: 12px;
+            font-size: 14px; font-family: inherit;
+            resize: vertical; transition: 0.2s; min-height: 100px;
+        }
+        .modal-box .form-group textarea:focus {
+            outline: none; border-color: #f5a623;
+            box-shadow: 0 0 0 3px rgba(245,166,35,0.08);
+        }
+        .modal-box .contact-btns {
+            display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0 18px;
+        }
+        .modal-box .contact-btns .btn {
+            padding: 8px 18px; border: none; border-radius: 10px;
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            transition: 0.2s; font-family: inherit;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .modal-box .contact-btns .btn-call { background: #dbeafe; color: #2563eb; }
+        .modal-box .contact-btns .btn-call:hover { background: #2563eb; color: white; }
+        .modal-box .contact-btns .btn-chat { background: #f5a623; color: white; }
+        .modal-box .contact-btns .btn-chat:hover { background: #d4951f; }
+        .modal-box .contact-btns .btn-wa { background: #25D366; color: white; }
+        .modal-box .contact-btns .btn-wa:hover { background: #1da851; }
+        .modal-box .contact-btns .btn-dir { background: #f3f4f6; color: #6b7280; }
+        .modal-box .contact-btns .btn-dir:hover { background: #e5e7eb; }
+        .modal-box .modal-actions {
+            display: flex; gap: 12px; justify-content: flex-end; margin-top: 6px;
+        }
+        .modal-box .modal-actions .btn {
+            padding: 10px 24px; border: none; border-radius: 12px;
+            font-size: 14px; font-weight: 600; cursor: pointer;
+            transition: 0.2s; font-family: inherit;
+        }
+        .modal-box .modal-actions .btn-secondary { background: #f3f4f6; color: #6b7280; }
+        .modal-box .modal-actions .btn-secondary:hover { background: #e5e7eb; }
+        .modal-box .modal-actions .btn-primary { background: #f5a623; color: white; }
+        .modal-box .modal-actions .btn-primary:hover { background: #d4951f; }
+
+        /* ─── TOAST ─── */
+        .toast {
+            position: fixed; bottom: 90px; left: 50%;
+            transform: translateX(-50%); padding: 12px 28px;
+            border-radius: 14px; color: white; font-weight: 600;
+            font-size: 14px; z-index: 10000; opacity: 0;
+            transition: 0.4s ease; max-width: 92%;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            font-family: inherit; pointer-events: none;
+        }
+        .toast.show { opacity: 1; }
+        .toast.success { background: #059669; }
+        .toast.error { background: #dc2626; }
+        .toast.warning { background: #d97706; }
+        .toast.info { background: #2563eb; }
+
+        /* ─── EMPTY STATE ─── */
+        .empty-state { text-align: center; padding: 40px 20px; color: #6b7280; }
+        .empty-state i {
+            font-size: 48px; color: #d1d5db;
+            margin-bottom: 12px; display: block;
+        }
+        .empty-state h4 {
+            font-size: 18px; font-weight: 600;
+            color: #1a1a2e; margin-bottom: 4px;
+        }
+        .empty-state p { font-size: 14px; }
+
+        /* ─── LOADING ─── */
+        .loading-state { text-align: center; padding: 40px; }
+        .loading-state i { font-size: 32px; color: #f5a623; }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 768px) {
+            .main-wrap { padding: 16px 16px 0; }
+            .welcome h1 { font-size: 22px; }
+            .search-bar { flex-wrap: wrap; padding: 12px; }
+            .search-bar .location-tag { width: 100%; margin-bottom: 6px; justify-content: center; }
+            .search-bar input { width: 100%; padding: 8px 0; }
+            .search-bar .search-btn { width: 100%; margin-top: 6px; justify-content: center; }
+            .prop-grid { grid-template-columns: 1fr; }
+            .filter-row .opt { font-size: 11px; padding: 3px 10px; }
+            .bottom-nav .nav-item { font-size: 9px; padding: 2px 5px; }
+            .bottom-nav .nav-item i { font-size: 18px; }
+            .modal-box { padding: 24px; }
+            .top-header .logo { font-size: 18px; }
+        }
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .prop-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        /*  ANIMATED LAUNDRY NAV BUTTON  */
+        .bottom-nav .nav-item.laundry-nav {
+            position: relative;
+            color: #7c3aed;
+            animation: laundryPulse 2.4s ease-in-out infinite;
+        }
+        .bottom-nav .nav-item.laundry-nav i {
+            animation: laundrySpin 3s ease-in-out infinite;
+            display: inline-block;
+        }
+        .bottom-nav .nav-item.laundry-nav span {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+        @keyframes laundryPulse {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+        @keyframes laundrySpin {
+            0%, 100% { transform: rotate(-8deg) scale(1); }
+            25% { transform: rotate(8deg) scale(1.08); }
+            50% { transform: rotate(-8deg) scale(1); }
+            75% { transform: rotate(8deg) scale(1.08); }
+        }
+        .bottom-nav .nav-item.laundry-nav .laundry-badge {
+            position: absolute;
+            top: -4px;
+            right: 2px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            background: linear-gradient(135deg, #f5a623, #d4951f);
+            color: white;
+            font-size: 10px;
+            font-weight: 800;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(245,166,35,0.5);
+            border: 2px solid white;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .bottom-nav .nav-item.laundry-nav .laundry-badge.pop {
+            animation: badgePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .bottom-nav .nav-item.laundry-nav .laundry-badge.empty {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            box-shadow: 0 2px 8px rgba(220,38,38,0.5);
+        }
+        @keyframes badgePop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.5); }
+            100% { transform: scale(1); }
+        }
+        .bottom-nav .nav-item.laundry-nav .glow-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(124,58,237,0.35) 0%, transparent 70%);
+            pointer-events: none;
+            animation: glowRing 2.4s ease-in-out infinite;
+        }
+        @keyframes glowRing {
+            0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.9; transform: translate(-50%, -50%) scale(1.25); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══ TOP HEADER ═══ -->
+    <header class="top-header">
+        <div class="inner">
+            <div class="logo">
+                EU <span>PONKALA</span>
+                <small>Find Your Place. Find Your Community.</small>
+            </div>
+            <div class="actions">
+                <button class="bell" onclick="showToast('🔔 No new notifications', 'info')">
+                    <i class="fas fa-bell"></i>
+                    <span class="dot"></span>
+                </button>
+                <div class="avatar" id="userAvatar" onclick="showProfile()">F</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ═══ MAIN ═══ -->
+    <main class="main-wrap">
+
+        <!-- Welcome -->
+        <div class="welcome">
+            <h1>Hello, <span id="userName">Student</span> 👋</h1>
+            <p>Find your next home near Eden University</p>
+        </div>
+
+        <!-- Search -->
+                        <!--  SERVICES BANNER  -->
+        <div id="services-banner" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;">
+            <a href="/laundry" style="display:flex;align-items:center;gap:16px;padding:20px 22px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:20px;text-decoration:none;color:white;box-shadow:0 8px 24px rgba(102,126,234,0.35);transition:0.3s;"
+               onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 14px 32px rgba(102,126,234,0.5)';"
+               onmouseout="this.style.transform='none';this.style.boxShadow='0 8px 24px rgba(102,126,234,0.35)';">
+                <div style="width:54px;height:54px;border-radius:16px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;"></div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-size:16px;font-weight:800;margin-bottom:2px;">Laundry Service</div>
+                    <div style="font-size:12.5px;opacity:0.9;">K50 unlocks 4 connections  verified providers wash at your place</div>
+                    <div id="laundryBadgeTop" style="display:none;margin-top:6px;background:rgba(255,255,255,0.2);border-radius:20px;padding:3px 12px;font-size:11px;font-weight:700;width:fit-content;">0 connections</div>
+                </div>
+                <div style="font-size:22px;"></div>
+            </a>
+            <a href="/wheelbarrow" style="display:flex;align-items:center;gap:16px;padding:20px 22px;background:linear-gradient(135deg,#f5a623,#d4951f);border-radius:20px;text-decoration:none;color:white;box-shadow:0 8px 24px rgba(245,166,35,0.35);transition:0.3s;"
+               onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 14px 32px rgba(245,166,35,0.5)';"
+               onmouseout="this.style.transform='none';this.style.boxShadow='0 8px 24px rgba(245,166,35,0.35)';">
+                <div style="width:54px;height:54px;border-radius:16px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;"></div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-size:16px;font-weight:800;margin-bottom:2px;">Wheelbarrow Transport</div>
+                    <div style="font-size:12.5px;opacity:0.9;">Move your belongings  operators near Eden University</div>
+                </div>
+                <div style="font-size:22px;"></div>
+            </a>
+        </div>
+<div class="search-wrap">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search accommodation..." id="searchInput" onkeyup="searchProperties()">
+                <span class="location-tag"><i class="fas fa-map-marker-alt"></i> Near Eden University</span>
+                <button class="search-btn" onclick="searchProperties()">Search</button>
+            </div>
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="filter-chips">
+            <button class="chip active" onclick="filterBy('all', this)">🏠 All</button>
+            <button class="chip" onclick="filterBy('available', this)">✅ Available</button>
+            <button class="chip" onclick="filterBy('nearby', this)">📍 Nearby</button>
+            <button class="chip" onclick="filterBy('popular', this)">⭐ Popular</button>
+            <button class="chip" onclick="filterBy('saved', this)">❤️ Saved</button>
+        </div>
+
+        <!-- Filter: Price -->
+        <div class="filter-row">
+            <span class="label">💰 Price:</span>
+            <button class="opt" onclick="filterPrice('all', this)">All</button>
+            <button class="opt" onclick="filterPrice('under1000', this)">Under K1,000</button>
+            <button class="opt active" onclick="filterPrice('1000-1500', this)">K1,000 – K1,500</button>
+            <button class="opt" onclick="filterPrice('1500-2000', this)">K1,500 – K2,000</button>
+            <button class="opt" onclick="filterPrice('2000+', this)">K2,000+</button>
+        </div>
+
+        <!-- Filter: Room Type -->
+        <div class="filter-row">
+            <span class="label">🏠 Room:</span>
+            <button class="opt active" onclick="filterRoom('all', this)">All</button>
+            <button class="opt" onclick="filterRoom('single', this)">Single</button>
+            <button class="opt" onclick="filterRoom('double', this)">Double</button>
+            <button class="opt" onclick="filterRoom('shared', this)">Shared</button>
+        </div>
+
+        <!-- Filter: Facilities -->
+        <div class="filter-row">
+            <span class="label">📶 Facilities:</span>
+            <button class="opt active" onclick="filterFacility('all', this)">All</button>
+            <button class="opt" onclick="filterFacility('wifi', this)"><i class="fas fa-wifi"></i> Wi-Fi</button>
+            <button class="opt" onclick="filterFacility('electricity', this)"><i class="fas fa-bolt"></i> Electric</button>
+            <button class="opt" onclick="filterFacility('water', this)"><i class="fas fa-water"></i> Water</button>
+            <button class="opt" onclick="filterFacility('security', this)"><i class="fas fa-shield-alt"></i> Security</button>
+            <button class="opt" onclick="filterFacility('parking', this)"><i class="fas fa-parking"></i> Parking</button>
+        </div>
+
+        <!-- Loading state -->
+        <div id="loadingState" class="loading-state">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p style="color:#6b7280;margin-top:8px;">Loading properties...</p>
+        </div>
+
+        <!-- ─── SECTION: Available Now ─── -->
+        <div class="section-head">
+            <h3>🏠 Available Now</h3>
+            <button class="more" onclick="showToast('📋 Viewing all available', 'info')">View All →</button>
+        </div>
+        <div class="prop-grid" id="availableGrid"></div>
+
+        <!-- ─── SECTION: My Favourites ─── -->
+        <div class="section-head">
+            <h3>❤️ My Favourites</h3>
+            <button class="more" onclick="showToast('📋 Viewing all favourites', 'info')">View All →</button>
+        </div>
+        <div class="prop-grid" id="favouritesGrid"></div>
+
+        <!-- ─── SECTION: Near You ─── -->
+        <div class="section-head">
+            <h3>📍 Near You</h3>
+            <button class="more" onclick="showToast('📋 Viewing nearby properties', 'info')">View All →</button>
+        </div>
+        <div class="prop-grid" id="nearbyGrid"></div>
+
+        <!-- ─── SECTION: Popular ─── -->
+        <div class="section-head">
+            <h3>⭐ Popular with Students</h3>
+            <button class="more" onclick="showToast('📋 Viewing popular properties', 'info')">View All →</button>
+        </div>
+        <div class="prop-grid" id="popularGrid"></div>
+
+                <!-- ─── Interactive Map Section ─── -->
+        <div class="section-head">
+            <h3>🗺️ Properties on Map</h3>
+            <button class="more" onclick="locateMe()">📍 My Location</button>
+        </div>
+        <div id="map" style="height: 450px; border-radius: 20px; overflow: hidden; margin-bottom: 32px; box-shadow: 0 8px 28px rgba(0,0,0,0.06); border: 1px solid #eef2f6;"></div>
+    </main>
+
+    <!-- ═══ BOTTOM NAV ═══ -->
+<nav class="bottom-nav">
+        <button class="nav-item active" onclick="location.href='/student'">
+            <i class="fas fa-home"></i><span>Home</span>
+        </button>
+        <button class="nav-item" onclick="location.href='/search'">
+            <i class="fas fa-search"></i><span>Search</span>
+        </button>
+        <button class="nav-item" onclick="location.href='/saved'">
+            <i class="fas fa-heart"></i><span>Saved</span>
+        </button>
+        
+        <button class="nav-item" onclick="location.href='/student#alerts'">
+            <i class="fas fa-bell"></i><span>Alerts</span>
+        </button>
+        <button class="nav-item" onclick="location.href='/profile'">
+            <i class="fas fa-user"></i><span>Profile</span>
+        </button>
+    </nav>
+
+    <!-- ═══ TOAST ═══ -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ═══ MODAL ═══ -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-box">
+            <h2 id="modalTitle">Contact Landlord</h2>
+            <p class="sub" id="modalSub">Send a message or reach out directly</p>
+            <div class="form-group">
+                <label>Your Message</label>
+                <textarea id="contactMsg" rows="4">Hello, I found your property on EU PONKALA. I am interested in the available accommodation. Is the space still available?</textarea>
+            </div>
+            <div class="contact-btns">
+                <button class="btn btn-call" onclick="showToast('📞 Calling landlord...', 'info')"><i class="fas fa-phone"></i> Call</button>
+                <button class="btn btn-chat" onclick="showToast('💬 Message sent!', 'success')"><i class="fas fa-comment"></i> Message</button>
+                <button class="btn btn-wa" onclick="showToast('📱 Opening WhatsApp...', 'info')"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                <button class="btn btn-dir" onclick="showToast('🗺️ Getting directions...', 'info')"><i class="fas fa-directions"></i> Directions</button>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="sendMessage()">Send Message</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════════
+        // SESSION GUARD — redirect if not logged in as student
+        // ═══════════════════════════════════════════════
+        (function() {
+            const token = localStorage.getItem('token');
+            const user  = JSON.parse(localStorage.getItem('user') || 'null');
+
+            if (!token || !user) {
+                window.location.href = '/login';
+                return;
+            }
+
+            if (user.user_type !== 'student') {
+                if (user.user_type === 'landlord') window.location.href = '/landlord';
+                else if (user.user_type === 'admin') window.location.href = '/admin';
+                else window.location.href = '/login';
+            }
+
+            // Personalise UI
+            document.addEventListener('DOMContentLoaded', () => {
+                const nameEl   = document.getElementById('userName');
+                const avatarEl = document.getElementById('userAvatar');
+                if (nameEl && user.full_name) nameEl.textContent = user.full_name.split(' ')[0];
+                if (avatarEl && user.full_name) avatarEl.textContent = user.full_name.charAt(0).toUpperCase();
+            });
+        })();
+
+        // ═══════════════════════════════════════════════
+        // STATE
+        // ═══════════════════════════════════════════════
+        let allProperties = [];
+        let currentPropertyId = null;
+        let activeFilter = 'all';
+        let activePrice  = 'all';
+        let activeRoom   = 'all';
+        let activeFacility = 'all';
+
+        // ═══════════════════════════════════════════════
+        // TOAST
+        // ═══════════════════════════════════════════════
+        function showToast(msg, type = 'success') {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast ' + type;
+            t.classList.add('show');
+            clearTimeout(t._hide);
+            t._hide = setTimeout(() => t.classList.remove('show'), 2800);
+        }
+
+        // ═══════════════════════════════════════════════
+        // FORMAT
+        // ═══════════════════════════════════════════════
+        function fmt(amount) { return 'K' + Number(amount).toLocaleString(); }
+
+        // ═══════════════════════════════════════════════
+        // FETCH PROPERTIES FROM API
+        // ═══════════════════════════════════════════════
+        async function loadProperties() {
+            try {
+                const response = await fetch('/api/properties');
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    allProperties = data.data || [];
+                }
+            } catch (err) {
+                console.error('Failed to load properties:', err);
+                allProperties = [];
+            }
+
+            document.getElementById('loadingState').style.display = 'none';
+            renderAll();
+            addPropertyMarkers(allProperties);
+        }
+
+        // ═══════════════════════════════════════════════
+        // RENDER CARDS
+        // ═══════════════════════════════════════════════
+        function renderCards(gridId, list) {
+            const grid = document.getElementById(gridId);
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            if (!list || !list.length) {
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column:1/-1;">
+                        <i class="fas fa-home"></i>
+                        <h4>No properties</h4>
+                        <p>Try adjusting your filters</p>
+                    </div>`;
+                return;
+            }
+
+            list.forEach(p => {
+                const st = p.status || 'available';
+                const stLabel = st.charAt(0).toUpperCase() + st.slice(1);
+                const savedCls = p.saved ? 'saved' : '';
+                const card = document.createElement('div');
+                card.className = 'prop-card';
+                var imgUrl = null;
+                if (p.photos && p.photos.length) {
+                    var primary = null;
+                    for (var i = 0; i < p.photos.length; i++) {
+                        if (p.photos[i].is_primary) { primary = p.photos[i]; break; }
+                    }
+                    imgUrl = primary ? primary.url : p.photos[0].url;
+                }
+                if (imgUrl && imgUrl.indexOf('http') !== 0 && imgUrl.indexOf('/') !== 0) {
+                    imgUrl = '/' + imgUrl;
+                }
+                var imageContent = imgUrl
+                    ? '<img src="' + imgUrl + '" alt="' + p.property_name + '" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;z-index:0;" onerror="this.style.display=\'none\';" />'
+                    : '<div class="no-photo-fallback">🏠</div>';
+
+                card.innerHTML = `
+                    <div class="image" onclick="openProperty(${p.property_id})" style="cursor:pointer;position:relative;overflow:hidden;">
+                        ${imageContent}
+                        ${p.is_verified ? `<span class="badge-verified"><i class="fas fa-check-circle"></i> VERIFIED</span>` : ''}
+                        <span class="badge-status ${st}">${stLabel}</span>
+                        <button class="btn-save ${savedCls}" onclick="event.stopPropagation();toggleSave(${p.property_id})">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                    </div>
+                    <div class="body" onclick="openProperty(${p.property_id})" style="cursor:pointer;">
+                        <div class="name">${p.property_name}</div>
+                        <div class="location"><i class="fas fa-map-marker-alt"></i> ${p.area || 'Lusaka'} • Eden University</div>
+                        <div class="meta">
+                            <div class="price">${fmt(p.monthly_price)} <small>/month</small></div>
+                            <div class="spaces"><strong>${p.available_spaces || 0}</strong> spaces</div>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button class="btn btn-primary" onclick="openModal(${p.property_id})"><i class="fas fa-envelope"></i> Contact</button>
+                        ${p.status === 'available' ? `<button class="btn btn-success" onclick="showToast('✅ Interested in ${p.property_name}', 'success')"><i class="fas fa-check"></i> Interested</button>` : ''}
+                        <button class="btn btn-outline" onclick="getDirections(${p.property_id})"><i class="fas fa-directions"></i></button>
+                        <button class="btn btn-whatsapp" onclick="openWhatsApp('')"><i class="fab fa-whatsapp"></i></button>
+                        <button class="btn btn-phone" onclick="callLandlord(${p.landlord?.phone || '+260971234567'})"><i class="fas fa-phone"></i></button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // ═══════════════════════════════════════════════
+        // FILTERS
+        // ═══════════════════════════════════════════════
+        function filterBy(type, el) {
+            document.querySelectorAll('.filter-chips .chip').forEach(c => c.classList.remove('active'));
+            if (el) el.classList.add('active');
+            activeFilter = type;
+            renderAll();
+        }
+        function filterPrice(range, el) {
+            document.querySelectorAll('.filter-row:nth-of-type(1) .opt').forEach(c => c.classList.remove('active'));
+            if (el) el.classList.add('active');
+            activePrice = range;
+            renderAll();
+        }
+        function filterRoom(type, el) {
+            document.querySelectorAll('.filter-row:nth-of-type(2) .opt').forEach(c => c.classList.remove('active'));
+            if (el) el.classList.add('active');
+            activeRoom = type;
+            renderAll();
+        }
+        function filterFacility(type, el) {
+            document.querySelectorAll('.filter-row:nth-of-type(3) .opt').forEach(c => c.classList.remove('active'));
+            if (el) el.classList.add('active');
+            activeFacility = type;
+            renderAll();
+        }
+
+        function getFiltered() {
+            let result = [...allProperties];
+
+            if (activePrice !== 'all') {
+                result = result.filter(p => {
+                    if (activePrice === 'under1000')   return p.monthly_price < 1000;
+                    if (activePrice === '1000-1500')   return p.monthly_price >= 1000 && p.monthly_price <= 1500;
+                    if (activePrice === '1500-2000')   return p.monthly_price >= 1500 && p.monthly_price <= 2000;
+                    if (activePrice === '2000+')       return p.monthly_price > 2000;
+                    return true;
+                });
+            }
+
+            if (activeFacility !== 'all') {
+                result = result.filter(p =>
+                    p.facilities && p.facilities.some(f =>
+                        f.toLowerCase().includes(activeFacility)
+                    )
+                );
+            }
+
+            return result;
+        }
+
+        // ═══════════════════════════════════════════════
+        // SEARCH
+        // ═══════════════════════════════════════════════
+        function searchProperties() {
+            const q = document.getElementById('searchInput').value.toLowerCase().trim();
+            if (!q) { renderAll(); return; }
+            const filtered = allProperties.filter(p =>
+                (p.property_name || '').toLowerCase().includes(q) ||
+                (p.area || '').toLowerCase().includes(q) ||
+                (p.address || '').toLowerCase().includes(q)
+            );
+            renderAll(filtered);
+        }
+
+        // ═══════════════════════════════════════════════
+        // RENDER ALL SECTIONS
+        // ═══════════════════════════════════════════════
+        function renderAll(override = null) {
+            const data = override || getFiltered();
+            const avail = data.filter(p => p.available_spaces > 0 && p.status !== 'full');
+            const saved = data.filter(p => p.saved);
+            const nearby = data.filter(p => (p.area || '').match(/Chelstone|Kabulonga/));
+            const popular = data.filter(p => (p.view_count || 0) > 100 || p.is_verified);
+
+            renderCards('availableGrid', avail.slice(0, 6));
+            renderCards('favouritesGrid', saved.length ? saved : data.slice(0, 2));
+            renderCards('nearbyGrid', nearby.length ? nearby : data.slice(0, 3));
+            renderCards('popularGrid', popular.length ? popular : data.slice(0, 3));
+            // Keep map in sync with filtered view
+            if (typeof map !== 'undefined' && map) addPropertyMarkers(data);
+        }
+
+        // ═══════════════════════════════════════════════
+        // PROPERTY & SAVE
+        // ═══════════════════════════════════════════════
+        function openProperty(id) {
+            window.location.href = '/student/property?id=' + id;
+        }
+
+        async function toggleSave(id) {
+            const p = allProperties.find(x => x.property_id === id);
+            if (!p) return;
+            p.saved = !p.saved;
+            showToast(p.saved ? '❤️ Added to favourites' : '💔 Removed from favourites', 'info');
+            try {
+                await fetch('/api/favourites/toggle', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ property_id: id })
+                });
+            } catch (e) { /* silent */ }
+            renderAll();
+        }
+
+        // ═══════════════════════════════════════════════
+        // MODAL
+        // ═══════════════════════════════════════════════
+        function openModal(id) {
+            currentPropertyId = id;
+            const p = allProperties.find(x => x.property_id === id);
+            if (!p) return;
+            document.getElementById('modalTitle').textContent = `Contact ${p.landlord?.name || 'Landlord'}`;
+            document.getElementById('modalSub').textContent = `${p.property_name} • ${p.area || 'Lusaka'}`;
+            document.getElementById('contactMsg').value =
+                `Hello, I found your property "${p.property_name}" on EU PONKALA. I am interested in the available accommodation. Is the space still available?`;
+            document.getElementById('modal').classList.add('open');
+        }
+        function closeModal() {
+            document.getElementById('modal').classList.remove('open');
+        }
+                async function sendMessage() {
+            const msg = document.getElementById('contactMsg').value;
+            if (!msg.trim()) { showToast('⚠️ Please enter a message', 'error'); return; }
+
+            const pid = currentPropertyId || (allProperties[0] && allProperties[0].property_id);
+
+            try {
+                const res = await fetch('/api/inquiries', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ property_id: pid, message: msg })
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    showToast('💬 Message sent!', 'success');
+                    closeModal();
+                } else {
+                    showToast('❌ ' + (data.message || 'Failed to send'), 'error');
+                }
+            } catch (err) {
+                showToast('❌ Network error', 'error');
+            }
+        }
+
+        // ═══════════════════════════════════════════════
+        // BOTTOM NAV
+        // ═══════════════════════════════════════════════
+        function navigateTo(section) {
+            document.querySelectorAll('.bottom-nav .nav-item').forEach(n => n.classList.remove('active'));
+            const map = { home: 0, search: 1, saved: 2, alerts: 3, profile: 4 };
+            const items = document.querySelectorAll('.bottom-nav .nav-item');
+            if (items[map[section]]) items[map[section]].classList.add('active');
+            const msgs = {
+                home: '🏠 Home', search: '🔍 Search',
+                saved: '❤️ Favourites', alerts: '🔔 Alerts', profile: '👤 Profile'
+            };
+            showToast(msgs[section] || '📱 Navigation', 'info');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showProfile() {
+            if (confirm('Logout?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/login';
+            }
+        }
+
+        // ═══════════════════════════════════════════════
+        // CLOSE MODAL ON OVERLAY CLICK
+        // ═══════════════════════════════════════════════
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+                // ═══════════════════════════════════════════════
+        // MAP
+        // ═══════════════════════════════════════════════
+        let map;
+        let markers = [];
+        const EDEN_UNIVERSITY = { lat: -15.3875, lng: 28.3228 };
+
+        function initMap() {
+            const el = document.getElementById('map');
+            if (!el || map) return;
+            map = L.map('map', {
+                center: [EDEN_UNIVERSITY.lat, EDEN_UNIVERSITY.lng],
+                zoom: 14,
+                zoomControl: true
+            });
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap',
+                maxZoom: 19
+            }).addTo(map);
+
+            const uniIcon = L.divIcon({
+                className: 'uni-marker',
+                html: '<div style="background:#2563eb;color:white;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 4px 12px rgba(37,99,235,0.4);border:3px solid white;">🎓</div>',
+                iconSize: [38, 38],
+                iconAnchor: [19, 19]
+            });
+            L.marker([EDEN_UNIVERSITY.lat, EDEN_UNIVERSITY.lng], { icon: uniIcon })
+                .addTo(map)
+                .bindPopup('<b>Eden University</b><br/>Great East Road, Lusaka');
+        }
+
+        function addPropertyMarkers(list) {
+            if (!map) return;
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+            (list || []).forEach(p => {
+                const lat = p.latitude || EDEN_UNIVERSITY.lat + (Math.random() - 0.5) * 0.02;
+                const lng = p.longitude || EDEN_UNIVERSITY.lng + (Math.random() - 0.5) * 0.02;
+                const color = p.status === 'available' ? '#059669'
+                    : p.status === 'full' ? '#dc2626'
+                    : '#f59e0b';
+                const icon = L.divIcon({
+                    className: 'prop-marker',
+                    html: '<div style="background:' + color + ';width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;color:white;box-shadow:0 3px 10px rgba(0,0,0,0.25);border:3px solid white;">🏠</div>',
+                    iconSize: [32, 32],
+                    iconAnchor: [16, 16]
+                });
+                const marker = L.marker([lat, lng], { icon }).addTo(map);
+                marker.bindPopup(
+                    '<div style="min-width:200px;font-family:Inter,sans-serif;">' +
+                        '<div style="font-weight:700;font-size:15px;margin-bottom:4px;">' + p.property_name + '</div>' +
+                        '<div style="font-size:13px;color:#6b7280;margin-bottom:6px;">' + (p.area || 'Lusaka') + '</div>' +
+                        '<div style="font-weight:700;color:#f5a623;margin-bottom:4px;">K' + Number(p.monthly_price).toLocaleString() + '/month</div>' +
+                        '<div style="font-size:13px;color:' + color + ';font-weight:600;margin-bottom:8px;">' + (p.status || 'available').toUpperCase() + ' · ' + (p.available_spaces || 0) + ' spaces</div>' +
+                        '<a href="/student/property?id=' + p.property_id + '" style="display:inline-block;background:#f5a623;color:white;padding:6px 14px;border-radius:8px;text-decoration:none;font-size:12px;font-weight:600;">View Property</a>'
+                        + '<button onclick="getDirections(' + p.property_id + ')" style="display:inline-block;margin-left:6px;background:#2563eb;color:white;padding:6px 14px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;">🧭 Directions</button>' +
+                    '</div>'
+                );
+                markers.push(marker);
+            });
+        }
+
+        function locateMe() {
+            if (!navigator.geolocation) { showToast('⚠️ Geolocation not supported', 'error'); return; }
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const lat = pos.coords.latitude;
+                    const lng = pos.coords.longitude;
+                    map.setView([lat, lng], 15);
+                    L.circleMarker([lat, lng], {
+                        radius: 8, fillColor: '#2563eb', color: 'white', weight: 3, fillOpacity: 1
+                    }).addTo(map).bindPopup('📍 You are here').openPopup();
+                    showToast('📍 Located you', 'success');
+                },
+                () => showToast('⚠️ Could not get location', 'error')
+            );
+        }
+        // ═══════════════════════════════════════════════
+        // GET DIRECTIONS
+        // ═══════════════════════════════════════════════
+        function getDirections(propertyId) {
+            const p = allProperties.find(x => x.property_id === propertyId);
+            if (!p) {
+                showToast('⚠️ Property not found', 'error');
+                return;
+            }
+
+            // Use stored coordinates or fall back to a default near Eden University
+            const destLat = p.latitude || (-15.3875 + (Math.random() - 0.5) * 0.02);
+            const destLng = p.longitude || (28.3228 + (Math.random() - 0.5) * 0.02);
+            const address = encodeURIComponent((p.property_name || '') + ', ' + (p.address || '') + ', ' + (p.area || 'Lusaka') + ', Zambia');
+
+            // Show the directions modal
+            const modal = document.getElementById('directionsModal');
+            const title = document.getElementById('directionsTitle');
+            const sub = document.getElementById('directionsSub');
+
+            if (title) title.textContent = 'Get Directions';
+            if (sub) sub.textContent = p.property_name + ' • ' + (p.area || 'Lusaka');
+
+            // Wire up the three options
+            const googleBtn = document.getElementById('dirGoogle');
+            const appleBtn = document.getElementById('dirApple');
+            const wazeBtn = document.getElementById('dirWaze');
+            const copyBtn = document.getElementById('dirCopy');
+
+            if (googleBtn) googleBtn.href =
+                'https://www.google.com/maps/dir/?api=1&destination=' + destLat + ',' + destLng + '&destination_place_id=&travelmode=driving';
+            if (appleBtn) appleBtn.href =
+                'https://maps.apple.com/?daddr=' + destLat + ',' + destLng + '&dirflg=d';
+            if (wazeBtn) wazeBtn.href =
+                'https://waze.com/ul?ll=' + destLat + ',' + destLng + '&navigate=yes';
+            if (copyBtn) copyBtn.onclick = function() {
+                navigator.clipboard.writeText(destLat + ', ' + destLng).then(() => {
+                    showToast('📋 Coordinates copied!', 'success');
+                });
+            };
+
+            if (modal) modal.classList.add('open');
+        }
+
+        function closeDirectionsModal() {
+            const modal = document.getElementById('directionsModal');
+            if (modal) modal.classList.remove('open');
+        }
+
+        function openInApp(app, propertyId) {
+            const p = allProperties.find(x => x.property_id === propertyId);
+            if (!p) return;
+            const destLat = p.latitude || (-15.3875 + (Math.random() - 0.5) * 0.02);
+            const destLng = p.longitude || (28.3228 + (Math.random() - 0.5) * 0.02);
+            let url = '';
+            if (app === 'google') url = 'https://www.google.com/maps/dir/?api=1&destination=' + destLat + ',' + destLng;
+            else if (app === 'apple') url = 'https://maps.apple.com/?daddr=' + destLat + ',' + destLng;
+            else if (app === 'waze') url = 'https://waze.com/ul?ll=' + destLat + ',' + destLng + '&navigate=yes';
+            else return;
+            window.open(url, '_blank');
+        }
+        // ─── Call / WhatsApp helpers ───
+        function callLandlord(phone) {
+            const num = phone || '+260971234567';
+            window.location.href = 'tel:' + num;
+            showToast('📞 Calling ' + num, 'info');
+        }
+        function openWhatsApp(phone) {
+            const num = (phone || '+260976590619').replace(/[^0-9]/g, '');
+            window.open('https://wa.me/' + num, '_blank');
+            showToast('📱 Opening WhatsApp', 'info');
+        }
+        function showProfile() {
+            if (confirm('Logout?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/login';
+            }
+        }
+
+        // ═══════════════════════════════════════════════
+        // INIT
+        // ═══════════════════════════════════════════════
+        document.addEventListener('DOMContentLoaded', () => {
+            initMap();
+            loadProperties();
+        });
+    </script>
+
+    <!-- ═══ DIRECTIONS MODAL ═══ -->
+    <div class="modal-overlay" id="directionsModal">
+        <div class="modal-box">
+            <h2 id="directionsTitle">Get Directions</h2>
+            <p class="sub" id="directionsSub">Choose your preferred navigation app</p>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0;">
+                <a id="dirGoogle" href="#" target="_blank" rel="noopener"
+                   style="display:flex;align-items:center;gap:10px;padding:16px;background:#f8f9fa;border-radius:14px;text-decoration:none;color:#1a1a2e;font-weight:600;border:1px solid #eef2f6;transition:0.2s;">
+                    <span style="font-size:24px;">🗺️</span> Google Maps
+                </a>
+                <a id="dirApple" href="#" target="_blank" rel="noopener"
+                   style="display:flex;align-items:center;gap:10px;padding:16px;background:#f8f9fa;border-radius:14px;text-decoration:none;color:#1a1a2e;font-weight:600;border:1px solid #eef2f6;transition:0.2s;">
+                    <span style="font-size:24px;">🍎</span> Apple Maps
+                </a>
+                <a id="dirWaze" href="#" target="_blank" rel="noopener"
+                   style="display:flex;align-items:center;gap:10px;padding:16px;background:#f8f9fa;border-radius:14px;text-decoration:none;color:#1a1a2e;font-weight:600;border:1px solid #eef2f6;transition:0.2s;">
+                    <span style="font-size:24px;">🚗</span> Waze
+                </a>
+                <button id="dirCopy"
+                   style="display:flex;align-items:center;gap:10px;padding:16px;background:#f8f9fa;border-radius:14px;text-decoration:none;color:#1a1a2e;font-weight:600;border:1px solid #eef2f6;transition:0.2s;cursor:pointer;font-family:inherit;font-size:14px;">
+                    <span style="font-size:24px;">📋</span> Copy Coordinates
+                </button>
+            </div>
+
+            <p style="font-size:13px;color:#6b7280;line-height:1.7;margin-bottom:16px;">
+                📍 Your destination will open in your preferred navigation app with turn-by-turn directions from your current location.
+            </p>
+
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeDirectionsModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ EU PONKALA Chat Widget ═══ -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/shared/chat.js"></script>
+    <script>
+        (function() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            if (user && user.user_id && window.EU_CHAT) {
+                EU_CHAT.init({ userId: user.user_id, userType: 'student' });
+            }
+        })();
+        // ─── Handle #hash navigation from property page ───
+        function euHandleHash() {
+            const hash = (location.hash || '').replace('#', '').toLowerCase();
+            if (!hash) return;
+            console.log('🔗 Navigating to section:', hash);
+
+            const mapping = {
+                home: 0,
+                search: 1,
+                saved: 2,
+                alerts: 3,
+                profile: 4
+            };
+
+            const idx = mapping[hash];
+            const items = document.querySelectorAll('.bottom-nav .nav-item');
+            if (idx !== undefined && items[idx]) {
+                items.forEach((n, i) => n.classList.toggle('active', i === idx));
+                if (typeof navigateTo === 'function') navigateTo(hash);
+            }
+        }
+
+        window.addEventListener('hashchange', euHandleHash);
+        document.addEventListener('DOMContentLoaded', () => setTimeout(euHandleHash, 400));
+        //  LAUNDRY NAV BADGE  fetch connection count 
+        (function() {
+            const badge = document.getElementById('laundryNavBadge');
+            if (!badge) return;
+
+            let lastCount = null;
+
+            async function updateLaundryBadge() {
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                if (!user || !user.user_id) return;
+
+                try {
+                    const res = await fetch('/api/laundry/access/' + user.user_id);
+                    const data = await res.json();
+                    if (data.status !== 'success' || !data.data) return;
+
+                    const count = data.data.connections_remaining || 0;
+                    badge.textContent = count;
+                    badge.style.display = 'flex';
+
+                    if (count === 0) {
+                        badge.classList.add('empty');
+                    } else {
+                        badge.classList.remove('empty');
+                    }
+
+                    // Pop animation when count changes
+                    if (lastCount !== null && lastCount !== count) {
+                        badge.classList.remove('pop');
+                        void badge.offsetWidth;
+                        badge.classList.add('pop');
+                    }
+                    lastCount = count;
+
+                    // Update the whole nav if count is 0  show red dot
+                    const navBtn = document.getElementById('laundryNavBtn');
+                    if (navBtn) {
+                        navBtn.style.color = count === 0 ? '#dc2626' : '#7c3aed';
+                    }
+                } catch (e) {
+                    // Silently ignore  server may not be running the laundry module yet
+                }
+            }
+
+            // Run once and refresh every 20 seconds
+            updateLaundryBadge();
+            setInterval(updateLaundryBadge, 20000);
+
+            // Also re-check when tab comes back into focus
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) updateLaundryBadge();
+            });
+        })();
+        //  LAUNDRY TOP BANNER BADGE 
+        (function() {
+            const badge = document.getElementById('laundryBadgeTop');
+            if (!badge) return;
+
+            async function updateLaundryTopBadge() {
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                if (!user || !user.user_id) return;
+                try {
+                    const res = await fetch('/api/laundry/access/' + user.user_id);
+                    const data = await res.json();
+                    if (data.status !== 'success' || !data.data) return;
+                    const count = data.data.connections_remaining || 0;
+                    if (count > 0) {
+                        badge.textContent = count + ' connection' + (count === 1 ? '' : 's') + ' remaining';
+                        badge.style.display = 'block';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                } catch (e) {}
+            }
+            updateLaundryTopBadge();
+            setInterval(updateLaundryTopBadge, 30000);
+        })();
+    </script>
+
+<!-- ============================================================ -->
+<!-- ENGINE SERVICES SHIM  adds Laundry + Wheelbarrow + Orders   -->
+<!-- Injected by M8-fix. Works alongside the property features.    -->
+<!-- ============================================================ -->
+
+</div>
+
+<!-- Notification bell  inject into top-right if space available -->
+<script>
+(function(){
+    'use strict';
+    var ENGINE = '/api/engine';
+    var user = null; try { user = JSON.parse(localStorage.getItem('user') || 'null'); } catch(e){}
+    var userId = user && (user.user_id || user.id);
+    if (!userId) return;
+
+    // ---------- LAUNDRY BADGE ----------
+    fetch(ENGINE + '/laundry/access/' + userId).then(function(r){ return r.json(); }).then(function(res){
+        if (res.status !== 'success') return;
+        var a = res.data;
+        var b = document.getElementById('engLaundryBadge');
+        if (!b) return;
+        if (a.unlocked && a.remaining > 0) {
+            b.textContent = a.remaining + ' credit' + (a.remaining === 1 ? '' : 's') + ' left';
+            b.style.background = 'rgba(255,255,255,0.95)';
+            b.style.color = '#065f46';
+        } else {
+            b.textContent = 'Unlock K50';
+        }
+    }).catch(function(){});
+
+    // ---------- MY SERVICE ORDERS ----------
+    function renderOrders(){
+        fetch(ENGINE + '/orders/user-enriched/' + userId).then(function(r){ return r.json(); }).then(function(res){
+            if (res.status !== 'success') return;
+            var orders = (res.data || []).slice(0, 5);
+            var list = document.getElementById('engOrdersList');
+            var count = document.getElementById('engOrdersCount');
+            if (!list) return;
+            count.textContent = orders.length + ' order' + (orders.length === 1 ? '' : 's');
+            if (!orders.length) {
+                list.innerHTML = '<div style="text-align:center;padding:24px;color:#9ca3af;font-size:13px;">No active service orders</div>';
+                return;
+            }
+            list.innerHTML = orders.map(function(o){
+                var isL = o.service_type === 'LAUNDRY';
+                var sc = (o.order_status === 'COMPLETED') ? 'completed' : (o.order_status === 'CANCELLED' || o.order_status === 'DISPUTED') ? 'cancelled' : 'waiting';
+                var bg = sc === 'completed' ? '#d1fae5' : sc === 'cancelled' ? '#fee2e2' : '#fef3c7';
+                var fg = sc === 'completed' ? '#065f46' : sc === 'cancelled' ? '#991b1b' : '#92400e';
+                return '<a href="/' + (isL ? 'laundry' : 'wheelbarrow') + '" style="display:flex;align-items:center;gap:14px;padding:14px;background:#fafbfc;border-radius:12px;border:1px solid #f0f2f5;margin-bottom:8px;text-decoration:none;color:inherit;">' +
+                    '<div style="width:40px;height:40px;border-radius:10px;background:' + (isL ? 'linear-gradient(135deg,#f5a623,#d4951f)' : 'linear-gradient(135deg,#3b82f6,#1d4ed8)') + ';color:white;display:flex;align-items:center;justify-content:center;font-size:18px;">' + (isL ? '' : '') + '</div>' +
+                    '<div style="flex:1;">' +
+                        '<div style="font-weight:900;font-size:14px;">' + o.order_code + '</div>' +
+                        '<div style="font-size:11px;color:#9ca3af;font-weight:600;margin-top:2px;">' + (o.pickup_zone_name || '') + '  ' + new Date(o.created_at).toLocaleDateString() + '</div>' +
+                    '</div>' +
+                    '<div style="text-align:right;">' +
+                        '<div style="font-weight:900;font-size:14px;">K' + o.price + '</div>' +
+                        '<div style="font-size:10px;font-weight:800;padding:3px 8px;border-radius:10px;background:' + bg + ';color:' + fg + ';text-transform:uppercase;margin-top:3px;display:inline-block;">' + (o.student_state || o.order_status) + '</div>' +
+                    '</div>' +
+                '</a>';
+            }).join('');
+        }).catch(function(){});
+    }
+    renderOrders();
+    setInterval(renderOrders, 20000);
+
+    // ---------- NOTIFICATION BELL (inject into header) ----------
+    function injectBell(){
+        if (document.getElementById('engBell')) return;
+        // Try to find a header/navbar
+        var header = document.querySelector('header') || document.querySelector('.topbar') || document.querySelector('nav') || document.querySelector('.header');
+        if (!header) return;
+        var bell = document.createElement('button');
+        bell.id = 'engBell';
+        bell.style.cssText = 'position:fixed;top:20px;right:20px;z-index:999;width:44px;height:44px;border-radius:50%;background:white;border:1px solid #eef2f6;box-shadow:0 4px 14px rgba(0,0,0,0.08);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;';
+        bell.innerHTML = '<span style="position:absolute;top:-2px;right:-2px;background:#dc2626;color:white;font-size:10px;font-weight:900;padding:2px 6px;border-radius:10px;display:none;" id="engBellBadge">0</span>';
+        document.body.appendChild(bell);
+        bell.onclick = function(){
+            fetch(ENGINE + '/notifications/' + userId + '?all=1').then(function(r){ return r.json(); }).then(function(res){
+                if (res.status !== 'success' || !res.data.items.length) { alert('No notifications'); return; }
+                var txt = res.data.items.slice(0, 10).map(function(n){ return ' ' + n.title + (n.body ? '  ' + n.body : ''); }).join('\n');
+                alert('Notifications:\n\n' + txt);
+                return fetch(ENGINE + '/notifications/' + userId + '/read-all', { method: 'POST' });
+            }).then(function(){ loadBadge(); });
+        };
+        loadBadge();
+    }
+    function loadBadge(){
+        fetch(ENGINE + '/notifications/' + userId).then(function(r){ return r.json(); }).then(function(res){
+            if (res.status !== 'success') return;
+            var n = res.data.unread || 0;
+            var b = document.getElementById('engBellBadge');
+            if (b && n > 0) { b.style.display = 'block'; b.textContent = n > 99 ? '99+' : n; }
+            else if (b) { b.style.display = 'none'; }
+        }).catch(function(){});
+    }
+    setTimeout(injectBell, 500);
+    setInterval(loadBadge, 30000);
+})();
+</script>
+<!-- END ENGINE SERVICES SHIM -->
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

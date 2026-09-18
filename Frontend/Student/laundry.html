@@ -1,0 +1,543 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>EU PONKALA - Laundry</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Inter,sans-serif;background:#f0f2f7;color:#1a1a2e;min-height:100vh;padding-bottom:60px}
+.topnav{background:white;border-bottom:1px solid #eef2f6;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,0.04)}
+.topnav-inner{max-width:1280px;margin:0 auto;padding:16px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.logo{font-size:20px;font-weight:900;letter-spacing:-0.5px}
+.logo span{color:#f5a623}
+.navlinks{display:flex;gap:26px;font-size:14px;font-weight:600}
+.navlinks a{color:#6b7280;text-decoration:none;transition:color 0.15s}
+.navlinks a:hover{color:#1a1a2e}
+.navlinks a.active{color:#f5a623}
+.navright{display:flex;align-items:center;gap:14px}
+.status-pill{font-size:12px;font-weight:700;padding:8px 16px;border-radius:20px;display:flex;align-items:center;gap:6px}
+.status-pill.ok{background:#d1fae5;color:#065f46}
+.status-pill.locked{background:#fee2e2;color:#991b1b}
+.bell{position:relative;width:40px;height:40px;border-radius:12px;background:#f8f9fa;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#6b7280;font-size:16px;transition:all 0.15s;border:none}
+.bell:hover{background:#eef2f6;color:#1a1a2e}
+.bell .badge{position:absolute;top:-4px;right:-4px;background:#dc2626;color:white;font-size:10px;font-weight:900;padding:2px 6px;border-radius:10px;min-width:18px}
+.avatar{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#f5a623,#d4951f);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;cursor:pointer;border:none}
+.container{max-width:1280px;margin:0 auto;padding:28px 32px;display:grid;grid-template-columns:1fr 400px;gap:28px}
+@media (max-width:1024px){.container{grid-template-columns:1fr}}
+.hero{background:linear-gradient(135deg,#f5a623 0%,#d4951f 100%);border-radius:24px;padding:32px 36px;color:white;margin-bottom:24px;box-shadow:0 20px 50px rgba(245,166,35,0.25);position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;background:rgba(255,255,255,0.08);border-radius:50%}
+.hero h1{font-size:28px;font-weight:900;margin-bottom:6px;letter-spacing:-0.5px}
+.hero p{font-size:15px;opacity:0.95;margin-bottom:18px;max-width:520px;line-height:1.5}
+.hero-badges{display:flex;gap:10px;flex-wrap:wrap;position:relative;z-index:2}
+.hero-badges span{background:rgba(255,255,255,0.22);padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;backdrop-filter:blur(10px)}
+.card{background:white;border-radius:20px;padding:26px;margin-bottom:20px;border:1px solid #eef2f6;box-shadow:0 2px 10px rgba(0,0,0,0.03)}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.card-title{font-size:16px;font-weight:800;display:flex;align-items:center;gap:10px}
+.card-title i{color:#f5a623;font-size:18px}
+.card-sub{font-size:12px;color:#9ca3af;font-weight:600}
+.loc-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+label{font-size:11px;font-weight:800;color:#6b7280;display:block;margin-bottom:7px;text-transform:uppercase;letter-spacing:0.5px}
+select,input,textarea{width:100%;padding:13px 16px;border:1.5px solid #eef2f6;border-radius:12px;font-family:inherit;font-size:14px;background:#f8f9fa;color:#1a1a2e;font-weight:500}
+select:focus,input:focus,textarea:focus{outline:none;border-color:#f5a623;background:white;box-shadow:0 0 0 4px rgba(245,166,35,0.1)}
+.items-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media (max-width:640px){.items-grid{grid-template-columns:1fr 1fr}}
+@media (min-width:1024px) and (max-width:1280px){.items-grid{grid-template-columns:1fr 1fr}}
+.item{background:#fafbfc;border:1.5px solid #eef2f6;border-radius:16px;padding:18px 14px;text-align:center;transition:all 0.2s}
+.item:hover{border-color:#f5a623;background:white;transform:translateY(-2px);box-shadow:0 8px 20px rgba(245,166,35,0.12)}
+.item.selected{border-color:#f5a623;background:#fff8ec}
+.item .ico{font-size:32px;margin-bottom:8px;color:#f5a623}
+.item .name{font-size:14px;font-weight:800;margin-bottom:3px}
+.item .price{font-size:12px;color:#9ca3af;font-weight:600;margin-bottom:12px}
+.item .qty{display:flex;align-items:center;justify-content:center;gap:10px}
+.item .qty button{width:32px;height:32px;border:none;border-radius:10px;font-weight:900;cursor:pointer;font-size:16px;background:#f5a623;color:white;transition:transform 0.1s;font-family:inherit}
+.item .qty button:hover{transform:scale(1.08)}
+.item .qty button.minus{background:#e5e7eb;color:#374151}
+.item .qty span{min-width:24px;font-weight:900;font-size:15px}
+.cart{background:white;border-radius:20px;padding:24px;border:1px solid #eef2f6;position:sticky;top:100px;box-shadow:0 2px 10px rgba(0,0,0,0.03)}
+.cart-title{font-size:16px;font-weight:800;margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.cart-title i{color:#f5a623}
+.cart-line{display:flex;justify-content:space-between;padding:10px 0;font-size:13px;border-bottom:1px dashed #eef2f6}
+.cart-line:last-of-type{border-bottom:none}
+.cart-line .name{color:#1a1a2e;font-weight:700}
+.cart-line .qty{color:#9ca3af;font-size:12px;margin-top:2px}
+.cart-line .amt{font-weight:800;color:#1a1a2e}
+.cart-empty{text-align:center;padding:36px 0;color:#9ca3af;font-size:13px}
+.cart-empty i{font-size:42px;color:#e5e7eb;display:block;margin-bottom:10px}
+.cart-total{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:2px solid #f5a623}
+.cart-total-label{font-size:12px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px}
+.cart-total-value{font-size:28px;font-weight:900;color:#f5a623}
+.place-btn{width:100%;margin-top:16px;padding:16px;border:none;border-radius:14px;background:#f5a623;color:white;font-weight:800;cursor:pointer;font-family:inherit;font-size:15px;box-shadow:0 10px 24px rgba(245,166,35,0.35);transition:all 0.15s}
+.place-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 14px 30px rgba(245,166,35,0.45)}
+.place-btn:disabled{opacity:0.5;cursor:not-allowed}
+.locked{padding:36px 24px;text-align:center;background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:20px}
+.locked i{font-size:56px;color:#92400e;margin-bottom:14px;display:block}
+.locked h3{font-size:20px;font-weight:900;color:#78350f;margin-bottom:8px}
+.locked p{font-size:14px;color:#92400e;margin-bottom:20px;max-width:420px;margin-left:auto;margin-right:auto}
+.locked button{padding:14px 32px;border:none;border-radius:14px;background:#f5a623;color:white;font-weight:800;cursor:pointer;font-family:inherit;font-size:15px;box-shadow:0 8px 20px rgba(245,166,35,0.4)}
+/* ORDERS */
+.order{background:#fafbfc;border-radius:18px;padding:20px;margin-bottom:14px;border:1px solid #eef2f6;transition:all 0.15s}
+.order:hover{border-color:#f5a623;background:white;box-shadow:0 4px 16px rgba(0,0,0,0.05)}
+.order-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:12px;flex-wrap:wrap}
+.order-code{font-size:16px;font-weight:900;letter-spacing:0.3px}
+.order-time{font-size:11px;color:#9ca3af;margin-top:3px;font-weight:600}
+.order-status{font-size:11px;font-weight:800;padding:6px 14px;border-radius:20px;text-transform:uppercase;letter-spacing:0.3px;white-space:nowrap}
+.order-status.waiting{background:#fef3c7;color:#92400e}
+.order-status.assigned{background:#dbeafe;color:#1e40af}
+.order-status.washing{background:#fce7f3;color:#9f1239}
+.order-status.completed{background:#d1fae5;color:#065f46}
+.order-status.cancelled{background:#fee2e2;color:#991b1b}
+.order-status.disputed{background:#ede9fe;color:#5b21b6}
+.order-info{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;font-size:13px}
+.order-info .row{display:flex;justify-content:space-between;padding:8px 12px;background:white;border-radius:10px;border:1px solid #f0f2f5}
+.order-info .row span:first-child{color:#9ca3af;font-weight:600}
+.order-info .row span:last-child{color:#1a1a2e;font-weight:800}
+.provider-box{background:white;border-radius:12px;padding:14px 16px;margin-bottom:14px;border:1px solid #f0f2f5;display:flex;align-items:center;gap:14px}
+.provider-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#f5a623,#d4951f);color:white;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;flex-shrink:0}
+.provider-info{flex:1}
+.provider-info .name{font-weight:800;font-size:14px;margin-bottom:2px}
+.provider-info .meta{font-size:12px;color:#6b7280;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.provider-info .rating{color:#f5a623;font-weight:800}
+.call-btn{width:44px;height:44px;border-radius:50%;background:#065f46;color:white;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;font-size:16px;flex-shrink:0;transition:transform 0.15s}
+.call-btn:hover{transform:scale(1.08)}
+.code-box{background:#fef3c7;border:2px dashed #f5a623;border-radius:14px;padding:16px;text-align:center;margin-bottom:14px}
+.code-box .label{font-size:11px;font-weight:800;color:#92400e;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.code-box .code{font-size:32px;font-weight:900;color:#78350f;letter-spacing:8px;font-family:monospace}
+.order-actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{padding:10px 18px;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px;transition:all 0.15s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:#f5a623;color:white;box-shadow:0 4px 12px rgba(245,166,35,0.3)}
+.btn-danger{background:#fee2e2;color:#991b1b}
+.btn-success{background:#d1fae5;color:#065f46}
+.btn-outline{background:white;color:#6b7280;border:1.5px solid #eef2f6}
+.star-rating{display:flex;gap:4px;margin-top:8px}
+.star-rating .star{font-size:24px;color:#e5e7eb;cursor:pointer;transition:color 0.15s}
+.star-rating .star.active{color:#f5a623}
+.orders-empty{text-align:center;padding:40px 20px;color:#9ca3af;font-size:14px}
+.orders-empty i{font-size:48px;color:#e5e7eb;display:block;margin-bottom:12px}
+.toast{position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-100px);background:#1a1a2e;color:white;padding:14px 24px;border-radius:14px;font-size:14px;font-weight:700;z-index:9999;box-shadow:0 20px 50px rgba(0,0,0,0.3);transition:transform 0.3s}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{background:linear-gradient(135deg,#065f46,#059669)}
+.toast.error{background:linear-gradient(135deg,#991b1b,#dc2626)}
+.modal-bg{position:fixed;inset:0;background:rgba(15,12,41,0.7);backdrop-filter:blur(6px);z-index:9998;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-bg.show{display:flex}
+.modal{background:white;border-radius:20px;padding:28px;max-width:420px;width:100%}
+.modal h3{font-size:20px;font-weight:900;margin-bottom:8px}
+.modal p{font-size:14px;color:#6b7280;margin-bottom:20px}
+.modal textarea{min-height:100px;resize:vertical;margin-bottom:16px}
+.modal-actions{display:flex;gap:10px}
+.modal-actions .btn{flex:1;justify-content:center;padding:14px}
+.loading{text-align:center;padding:60px 20px;color:#9ca3af}
+.loading i{font-size:32px;color:#f5a623;animation:spin 1s linear infinite;display:block;margin-bottom:14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <div class="topnav-inner">
+    <div class="logo">EU <span>PONKALA</span></div>
+    <nav class="navlinks">
+      <a href="/student">Home</a>
+      <a href="/search">Search</a>
+      <a href="/saved">Saved</a>
+      <a href="/laundry" class="active">Laundry</a>
+      <a href="/wheelbarrow">Wheelbarrow</a>
+    </nav>
+    <div class="navright">
+      <button class="bell" id="bellBtn" title="Notifications"><i class="fas fa-bell"></i><span class="badge" id="bellBadge" style="display:none;">0</span></button>
+      <div class="status-pill locked" id="statusPill">Loading...</div>
+      <button class="avatar" id="avatarBtn">?</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="left">
+
+    <div class="hero">
+      <h1 id="heroTitle">Laundry Service</h1>
+      <p id="heroSub">Verified providers come to your location and wash your clothes. Cash on completion.</p>
+      <div class="hero-badges">
+        <span><i class="fas fa-check-circle"></i> K50 = 4 connections</span>
+        <span id="heroRemaining"><i class="fas fa-spinner fa-spin"></i> Checking...</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title"><i class="fas fa-home"></i> Where should the washer come?</div>
+        <div class="card-sub">So they can find you</div>
+      </div>
+
+      <label>Your address or building</label>
+      <input id="pickupLocation" type="text" placeholder="e.g. Zeworld Boarding House, Room 12" autocomplete="off" style="margin-bottom:12px;" />
+
+      <label>Nearest landmark or junction <span style="color:#9ca3af;font-weight:600;text-transform:none;letter-spacing:0;font-size:10px;">(helps the washer find you)</span></label>
+      <input id="pickupLandmarkText" type="text" placeholder="e.g. Behind Eden University, opposite Unicos Hospital" autocomplete="off" style="margin-bottom:12px;" />
+
+      <button id="getLocationBtn" type="button" style="width:100%;padding:12px;border:1.5px dashed #f5a623;border-radius:12px;background:#fff8ec;color:#92400e;font-weight:800;cursor:pointer;font-family:inherit;font-size:13px;display:flex;align-items:center;justify-content:center;gap:8px;">
+        <i class="fas fa-crosshairs"></i> Use my current GPS location
+      </button>
+
+      <div id="locPreview" style="font-size:12px;color:#6b7280;margin-top:10px;padding:12px;background:#fafbfc;border-radius:10px;font-weight:600;line-height:1.5;display:none;"></div>
+
+      <div style="font-size:11px;color:#9ca3af;margin-top:10px;line-height:1.5;">
+         <b>Tip:</b> Add a nearby school, church, shop, or landmark so the washer can find you quickly.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title"><i class="fas fa-tshirt"></i> Select Items</div>
+        <div class="card-sub" id="itemCount">0 items</div>
+      </div>
+      <div id="itemsArea">
+        <div class="loading" id="loadingItems"><i class="fas fa-spinner"></i>Loading catalog...</div>
+        <div class="items-grid" id="itemsGrid"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title"><i class="fas fa-receipt"></i> My Laundry Orders</div>
+        <div class="card-sub" id="ordersCount">0 orders</div>
+      </div>
+      <div id="ordersList">
+        <div class="orders-empty"><i class="fas fa-inbox"></i>No orders yet. Place your first laundry order.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="right">
+    <div class="cart" id="cartBox">
+      <div class="cart-title"><i class="fas fa-shopping-basket"></i> Your Order</div>
+      <div id="cartContent">
+        <div class="cart-empty"><i class="fas fa-tshirt"></i>Select items to get started</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Dispute modal -->
+<div class="modal-bg" id="disputeModal">
+  <div class="modal">
+    <h3>Raise a Dispute</h3>
+    <p>Tell us what went wrong. Our team will review and respond.</p>
+    <label>Reason</label>
+    <select id="disputeReason" style="margin-bottom:12px;">
+      <option value="INCOMPLETE_WORK">Incomplete work</option>
+      <option value="DAMAGED_ITEMS">Damaged items</option>
+      <option value="MISSING_ITEMS">Missing items</option>
+      <option value="LATE_SERVICE">Late service</option>
+      <option value="OTHER">Other</option>
+    </select>
+    <label>Details</label>
+    <textarea id="disputeDetails" placeholder="Describe the issue..."></textarea>
+    <div class="modal-actions">
+      <button class="btn btn-outline" id="disputeCancel">Cancel</button>
+      <button class="btn btn-primary" id="disputeSubmit">Submit</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+'use strict';
+var API='/api/engine/laundry';
+var ORDERS_API='/api/engine/orders';
+var CANC_API='/api/engine/cancellations/order';
+var DISP_API='/api/engine/disputes/order';
+var RATE_API='/api/engine/ratings/order';
+var NOTIF_API='/api/engine/notifications';
+var user=null; try{user=JSON.parse(localStorage.getItem('user')||'null');}catch(e){}
+var userId=user&&(user.user_id||user.id);
+var catalog=[],cart={},access=null,orders=[];
+function $(s){return document.querySelector(s);}
+function el(id){return document.getElementById(id);}
+function api(path,opts){return fetch(API+path,Object.assign({headers:{'Content-Type':'application/json'}},opts||{})).then(function(r){return r.json();});}
+function toast(m,t){var e=el('toast');e.textContent=m;e.className='toast show '+(t||'');setTimeout(function(){e.className='toast';},3500);}
+if(userId){el('avatarBtn').textContent=(user.full_name||'U').charAt(0).toUpperCase();el('avatarBtn').onclick=function(){if(confirm('Sign out?')){localStorage.removeItem('user');location.href='/login';}};}
+
+// ---------- NOTIFICATIONS ----------
+function loadNotifs(){
+  if(!userId) return;
+  return fetch(NOTIF_API+'/'+userId).then(function(r){return r.json();}).then(function(res){
+    if(res.status!=='success') return;
+    var n=res.data.unread||0;
+    var b=el('bellBadge');
+    if(n>0){b.style.display='block';b.textContent=n>99?'99+':n;}
+    else b.style.display='none';
+  });
+}
+el('bellBtn').onclick=function(){
+  if(!userId) return;
+  fetch(NOTIF_API+'/'+userId+'?all=1').then(function(r){return r.json();}).then(function(res){
+    if(res.status!=='success'||!res.data.items.length){toast('No notifications','');return;}
+    var txt=res.data.items.slice(0,10).map(function(n){return ' '+n.title+(n.body?'  '+n.body:'');}).join('\n');
+    alert('Notifications:\n\n'+txt);
+    return fetch(NOTIF_API+'/'+userId+'/read-all',{method:'POST'});
+  }).then(function(){loadNotifs();});
+};
+
+// ---------- ZONES ----------
+// ---------- LOCATION (free-text + landmark + GPS) ----------
+  var DEFAULT_ZONE_ID = 1;
+  var gpsCoords = null;
+
+  function getAddress(){
+    var e = el('pickupLocation');
+    return e ? (e.value || '').trim() : '';
+  }
+  function getLandmark(){
+    var e = el('pickupLandmarkText');
+    return e ? (e.value || '').trim() : '';
+  }
+  function buildLocationText(){
+    var parts = [];
+    if (getAddress()) parts.push(getAddress());
+    if (getLandmark()) parts.push('Near: ' + getLandmark());
+    if (gpsCoords) parts.push('GPS: ' + gpsCoords.lat.toFixed(4) + ',' + gpsCoords.lng.toFixed(4));
+    return parts.join(' - ');
+  }
+  function updateLocPreview(){
+    var prev = el('locPreview');
+    if (!prev) return;
+    var txt = buildLocationText();
+    if (!txt) { prev.style.display = 'none'; return; }
+    prev.style.display = 'block';
+    prev.innerHTML = '<b style="color:#1a1a2e;">Washer will come to:</b><br>' + txt;
+  }
+  function useGps(){
+    if (!navigator.geolocation) { alert('GPS not available on this device'); return; }
+    var btn = el('getLocationBtn');
+    if (!btn) return;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Getting location...';
+    btn.disabled = true;
+    navigator.geolocation.getCurrentPosition(function(pos){
+      gpsCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      btn.innerHTML = '<i class="fas fa-check"></i> GPS attached';
+      btn.style.background = '#d1fae5';
+      btn.style.color = '#065f46';
+      btn.style.borderColor = '#065f46';
+      btn.disabled = false;
+      updateLocPreview();
+    }, function(err){
+      btn.innerHTML = '<i class="fas fa-crosshairs"></i> Use my current GPS location';
+      btn.disabled = false;
+      alert('Could not get location: ' + err.message);
+    }, { timeout: 10000, enableHighAccuracy: true });
+  }
+
+  setTimeout(function(){
+    var a = el('pickupLocation');
+    var l = el('pickupLandmarkText');
+    var g = el('getLocationBtn');
+    if (a) a.addEventListener('input', updateLocPreview);
+    if (l) l.addEventListener('input', updateLocPreview);
+    if (g) g.onclick = useGps;
+  }, 500);
+
+  function loadCatalog(){return api('/catalog').then(function(res){if(res.status==='success')catalog=res.data;});}
+function loadAccess(){return api('/access/'+userId).then(function(res){if(res.status==='success')access=res.data;renderAccess();});}
+function renderAccess(){
+  var rem=access?access.remaining:0; var un=access&&access.unlocked&&rem>0;
+  var p=el('statusPill');
+  if(un){
+    p.className='status-pill ok'; p.innerHTML='<i class="fas fa-check-circle"></i> '+rem+' left';
+    el('heroTitle').textContent='Laundry Unlocked';
+    el('heroSub').textContent='You have '+rem+' wash connection'+(rem===1?'':'s')+' remaining.';
+    el('heroRemaining').innerHTML='<i class="fas fa-check"></i> '+rem+' remaining';
+  } else {
+    p.className='status-pill locked'; p.innerHTML='<i class="fas fa-lock"></i> Locked';
+    el('heroTitle').textContent='Laundry Locked';
+    el('heroSub').textContent='Unlock for K50 and get 4 wash connections. Cash only.';
+    el('heroRemaining').innerHTML='<i class="fas fa-lock"></i> 0 remaining';
+  }
+  renderItemsArea();
+}
+
+// ---------- ITEMS ----------
+var ICONS={'T-SHIRT':'fa-tshirt','TROUSERS':'fa-socks','JEANS':'fa-user-tie','SKIRT':'fa-female','DRESS':'fa-female','OTHER':'fa-box'};
+function renderItemsArea(){
+  var rem=access?access.remaining:0; var un=access&&access.unlocked&&rem>0;
+  el('loadingItems').style.display='none';
+  if(!un){
+    el('itemsGrid').innerHTML='<div class="locked" style="grid-column:1/-1;"><i class="fas fa-lock"></i><h3>Laundry locked</h3><p>Unlock for K50 and get 4 wash connections. You only pay for the service after washing.</p><button id="unlockBtn"><i class="fas fa-unlock"></i> Unlock K50</button></div>';
+    return;
+  }
+  el('itemsGrid').innerHTML=catalog.map(function(c){
+    var ico=ICONS[c.item_code]||'fa-tshirt'; var q=cart[c.item_code]||0;
+    return '<div class="item'+(q>0?' selected':'')+'" data-code="'+c.item_code+'"><div class="ico"><i class="fas '+ico+'"></i></div><div class="name">'+c.item_label+'</div><div class="price">K'+c.unit_price+' each</div><div class="qty"><button class="minus" data-sub="'+c.item_code+'">-</button><span id="qty-'+c.item_code+'">'+q+'</span><button data-add="'+c.item_code+'">+</button></div></div>';
+  }).join('');
+}
+
+// ---------- CART ----------
+function buildCart(){var a=[];Object.keys(cart).forEach(function(k){if(cart[k]>0)a.push({item_code:k,quantity:cart[k]});});return a;}
+function updateCart(){
+  Object.keys(cart).forEach(function(c){var e=el('qty-'+c);if(e)e.textContent=cart[c];var p=document.querySelector('.item[data-code="'+c+'"]');if(p){if(cart[c]>0)p.classList.add('selected');else p.classList.remove('selected');}});
+  var items=buildCart(); var cnt=items.reduce(function(s,i){return s+i.quantity;},0);
+  el('itemCount').textContent=cnt+' item'+(cnt===1?'':'s');
+  if(!cnt){el('cartContent').innerHTML='<div class="cart-empty"><i class="fas fa-tshirt"></i>Select items to get started</div>';return;}
+  var lines='';
+  items.forEach(function(it){var c=catalog.find(function(x){return x.item_code===it.item_code;});if(!c)return;lines+='<div class="cart-line"><div><div class="name">'+c.item_label+'</div><div class="qty">K'+c.unit_price+' x '+it.quantity+'</div></div><div class="amt">K'+(c.unit_price*it.quantity)+'</div></div>';});
+  api('/price',{method:'POST',body:JSON.stringify({items:items})}).then(function(res){
+    if(res.status!=='success')return;
+    el('cartContent').innerHTML=lines+'<div class="cart-total"><div><div class="cart-total-label">Total</div></div><div class="cart-total-value">K'+res.data.total+'</div></div><button class="place-btn" id="placeOrderBtn"><i class="fas fa-check"></i> Place Order</button>';
+  });
+}
+
+// ---------- UNLOCK ----------
+function unlock(){
+  if(!confirm('Unlock Laundry for K50?\nYou get 4 wash connections.'))return;
+  api('/access/unlock',{method:'POST',body:JSON.stringify({user_id:userId,reference:'WEB-'+Date.now()})}).then(function(res){
+    if(res.status==='success'){access=res.data;renderAccess();toast('Unlocked - '+access.remaining+' connections','success');}
+    else toast('Unlock failed: '+res.message,'error');
+  });
+}
+
+// ---------- PLACE ORDER ----------
+function placeOrder(){
+  var items=buildCart();
+  if(!items.length){toast('Add at least one item','error');return;}
+  if(!access||access.remaining<=0){toast('Unlock first (K50)','error');return;}
+  var zid = DEFAULT_ZONE_ID; var lm = null; var locText = buildLocationText();
+  if(!getAddress()){toast('Please enter your address so the washer can find you','error');return;}
+  var btn=el('placeOrderBtn'); if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Placing...';}
+  api('/order',{method:'POST',body:JSON.stringify({user_id:userId,items:items,pickup_zone_id:zid,pickup_landmark_id:lm,pickup_address_text:locText,pickup_landmark_text:getLandmark(),pickup_gps_lat:gpsCoords?gpsCoords.lat:null,pickup_gps_lng:gpsCoords?gpsCoords.lng:null,instructions:'Web order'})}).then(function(res){
+    if(res.status==='success'){toast('Order '+res.data.order_code+' placed (K'+res.data.price+')','success');cart={};setTimeout(function(){location.reload();},1500);}
+    else{toast('Failed: '+res.message,'error');if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-check"></i> Place Order';}}
+  }).catch(function(e){toast('Error: '+e.message,'error');if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-check"></i> Place Order';}});
+}
+
+// ---------- ORDERS ----------
+function loadOrders(){
+  return fetch(ORDERS_API+'/user-enriched/'+userId).then(function(r){return r.json();}).then(function(res){
+    if(res.status!=='success')return;
+    orders=(res.data||[]).filter(function(o){return o.service_type==='LAUNDRY';});
+    renderOrders();
+  });
+}
+function statusClass(s){
+  if(s==='REQUESTED'||s==='PAYMENT_PENDING'||s==='PAYMENT_CONFIRMED'||s==='PROVIDER_SEARCHING')return 'waiting';
+  if(s==='PROVIDER_ASSIGNED'||s==='PROVIDER_CONTACTED')return 'assigned';
+  if(s==='PROVIDER_ON_THE_WAY'||s==='PROVIDER_ARRIVED'||s==='WASHING'||s==='COMPLETION_PENDING')return 'washing';
+  if(s==='COMPLETED')return 'completed';
+  if(s==='CANCELLED')return 'cancelled';
+  if(s==='DISPUTED')return 'disputed';
+  return 'waiting';
+}
+function initials(name){if(!name)return '?';var p=name.trim().split(' ');return (p[0][0]+(p[1]?p[1][0]:'')).toUpperCase();}
+function renderOrders(){
+  el('ordersCount').textContent=orders.length+' order'+(orders.length===1?'':'s');
+  if(!orders.length){el('ordersList').innerHTML='<div class="orders-empty"><i class="fas fa-inbox"></i>No orders yet. Place your first laundry order.</div>';return;}
+  el('ordersList').innerHTML=orders.slice(0,30).map(function(o){
+    var cls=statusClass(o.order_status);
+    var d=new Date(o.created_at);
+    var time=d.toLocaleDateString()+' '+d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    var html='<div class="order">';
+    html+='<div class="order-head"><div><div class="order-code">'+o.order_code+'</div><div class="order-time">'+time+'</div></div><div class="order-status '+cls+'">'+o.student_state+'</div></div>';
+    html+='<div class="order-info"><div class="row"><span>Price</span><span>K'+o.price+'</span></div><div class="row"><span>Zone</span><span>'+(o.pickup_zone_name||'-')+'</span></div></div>';
+    // Provider box: name always visible if assigned; phone only after provider confirms
+    if(o.provider_id && o.provider_name){
+      var phoneHtml = o.provider_phone_visible && o.provider_phone
+        ? '<a class="call-btn" href="tel:'+o.provider_phone+'" title="Call '+o.provider_phone+'"><i class="fas fa-phone"></i></a>'
+        : '<span style="width:44px;height:44px;border-radius:50%;background:#e5e7eb;color:#9ca3af;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;" title="Waiting for provider to confirm"><i class="fas fa-clock"></i></span>';
+      html+='<div class="provider-box"><div class="provider-avatar">'+initials(o.provider_name)+'</div><div class="provider-info"><div class="name">'+o.provider_name+(o.provider_phone_visible?' <span style="color:#065f46;font-size:11px;font-weight:700;">CONFIRMED</span>':' <span style="color:#d97706;font-size:11px;font-weight:700;">WAITING</span>')+'</div><div class="meta"><span>'+o.provider_code+'</span>'+(o.provider_rating?'<span class="rating"><i class="fas fa-star"></i> '+Number(o.provider_rating).toFixed(1)+' ('+o.provider_rating_count+')</span>':'<span style="color:#9ca3af;">No ratings yet</span>')+'</div></div>'+phoneHtml+'</div>';
+      if(!o.provider_phone_visible){
+        html+='<div style="background:#fef3c7;color:#92400e;padding:10px 14px;border-radius:10px;font-size:12px;font-weight:600;margin-bottom:14px;"><i class="fas fa-clock"></i> Waiting for '+o.provider_name+' to confirm. You\'ll see their phone number here.</div>';
+      }
+    }
+    // Completion code box (only when COMPLETION_PENDING and code exists)
+    if(o.order_status==='COMPLETION_PENDING' && o.completion_code){
+      html+='<div class="code-box"><div class="label">Give this code to your provider</div><div class="code">'+o.completion_code+'</div></div>';
+    }
+    // Dispute info
+    if(o.dispute_info){
+      html+='<div style="background:#ede9fe;padding:12px;border-radius:10px;font-size:12px;color:#5b21b6;margin-bottom:14px;font-weight:600;"><i class="fas fa-exclamation-circle"></i> '+o.dispute_info+'</div>';
+    }
+    // Actions
+    html+='<div class="order-actions">';
+    if(o.order_status==='COMPLETION_PENDING'){
+      html+='<button class="btn btn-primary" data-code-for="'+o.id+'"><i class="fas fa-check"></i> Confirm with code</button>';
+    }
+    if(['REQUESTED','PAYMENT_PENDING','PAYMENT_CONFIRMED','PROVIDER_SEARCHING','PROVIDER_ASSIGNED','PROVIDER_CONTACTED'].indexOf(o.order_status)>=0){
+      html+='<button class="btn btn-danger" data-cancel="'+o.id+'"><i class="fas fa-times"></i> Cancel</button>';
+    }
+    if(o.order_status==='COMPLETED' && !o.dispute_info){
+      html+='<button class="btn btn-outline" data-rate="'+o.id+'" data-provider="'+o.provider_id+'"><i class="fas fa-star"></i> Rate</button>';
+      html+='<button class="btn btn-outline" data-dispute="'+o.id+'"><i class="fas fa-flag"></i> Dispute</button>';
+    }
+    html+='</div></div>';
+    return html;
+  }).join('');
+}
+
+// ---------- ORDER ACTIONS ----------
+function cancelOrder(id){
+  if(!confirm('Cancel this order?'))return;
+  fetch(CANC_API+'/'+id,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({cancelled_by:'STUDENT',reason:'Cancelled by student'})}).then(function(r){return r.json();}).then(function(res){
+    if(res.status==='success'){toast('Order cancelled','success');setTimeout(loadOrders,600);}
+    else toast('Cancel failed: '+res.message,'error');
+  });
+}
+function rateOrder(orderId,providerId){
+  var stars=prompt('Rate your provider (1-5 stars):');
+  var s=Number(stars);
+  if(!s||s<1||s>5){toast('Enter 1-5','error');return;}
+  var comment=prompt('Optional comment:')||null;
+  fetch(RATE_API+'/'+orderId,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({student_user_id:userId,stars:s,comment:comment})}).then(function(r){return r.json();}).then(function(res){
+    if(res.status==='success'){toast('Thanks for rating!','success');setTimeout(loadOrders,600);}
+    else toast('Rating failed: '+res.message,'error');
+  });
+}
+var disputeOrderId=null;
+function openDispute(id){disputeOrderId=id;el('disputeModal').classList.add('show');}
+el('disputeCancel').onclick=function(){el('disputeModal').classList.remove('show');};
+el('disputeSubmit').onclick=function(){
+  var reason=el('disputeReason').value;
+  var details=el('disputeDetails').value||'';
+  if(!disputeOrderId)return;
+  fetch(DISP_API+'/'+disputeOrderId,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({raised_by:'STUDENT',reason:reason,description:details})}).then(function(r){return r.json();}).then(function(res){
+    el('disputeModal').classList.remove('show');
+    if(res.status==='success'){toast('Dispute submitted','success');setTimeout(loadOrders,600);}
+    else toast('Dispute failed: '+res.message,'error');
+  });
+};
+function confirmWithCode(id){
+  var code=prompt('Enter the 4-digit completion code:');
+  if(!code)return;
+  fetch('/api/engine/completion/'+id+'/verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:code})}).then(function(r){return r.json();}).then(function(res){
+    if(res.status==='success'){toast('Order confirmed!','success');setTimeout(loadOrders,600);}
+    else toast('Code failed: '+res.message,'error');
+  });
+}
+
+// ---------- CLICKS ----------
+document.addEventListener('click',function(ev){
+  var t=ev.target;
+  if(t.dataset&&t.dataset.add){cart[t.dataset.add]=(cart[t.dataset.add]||0)+1;updateCart();return;}
+  if(t.dataset&&t.dataset.sub){cart[t.dataset.sub]=Math.max(0,(cart[t.dataset.sub]||0)-1);updateCart();return;}
+  if(t.id==='unlockBtn'){unlock();return;}
+  if(t.id==='placeOrderBtn'){placeOrder();return;}
+  if(t.dataset&&t.dataset.cancel){cancelOrder(Number(t.dataset.cancel));return;}
+  if(t.dataset&&t.dataset.rate){rateOrder(Number(t.dataset.rate),Number(t.dataset.provider));return;}
+  if(t.dataset&&t.dataset.dispute){openDispute(Number(t.dataset.dispute));return;}
+  if(t.dataset&&t.dataset.codeFor){confirmWithCode(Number(t.dataset.codeFor));return;}
+});
+
+// ---------- BOOT ----------
+if(!userId){location.href='/login';return;}
+Promise.all([loadCatalog(),loadAccess(),loadOrders(),loadNotifs()]).catch(function(e){console.error('[laundry]',e);toast('Load error: '+e.message,'error');});
+setInterval(function(){loadOrders().catch(function(){});loadNotifs().catch(function(){});},15000);
+})();
+</script>
+</body>
+</html>

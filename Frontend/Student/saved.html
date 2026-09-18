@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EU PONKALA - Saved</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f5f7fb; color: #1a1a2e; padding-bottom: 90px; }
+        .top-header { background: white; padding: 14px 24px; border-bottom: 1px solid rgba(0,0,0,0.04); position: sticky; top: 0; z-index: 100; }
+        .top-header .inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 22px; font-weight: 900; text-decoration: none; color: #1a1a2e; }
+        .logo span { color: #f5a623; }
+        .back-btn { background: #f5a623; color: white; padding: 8px 18px; border-radius: 10px; text-decoration: none; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+        .main-wrap { max-width: 1200px; margin: 0 auto; padding: 24px 24px 0; }
+        h1 { font-size: 28px; font-weight: 800; margin-bottom: 6px; }
+        .subtitle { color: #6b7280; font-size: 14px; margin-bottom: 24px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+        .prop-card { background: white; border-radius: 16px; overflow: hidden; border: 1px solid #eef2f6; transition: 0.3s; }
+        .prop-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+        .prop-card .img { height: 160px; background: linear-gradient(135deg, #667eea, #764ba2); background-size: cover; background-position: center; position: relative; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.4); font-size: 40px; }
+        .prop-card .img .badge { position: absolute; bottom: 12px; left: 12px; background: #059669; color: white; padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+        .prop-card .img .remove { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.92); border: none; cursor: pointer; color: #dc2626; font-size: 14px; }
+        .prop-card .body { padding: 16px 18px 18px; }
+        .prop-card .name { font-weight: 700; font-size: 15px; margin-bottom: 2px; }
+        .prop-card .loc { font-size: 12px; color: #6b7280; margin-bottom: 10px; }
+        .prop-card .meta { display: flex; justify-content: space-between; padding-top: 10px; border-top: 1px solid #f0f2f5; }
+        .prop-card .price { color: #f5a623; font-weight: 800; font-size: 16px; }
+        .prop-card .spaces { font-size: 12px; color: #6b7280; }
+        .empty { padding: 80px 20px; text-align: center; color: #6b7280; }
+        .empty i { font-size: 64px; color: #d1d5db; display: block; margin-bottom: 16px; }
+        .empty h3 { font-size: 20px; color: #1a1a2e; margin-bottom: 6px; }
+        .empty a { color: #f5a623; font-weight: 600; text-decoration: none; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-top: 1px solid rgba(0,0,0,0.04); display: flex; justify-content: space-around; padding: 8px 0 14px; z-index: 1000; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; background: none; border: none; cursor: pointer; color: #9ca3af; font-size: 10px; font-weight: 600; font-family: inherit; padding: 4px 12px; text-decoration: none; }
+        .nav-item i { font-size: 20px; }
+        .nav-item.active { color: #f5a623; }
+    </style>
+</head>
+<body>
+
+<header class="top-header">
+    <div class="inner">
+        <a href="/student" class="logo">EU <span>PONKALA</span></a>
+        <a href="/student" class="back-btn"><i class="fas fa-arrow-left"></i> Back</a>
+    </div>
+</header>
+
+<main class="main-wrap">
+    <h1>❤️ Saved Properties</h1>
+    <p class="subtitle" id="subtitle">Your favourite spaces in one place</p>
+    <div class="grid" id="grid"></div>
+</main>
+
+<nav class="bottom-nav">
+    <a href="/student" class="nav-item"><i class="fas fa-home"></i><span>Home</span></a>
+    <a href="/search" class="nav-item"><i class="fas fa-search"></i><span>Search</span></a>
+    <a href="/saved" class="nav-item active"><i class="fas fa-heart"></i><span>Saved</span></a>
+    <a href="/profile" class="nav-item"><i class="fas fa-user"></i><span>Profile</span></a>
+</nav>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/shared/chat.js"></script>
+<script>
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    if (!localStorage.getItem('token')) window.location.href = '/login';
+    if (user && user.user_id && window.EU_CHAT) EU_CHAT.init({ userId: user.user_id, userType: 'student' });
+
+    async function loadSaved() {
+        const grid = document.getElementById('grid');
+        grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:40px;color:#9ca3af;">Loading…</p>';
+
+        try {
+            const res = await fetch('/api/favourites/' + user.user_id);
+            const data = await res.json();
+            const list = data.data || [];
+
+            document.getElementById('subtitle').textContent = list.length + ' saved propert' + (list.length === 1 ? 'y' : 'ies');
+
+            if (!list.length) {
+                grid.innerHTML = '<div class="empty" style="grid-column:1/-1;"><i class="fas fa-heart"></i><h3>No saved properties yet</h3><p>Start exploring accommodation near Eden University.</p><p style="margin-top:12px;"><a href="/search">Browse properties →</a></p></div>';
+                return;
+            }
+
+            grid.innerHTML = '';
+            list.forEach(p => {
+                const photo = (p.photos && p.photos[0]) ? p.photos[0].url : '';
+                const card = document.createElement('div');
+                card.className = 'prop-card';
+                card.innerHTML = `
+                    <div class="img" style="${photo ? "background-image:url('" + photo + "');" : ''}" onclick="location.href='/student/property?id=${p.property_id}'">
+                        ${!photo ? '🏠' : ''}
+                        ${p.is_verified ? '<span class="badge"><i class="fas fa-check-circle"></i> VERIFIED</span>' : ''}
+                        <button class="remove" onclick="event.stopPropagation();removeSaved(${p.property_id})"><i class="fas fa-heart-broken"></i></button>
+                    </div>
+                    <div class="body" onclick="location.href='/student/property?id=${p.property_id}'" style="cursor:pointer;">
+                        <div class="name">${p.property_name}</div>
+                        <div class="loc"><i class="fas fa-map-marker-alt"></i> ${p.area || 'Lusaka'}</div>
+                        <div class="meta">
+                            <div class="price">K${Number(p.monthly_price).toLocaleString()}<small>/month</small></div>
+                            <div class="spaces"><strong>${p.available_spaces || 0}</strong> spaces</div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        } catch (e) {
+            grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:40px;color:#dc2626;">Failed to load.</p>';
+        }
+    }
+
+    async function removeSaved(id) {
+        if (!confirm('Remove from saved?')) return;
+        await fetch('/api/favourites/toggle', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ student_user_id: user.user_id, property_id: id }) });
+        loadSaved();
+    }
+
+    document.addEventListener('DOMContentLoaded', loadSaved);
+</script>
+</body>
+</html>

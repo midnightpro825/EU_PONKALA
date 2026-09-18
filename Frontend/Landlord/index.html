@@ -1,0 +1,1353 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EU PONKALA - Landlord Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f0f2f5; color: #1a1a2e; }
+
+        /* ─── Sidebar ─── */
+        .sidebar {
+            position: fixed; left: 0; top: 0; width: 260px; height: 100vh;
+            background: linear-gradient(180deg, #0f0c29, #302b63, #24243e);
+            color: white; z-index: 1000; overflow-y: auto;
+        }
+        .sidebar-brand { padding: 30px 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .sidebar-brand h2 { font-size: 24px; font-weight: 800; }
+        .sidebar-brand h2 span { color: #f5a623; }
+        .sidebar-brand small { display: block; font-size: 11px; opacity: 0.6; margin-top: 4px; }
+        .sidebar-nav { padding: 20px 16px; }
+        .sidebar-nav .nav-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.4; padding: 16px 12px 8px; font-weight: 600; }
+        .sidebar-nav a {
+            display: flex; align-items: center; gap: 14px;
+            padding: 12px 16px; color: rgba(255,255,255,0.7);
+            text-decoration: none; border-radius: 12px;
+            transition: 0.2s; font-size: 14px; font-weight: 500;
+            margin-bottom: 4px; cursor: pointer;
+        }
+        .sidebar-nav a:hover { background: rgba(255,255,255,0.08); color: white; }
+        .sidebar-nav a.active { background: rgba(245, 166, 35, 0.15); color: #f5a623; box-shadow: inset 3px 0 0 #f5a623; }
+        .sidebar-nav a i { width: 20px; text-align: center; }
+        .sidebar-nav a .badge { margin-left: auto; background: #f5a623; color: #1a1a2e; font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 20px; }
+        .sidebar-nav a .badge.red { background: #dc2626; color: white; }
+
+        /* ─── Layout ─── */
+        .main-content { margin-left: 260px; padding: 24px 32px 40px; min-height: 100vh; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 24px; border-bottom: 1px solid #e4e7ec; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }
+        .header-left h1 { font-size: 28px; font-weight: 700; }
+        .header-left .greeting { font-size: 14px; color: #6b7280; margin-top: 2px; }
+        .header-left .greeting .highlight { color: #f5a623; font-weight: 600; }
+        .header-right { display: flex; align-items: center; gap: 16px; }
+        .header-right .notification-btn { position: relative; width: 44px; height: 44px; border-radius: 50%; background: white; border: 1px solid #e4e7ec; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #1a1a2e; font-size: 18px; }
+        .header-right .notification-btn .dot { position: absolute; top: 8px; right: 8px; width: 10px; height: 10px; background: #ef4444; border-radius: 50%; border: 2px solid white; }
+        .header-right .user-profile { display: flex; align-items: center; gap: 12px; padding: 6px 16px 6px 6px; background: white; border-radius: 50px; border: 1px solid #e4e7ec; cursor: pointer; }
+        .header-right .user-profile img { width: 36px; height: 36px; border-radius: 50%; }
+        .header-right .user-profile .user-info .name { font-size: 14px; font-weight: 600; }
+        .header-right .user-profile .user-info .role { font-size: 12px; color: #6b7280; }
+
+        /* ─── Stats ─── */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 28px; }
+        .stat-card { background: white; border-radius: 16px; padding: 20px 22px; border: 1px solid #e4e7ec; transition: 0.2s; cursor: pointer; }
+        .stat-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); transform: translateY(-2px); }
+        .stat-card .stat-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 10px; }
+        .stat-card .stat-icon.blue { background: #dbeafe; color: #2563eb; }
+        .stat-card .stat-icon.green { background: #d1fae5; color: #059669; }
+        .stat-card .stat-icon.orange { background: #fef3c7; color: #d97706; }
+        .stat-card .stat-icon.purple { background: #ede9fe; color: #7c3aed; }
+        .stat-card .stat-icon.pink { background: #fce7f3; color: #db2777; }
+        .stat-card .stat-number { font-size: 26px; font-weight: 700; }
+        .stat-card .stat-label { font-size: 13px; color: #6b7280; margin-top: 2px; }
+
+        /* ─── Section header ─── */
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .section-header h3 { font-size: 18px; font-weight: 600; }
+        .section-header .view-all { color: #f5a623; text-decoration: none; font-size: 14px; font-weight: 500; cursor: pointer; }
+
+        /* ─── Quick actions ─── */
+        .quick-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 28px; }
+        .quick-action { background: white; border-radius: 14px; padding: 16px 20px; border: 1px solid #e4e7ec; text-align: center; cursor: pointer; transition: 0.2s; text-decoration: none; color: #1a1a2e; }
+        .quick-action:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); transform: translateY(-2px); border-color: #f5a623; }
+        .quick-action i { font-size: 24px; color: #f5a623; display: block; margin-bottom: 6px; }
+        .quick-action span { font-size: 13px; font-weight: 500; }
+
+        /* ─── Property cards ─── */
+        .property-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; margin-bottom: 32px; }
+        .property-card { background: white; border-radius: 16px; overflow: hidden; border: 1px solid #e4e7ec; transition: 0.2s; }
+        .property-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-4px); }
+        .property-card .property-img { height: 140px; background: linear-gradient(135deg, #667eea, #764ba2); position: relative; display: flex; align-items: center; justify-content: center; color: white; font-size: 36px; }
+        .property-card .property-img .verified-badge { position: absolute; top: 10px; right: 10px; background: #059669; color: white; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+        .property-card .property-img .status-badge { position: absolute; bottom: 10px; left: 10px; padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+        .property-card .property-img .status-badge.available { background: #059669; color: white; }
+        .property-card .property-img .status-badge.full { background: #dc2626; color: white; }
+        .property-card .property-img .status-badge.pending { background: #f59e0b; color: #1a1a2e; }
+        .property-card .property-body { padding: 16px 18px 18px; }
+        .property-card .property-body .property-name { font-size: 16px; font-weight: 600; margin-bottom: 2px; }
+        .property-card .property-body .property-location { font-size: 12px; color: #6b7280; margin-bottom: 8px; }
+        .property-card .property-body .property-meta { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid #f0f2f5; }
+        .property-card .property-body .property-meta .price { font-size: 17px; font-weight: 700; color: #f5a623; }
+        .property-card .property-body .property-meta .price small { font-size: 12px; font-weight: 400; color: #6b7280; }
+        .property-card .property-body .property-meta .spaces { font-size: 12px; color: #6b7280; }
+        .property-card .property-body .property-meta .spaces strong { color: #1a1a2e; }
+        .property-card .property-actions { display: flex; gap: 8px; padding: 10px 18px 16px; border-top: 1px solid #f0f2f5; flex-wrap: wrap; }
+        .property-card .property-actions .btn { padding: 8px 14px; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: inherit; display: inline-flex; align-items: center; gap: 6px; }
+        .property-card .property-actions .btn-primary { background: #f5a623; color: white; }
+        .property-card .property-actions .btn-primary:hover { background: #d4951f; }
+        .property-card .property-actions .btn-success { background: #7c3aed; color: white; }
+        .property-card .property-actions .btn-success:hover { background: #6d28d9; }
+        .property-card .property-actions .btn-danger { background: #fee2e2; color: #dc2626; }
+        .property-card .property-actions .btn-danger:hover { background: #dc2626; color: white; }
+        .property-card .property-actions .btn-outline { background: transparent; border: 1px solid #e4e7ec; color: #6b7280; }
+        .property-card .property-actions .btn-outline:hover { background: #f8f9fa; }
+
+        /* ─── Toggle full/vacant ─── */
+        .toggle-full-btn { padding: 8px 14px; border-radius: 8px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.2s; font-family: inherit; display: inline-flex; align-items: center; gap: 6px; }
+        .toggle-full-btn.vacant { background: #d1fae5; color: #059669; }
+        .toggle-full-btn.vacant:hover { background: #059669; color: white; }
+        .toggle-full-btn.full { background: #fee2e2; color: #dc2626; }
+        .toggle-full-btn.full:hover { background: #dc2626; color: white; }
+
+        /* ─── Table ─── */
+        .table-container { background: white; border-radius: 16px; border: 1px solid #e4e7ec; overflow: hidden; margin-bottom: 32px; }
+        .table-container table { width: 100%; border-collapse: collapse; }
+        .table-container th { text-align: left; padding: 14px 18px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #6b7280; background: #f8f9fa; border-bottom: 1px solid #e4e7ec; }
+        .table-container td { padding: 12px 18px; border-bottom: 1px solid #f0f2f5; font-size: 14px; }
+        .table-container tr:last-child td { border-bottom: none; }
+        .table-container .status-tag { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .table-container .status-tag.new { background: #dbeafe; color: #2563eb; }
+        .table-container .status-tag.viewed { background: #fef3c7; color: #d97706; }
+        .table-container .status-tag.replied { background: #d1fae5; color: #059669; }
+        .table-container .status-tag.closed { background: #f3f4f6; color: #6b7280; }
+        .table-container .status-tag.available { background: #d1fae5; color: #059669; }
+        .table-container .status-tag.full { background: #fee2e2; color: #dc2626; }
+        .table-container .status-tag.pending { background: #fef3c7; color: #d97706; }
+        .table-container .action-btn { padding: 5px 12px; border: none; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; transition: 0.2s; margin-right: 4px; font-family: inherit; }
+        .table-container .action-btn.reply { background: #dbeafe; color: #2563eb; }
+        .table-container .action-btn.reply:hover { background: #2563eb; color: white; }
+        .table-container .action-btn.view { background: #fef3c7; color: #d97706; }
+        .table-container .action-btn.view:hover { background: #d97706; color: white; }
+        .table-container .action-btn.close { background: #fee2e2; color: #dc2626; }
+        .table-container .action-btn.close:hover { background: #dc2626; color: white; }
+
+        /* ─── Subscription card ─── */
+        .subscription-card { background: white; border-radius: 16px; padding: 24px; border: 1px solid #e4e7ec; margin-bottom: 28px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .subscription-card .sub-info h4 { font-size: 16px; font-weight: 600; }
+        .subscription-card .sub-info p { font-size: 14px; color: #6b7280; }
+        .subscription-card .sub-info .plan { color: #f5a623; font-weight: 700; font-size: 18px; }
+        .subscription-card .sub-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .subscription-card .sub-actions .btn { padding: 8px 20px; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; font-family: inherit; }
+        .subscription-card .sub-actions .btn-primary { background: #f5a623; color: white; }
+        .subscription-card .sub-actions .btn-primary:hover { background: #d4951f; }
+        .subscription-card .sub-actions .btn-outline { background: transparent; border: 1px solid #e4e7ec; color: #6b7280; }
+        .subscription-card .sub-actions .btn-outline:hover { background: #f8f9fa; }
+
+        /* ─── Toast ─── */
+        .toast { position: fixed; bottom: 24px; right: 24px; padding: 16px 24px; border-radius: 12px; color: white; font-weight: 500; z-index: 10000; transform: translateY(100px); opacity: 0; transition: 0.4s ease; max-width: 400px; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { background: #059669; }
+        .toast.error { background: #dc2626; }
+        .toast.warning { background: #d97706; }
+        .toast.info { background: #2563eb; }
+
+        /* ─── Mobile ─── */
+        .mobile-toggle { display: none; background: none; border: none; font-size: 24px; color: #1a1a2e; cursor: pointer; padding: 8px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* ═══ PHASE 2: Modals ═══ */
+        .pk-modal { display: none; position: fixed; inset: 0; background: rgba(15,12,41,0.55); backdrop-filter: blur(6px); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
+        .pk-modal.open { display: flex; }
+        .pk-modal-box { background: white; border-radius: 22px; padding: 28px; width: 100%; max-width: 680px; max-height: 90vh; overflow-y: auto; animation: pkIn 0.25s ease; position: relative; }
+        @keyframes pkIn { from { opacity: 0; transform: scale(0.96) translateY(12px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .pk-modal-box h2 { font-size: 22px; font-weight: 800; margin-bottom: 4px; color: #0f0c29; }
+        .pk-modal-box .sub { color: #6b7280; font-size: 14px; margin-bottom: 20px; }
+        .pk-modal-box .close-x { position: absolute; top: 20px; right: 24px; background: #f3f4f6; border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 18px; cursor: pointer; color: #6b7280; }
+        .pk-modal-box .close-x:hover { background: #e5e7eb; color: #1a1a2e; }
+
+        /* Room rows */
+        .room-manager-row { background: #f8f9fa; border-radius: 14px; padding: 16px 20px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; transition: 0.2s; }
+        .room-manager-row:hover { background: #f0f2f5; }
+        .room-manager-row .info .name { font-weight: 700; font-size: 15px; }
+        .room-manager-row .info .meta { font-size: 13px; color: #6b7280; }
+        .room-manager-row .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        .room-manager-row .actions button { padding: 6px 12px; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; transition: 0.2s; }
+        .btn-occupy { background: #d1fae5; color: #059669; }
+        .btn-occupy:hover { background: #059669; color: white; }
+        .btn-vacate { background: #fef3c7; color: #d97706; }
+        .btn-vacate:hover { background: #d97706; color: white; }
+        .btn-edit-r { background: #dbeafe; color: #2563eb; }
+        .btn-edit-r:hover { background: #2563eb; color: white; }
+        .btn-photos { background: #ede9fe; color: #7c3aed; }
+        .btn-photos:hover { background: #7c3aed; color: white; }
+        .btn-del-r { background: #fee2e2; color: #dc2626; }
+        .btn-del-r:hover { background: #dc2626; color: white; }
+
+        /* Inputs / buttons */
+        .pk-input { width: 100%; padding: 12px 16px; border: 1.5px solid #eef2f6; border-radius: 12px; font-size: 14px; font-family: inherit; transition: 0.2s; background: #f8f9fa; }
+        .pk-input:focus { outline: none; border-color: #f5a623; background: white; box-shadow: 0 0 0 4px rgba(245,166,35,0.10); }
+        .pk-label { display: block; font-weight: 600; font-size: 13px; margin-bottom: 6px; color: #1a1a2e; }
+        .pk-btn-primary { background: linear-gradient(135deg, #f5a623, #d4951f); color: white; border: none; padding: 12px 28px; border-radius: 12px; font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit; transition: 0.2s; }
+        .pk-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(245,166,35,0.35); }
+        .pk-btn-secondary { background: #f3f4f6; color: #6b7280; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 14px; cursor: pointer; font-family: inherit; }
+        .pk-btn-secondary:hover { background: #e5e7eb; }
+
+        /* Category tabs */
+        .cat-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+        .cat-tab { padding: 8px 16px; border-radius: 50px; border: 1.5px solid #eef2f6; background: white; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; color: #6b7280; transition: 0.2s; }
+        .cat-tab:hover { border-color: #f5a623; color: #1a1a2e; }
+        .cat-tab.active { background: #f5a623; color: white; border-color: #f5a623; }
+
+        /* Upload */
+        .upload-drop { border: 2px dashed #eef2f6; border-radius: 16px; padding: 32px 20px; text-align: center; cursor: pointer; transition: 0.2s; background: #f8f9fa; margin-bottom: 16px; }
+        .upload-drop:hover, .upload-drop.dragover { border-color: #f5a623; background: #fefce8; }
+        .upload-drop .icon { font-size: 42px; color: #f5a623; margin-bottom: 8px; }
+        .upload-drop p { font-size: 14px; color: #4b5563; font-weight: 500; }
+        .upload-drop small { font-size: 12px; color: #9ca3af; }
+
+        /* Photo grid */
+        .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 14px; }
+        .photo-tile { position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden; background: #f0f2f5; cursor: pointer; transition: 0.2s; }
+        .photo-tile:hover { transform: scale(1.03); }
+        .photo-tile img { width: 100%; height: 100%; object-fit: cover; }
+        .photo-tile .p-actions { position: absolute; inset: auto 6px 6px auto; display: flex; gap: 4px; }
+        .photo-tile .p-actions button { width: 28px; height: 28px; border-radius: 50%; border: none; background: rgba(255,255,255,0.92); cursor: pointer; font-size: 12px; transition: 0.2s; backdrop-filter: blur(4px); }
+        .photo-tile .p-actions button:hover { transform: scale(1.1); }
+        .photo-tile.is-primary { outline: 3px solid #f5a623; outline-offset: -3px; }
+        .photo-tile.is-primary::before { content: '★ COVER'; position: absolute; top: 6px; left: 6px; background: #f5a623; color: white; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; letter-spacing: 0.3px; }
+
+        .pk-toast { position: fixed; bottom: 24px; right: 24px; background: #059669; color: white; padding: 14px 24px; border-radius: 12px; font-weight: 600; font-size: 14px; z-index: 10001; opacity: 0; transition: 0.35s; pointer-events: none; box-shadow: 0 8px 28px rgba(0,0,0,0.15); max-width: 380px; }
+        .pk-toast.show { opacity: 1; }
+        .pk-toast.error { background: #dc2626; }
+        .pk-toast.warn { background: #d97706; }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 0; overflow: hidden; padding: 0; }
+            .sidebar.open { width: 260px; padding: 0; }
+            .main-content { margin-left: 0; padding: 16px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .property-grid { grid-template-columns: 1fr; }
+            .quick-actions { grid-template-columns: repeat(2, 1fr); }
+            .header-left h1 { font-size: 22px; }
+            .table-container { overflow-x: auto; }
+            .mobile-toggle { display: block; }
+            .subscription-card { flex-direction: column; text-align: center; }
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f0f2f5; }
+        ::-webkit-scrollbar-thumb { background: #c4c8d0; border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <h2>EU <span>PONKALA</span></h2>
+            <small>Landlord Dashboard</small>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-label">Main</div>
+            <a class="active" data-section="dashboard"><i class="fas fa-home"></i> Dashboard</a>
+            <a data-section="properties"><i class="fas fa-building"></i> My Properties <span class="badge" id="propertyBadge">0</span></a>
+            <a data-section="inquiries"><i class="fas fa-envelope"></i> Inquiries <span class="badge red" id="inquiryBadge">0</span></a>
+            <a data-section="rooms"><i class="fas fa-door-open"></i> Rooms & Spaces</a>
+
+            <div class="nav-label">Management</div>
+            <a data-section="add-property"><i class="fas fa-plus-circle"></i> Add Property</a>
+            <a data-section="analytics"><i class="fas fa-chart-line"></i> Insights</a>
+            <a data-section="map"><i class="fas fa-map-marked-alt"></i> My Map</a>
+
+            <div class="nav-label">Account</div>
+            <a data-section="subscription"><i class="fas fa-credit-card"></i> Subscription</a>
+            <a data-section="profile"><i class="fas fa-user"></i> Profile</a>
+            <a onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="header">
+            <div class="header-left">
+                <button class="mobile-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 id="pageTitle">Dashboard</h1>
+                <div class="greeting" id="greetingText">Good morning, <span class="highlight">Landlord</span></div>
+            </div>
+            <div class="header-right">
+                <button class="notification-btn" onclick="showSection('inquiries')">
+                    <i class="fas fa-bell"></i>
+                    <span class="dot"></span>
+                </button>
+                <div class="user-profile" onclick="showSection('profile')">
+                    <img id="userAvatarImg" src="https://ui-avatars.com/api/?name=L&background=f5a623&color=fff&size=36" alt="Landlord">
+                    <div class="user-info">
+                        <div class="name" id="userNameText">Landlord</div>
+                        <div class="role">Verified Landlord</div>
+                    </div>
+                    <i class="fas fa-chevron-down" style="font-size:12px;color:#6b7280;"></i>
+                </div>
+            </div>
+        </header>
+
+        <!-- DASHBOARD -->
+        <div id="section-dashboard" class="tab-content active">
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-building"></i></div><div class="stat-number" id="statProperties">0</div><div class="stat-label">My Properties</div></div>
+                <div class="stat-card"><div class="stat-icon green"><i class="fas fa-door-open"></i></div><div class="stat-number" id="statAvailable">0</div><div class="stat-label">Available Spaces</div></div>
+                <div class="stat-card"><div class="stat-icon orange"><i class="fas fa-envelope"></i></div><div class="stat-number" id="statInquiries">0</div><div class="stat-label">Student Inquiries</div></div>
+                <div class="stat-card"><div class="stat-icon purple"><i class="fas fa-eye"></i></div><div class="stat-number" id="statViews">0</div><div class="stat-label">Property Views</div></div>
+                <div class="stat-card"><div class="stat-icon pink"><i class="fas fa-heart"></i></div><div class="stat-number" id="statSaves">0</div><div class="stat-label">Saves</div></div>
+            </div>
+
+            <div class="quick-actions">
+                <div class="quick-action" onclick="showSection('add-property')"><i class="fas fa-plus-circle"></i><span>Add Property</span></div>
+                <div class="quick-action" onclick="showSection('rooms')"><i class="fas fa-door-open"></i><span>Add Room</span></div>
+                <div class="quick-action" onclick="showSection('properties')"><i class="fas fa-clock"></i><span>Update Availability</span></div>
+                <div class="quick-action" onclick="showSection('inquiries')"><i class="fas fa-envelope"></i><span>View Inquiries</span></div>
+            </div>
+
+            <div class="section-header">
+                <h3>🏠 My Properties</h3>
+                <a class="view-all" onclick="showSection('properties')">View All →</a>
+            </div>
+            <div class="property-grid" id="propertyGrid"></div>
+        </div>
+
+        <!-- PROPERTIES -->
+        <div id="section-properties" class="tab-content">
+            <div class="section-header">
+                <h3>🏢 My Properties</h3>
+                <button class="action-btn reply" onclick="showSection('add-property')"><i class="fas fa-plus"></i> Add Property</button>
+            </div>
+            <div class="property-grid" id="allPropertiesGrid"></div>
+        </div>
+
+        <!-- INQUIRIES -->
+        <div id="section-inquiries" class="tab-content">
+            <div class="section-header"><h3>📩 Student Inquiries</h3></div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Student</th><th>Property</th><th>Message</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody id="inquiriesTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ROOMS -->
+        <div id="section-rooms" class="tab-content">
+            <div class="section-header"><h3>🚪 Rooms & Spaces</h3></div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Room</th><th>Property</th><th>Type</th><th>Capacity</th><th>Occupied</th><th>Available</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody id="roomsTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ADD PROPERTY -->
+        <div id="section-add-property" class="tab-content">
+            <div class="section-header"><h3>➕ Add New Property</h3></div>
+            <div style="background:white;border-radius:16px;padding:28px;border:1px solid #e4e7ec;max-width:700px;">
+                <div style="margin-bottom:14px;">
+                    <label style="display:block;font-weight:600;font-size:14px;margin-bottom:4px;">Property Name</label>
+                    <input type="text" id="addPropName" placeholder="Enter property name" class="pk-input">
+                </div>
+                <div style="margin-bottom:14px;">
+                    <label style="display:block;font-weight:600;font-size:14px;margin-bottom:4px;">Description</label>
+                    <textarea id="addPropDesc" rows="3" placeholder="Describe your property" class="pk-input"></textarea>
+                </div>
+                <div style="margin-bottom:14px;">
+                    <label style="display:block;font-weight:600;font-size:14px;margin-bottom:4px;">Address</label>
+                    <input type="text" id="addPropAddress" placeholder="Enter full address" class="pk-input">
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+                    <div>
+                        <label style="display:block;font-weight:600;font-size:14px;margin-bottom:4px;">Area</label>
+                        <input type="text" id="addPropArea" placeholder="e.g. Chelstone" class="pk-input">
+                    </div>
+                    <div>
+                        <label style="display:block;font-weight:600;font-size:14px;margin-bottom:4px;">Monthly Price (K)</label>
+                        <input type="number" id="addPropPrice" placeholder="1500" class="pk-input">
+                    </div>
+                </div>
+                <button class="pk-btn-primary" onclick="addProperty()"><i class="fas fa-check"></i> Submit Property</button>
+            </div>
+        </div>
+
+        <!-- MY MAP -->
+        <div id="section-map" class="tab-content">
+            <div class="section-header">
+                <h3>🗺️ My Properties on Map</h3>
+                <button class="action-btn reply" onclick="locateLandlord()"><i class="fas fa-location-arrow"></i> My Location</button>
+            </div>
+            <div id="landlordMap" style="height: 520px; border-radius: 16px; overflow: hidden; border: 1px solid #e4e7ec;"></div>
+            <div class="section-header" style="margin-top:24px;"><h3>📍 Properties</h3></div>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>Property</th><th>Area</th><th>Latitude</th><th>Longitude</th><th>Status</th></tr></thead>
+                    <tbody id="mapPropsTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ANALYTICS -->
+        <div id="section-analytics" class="tab-content">
+            <div class="section-header"><h3>📊 Property Insights</h3></div>
+            <div class="stats-grid" style="margin-bottom:20px;">
+                <div class="stat-card"><div class="stat-number" id="anViews">0</div><div class="stat-label">Property Views</div></div>
+                <div class="stat-card"><div class="stat-number" id="anSaves">0</div><div class="stat-label">Saves</div></div>
+                <div class="stat-card"><div class="stat-number" id="anInquiries">0</div><div class="stat-label">Inquiries</div></div>
+                <div class="stat-card"><div class="stat-number" id="anRooms">0</div><div class="stat-label">Total Rooms</div></div>
+            </div>
+        </div>
+
+        <!-- SUBSCRIPTION -->
+        <div id="section-subscription" class="tab-content">
+            <div class="section-header"><h3>💳 Subscription</h3></div>
+            <div class="subscription-card">
+                <div class="sub-info">
+                    <h4>Current Plan</h4>
+                    <p>Landlord <span class="plan">Standard</span></p>
+                    <p><strong>K300 / 3 Months</strong></p>
+                    <p style="font-size:13px;color:#6b7280;">Expiry: December 8, 2026</p>
+                </div>
+                <div class="sub-actions">
+                    <button class="btn btn-outline" onclick="showToast('📋 Reviewing subscription', 'info')">Review</button>
+                    <button class="btn btn-primary" onclick="showToast('⬆️ Upgrade to Premium', 'info')">Upgrade Plan</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROFILE -->
+        <div id="section-profile" class="tab-content">
+            <div class="section-header"><h3>👤 My Profile</h3></div>
+            <div style="background:white;border-radius:16px;padding:28px;border:1px solid #e4e7ec;max-width:600px;">
+                <div style="display:flex;align-items:center;gap:20px;margin-bottom:24px;">
+                    <img id="profileAvatar" src="https://ui-avatars.com/api/?name=L&background=f5a623&color=fff&size=80" style="border-radius:50%;width:80px;height:80px;">
+                    <div>
+                        <h3 id="profileName">Landlord</h3>
+                        <p style="color:#6b7280;">Verified Landlord <i class="fas fa-check-circle" style="color:#059669;"></i></p>
+                    </div>
+                </div>
+                <div style="margin-bottom:14px;"><label class="pk-label">Full Name</label><input type="text" id="profileFullName" class="pk-input"></div>
+                <div style="margin-bottom:14px;"><label class="pk-label">Email</label><input type="email" id="profileEmail" class="pk-input"></div>
+                <div style="margin-bottom:14px;"><label class="pk-label">Phone</label><input type="text" id="profilePhone" class="pk-input"></div>
+                <button class="pk-btn-primary" onclick="showToast('✅ Profile updated!', 'success')"><i class="fas fa-save"></i> Save Changes</button>
+            </div>
+        </div>
+
+    </main>
+
+    <div class="toast" id="toast"></div>
+    <div class="pk-toast" id="pkToast"></div>
+
+    <!-- ═══ ROOM MANAGER MODAL ═══ -->
+    <div class="pk-modal" id="roomManagerModal">
+        <div class="pk-modal-box">
+            <button class="close-x" onclick="closeRoomManager()">✕</button>
+            <h2 id="rmTitle">Rooms & Spaces</h2>
+            <p class="sub" id="rmSub">Manage bed capacity and occupancy for each room</p>
+            <div id="roomList"></div>
+            <button class="pk-btn-primary" style="margin-top:20px;width:100%;" onclick="openAddRoom()">
+                <i class="fas fa-plus"></i> Add New Room
+            </button>
+        </div>
+    </div>
+
+    <!-- ═══ ADD / EDIT ROOM MODAL ═══ -->
+    <div class="pk-modal" id="roomEditModal">
+        <div class="pk-modal-box">
+            <button class="close-x" onclick="closeRoomEdit()">✕</button>
+            <h2 id="roomEditTitle">Add Room</h2>
+            <p class="sub">Configure the room details</p>
+
+            <div style="margin-bottom:14px;">
+                <label class="pk-label">Room Name</label>
+                <input class="pk-input" id="roomNameInput" placeholder="e.g. Room 6">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+                <div>
+                    <label class="pk-label">Type</label>
+                    <select class="pk-input" id="roomTypeInput">
+                        <option value="single">Single</option>
+                        <option value="double" selected>Double</option>
+                        <option value="shared">Shared</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="pk-label">Capacity (beds)</label>
+                    <input class="pk-input" id="roomCapInput" type="number" min="1" value="2">
+                </div>
+            </div>
+            <div style="margin-bottom:14px;">
+                <label class="pk-label">Price per month (K)</label>
+                <input class="pk-input" id="roomPriceInput" type="number" min="0" value="1500">
+            </div>
+            <div style="margin-bottom:20px;">
+                <label class="pk-label">Notes (optional)</label>
+                <textarea class="pk-input" id="roomNotesInput" rows="2" placeholder="e.g. Has private bathroom"></textarea>
+            </div>
+            <div style="display:flex;gap:12px;justify-content:flex-end;">
+                <button class="pk-btn-secondary" onclick="closeRoomEdit()">Cancel</button>
+                <button class="pk-btn-primary" onclick="saveRoom()">Save Room</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ PHOTO UPLOADER MODAL ═══ -->
+    <div class="pk-modal" id="photoModal">
+        <div class="pk-modal-box" style="max-width:760px;">
+            <button class="close-x" onclick="closePhotoModal()">✕</button>
+            <h2 id="pmTitle">Property Photos</h2>
+            <p class="sub" id="pmSub">Upload and organise photos by category</p>
+
+            <div style="margin-bottom:14px;">
+                <label class="pk-label">Scope</label>
+                <select class="pk-input" id="photoScope" onchange="onPhotoScopeChange()">
+                    <option value="property">Property-level</option>
+                    <option value="room">Specific room</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom:14px;display:none;" id="photoRoomSelectWrap">
+                <label class="pk-label">Room</label>
+                <select class="pk-input" id="photoRoomSelect"></select>
+            </div>
+
+            <label class="pk-label">Category</label>
+            <div class="cat-tabs" id="catTabs">
+                <button class="cat-tab active" data-cat="exterior">Exterior</button>
+                <button class="cat-tab" data-cat="kitchen">Kitchen</button>
+                <button class="cat-tab" data-cat="bedroom">Bedroom</button>
+                <button class="cat-tab" data-cat="bathroom">Bathroom</button>
+                <button class="cat-tab" data-cat="common_area">Common Area</button>
+                <button class="cat-tab" data-cat="compound">Compound</button>
+                <button class="cat-tab" data-cat="other">Other</button>
+            </div>
+
+            <div class="upload-drop" id="uploadDrop" onclick="document.getElementById('photoInput').click()">
+                <div class="icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                <p>Click to select photos or drag & drop here</p>
+                <small>JPG, PNG, WebP · up to 8MB each</small>
+                <input type="file" id="photoInput" accept="image/*" multiple style="display:none" onchange="handlePhotoUpload(event)">
+            </div>
+
+            <div class="photo-grid" id="photoGrid"></div>
+        </div>
+    </div>
+
+    <script>
+        // ═══════════════════════════════════════════════
+        // SESSION GUARD
+        // ═══════════════════════════════════════════════
+        (function() {
+            const token = localStorage.getItem('token');
+            const user  = JSON.parse(localStorage.getItem('user') || 'null');
+
+            if (!token || !user) { window.location.href = '/login'; return; }
+            if (user.user_type !== 'landlord') {
+                if (user.user_type === 'student') window.location.href = '/student';
+                else if (user.user_type === 'admin') window.location.href = '/admin';
+                else window.location.href = '/login';
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const hour = new Date().getHours();
+                const timeOfDay = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+                const greeting = document.getElementById('greetingText');
+                if (greeting) greeting.innerHTML = `${timeOfDay}, <span class="highlight">${user.full_name}</span>`;
+                document.getElementById('userNameText').textContent = user.full_name;
+                document.getElementById('userAvatarImg').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.full_name)}&background=f5a623&color=fff&size=36`;
+                document.getElementById('profileAvatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.full_name)}&background=f5a623&color=fff&size=80`;
+                document.getElementById('profileName').textContent = user.full_name;
+                document.getElementById('profileFullName').value = user.full_name;
+                document.getElementById('profileEmail').value = user.email || '';
+                document.getElementById('profilePhone').value = user.phone || '';
+            });
+        })();
+
+        // ═══════════════════════════════════════════════
+        // STATE
+        // ═══════════════════════════════════════════════
+        let allProperties = [];
+        let currentSection = 'dashboard';
+        let currentPropertyId = null;
+        let currentRooms = [];
+        let editingRoomId = null;
+        let photoPropertyId = null;
+        let photoRoomId = null;
+        let photoCategory = 'exterior';
+
+        // ═══════════════════════════════════════════════
+        // TOASTS
+        // ═══════════════════════════════════════════════
+        function showToast(msg, type = 'success') {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast ' + type;
+            t.classList.add('show');
+            clearTimeout(t._hide);
+            t._hide = setTimeout(() => t.classList.remove('show'), 2800);
+        }
+        function pkToast(msg, type = 'success') {
+            const t = document.getElementById('pkToast');
+            t.textContent = msg;
+            t.className = 'pk-toast show' + (type === 'error' ? ' error' : type === 'warn' ? ' warn' : '');
+            clearTimeout(t._h);
+            t._h = setTimeout(() => t.className = 'pk-toast', 2800);
+        }
+
+        // ═══════════════════════════════════════════════
+        // SIDEBAR
+        // ═══════════════════════════════════════════════
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+
+        // ═══════════════════════════════════════════════
+        // NAVIGATION
+        // ═══════════════════════════════════════════════
+        function showSection(section) {
+            currentSection = section;
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            const target = document.getElementById('section-' + section);
+            if (target) target.classList.add('active');
+
+            document.querySelectorAll('.sidebar-nav a').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.sidebar-nav a[data-section="' + section + '"]').forEach(el => el.classList.add('active'));
+
+            const titles = {
+                dashboard: 'Dashboard', properties: 'My Properties', inquiries: 'Inquiries',
+                rooms: 'Rooms & Spaces', 'add-property': 'Add Property', analytics: 'Insights',
+                subscription: 'Subscription', profile: 'My Profile', map: 'My Map'
+            };
+            document.getElementById('pageTitle').textContent = titles[section] || 'Dashboard';
+            document.getElementById('sidebar').classList.remove('open');
+
+            if (section === 'properties') renderProperties();
+            else if (section === 'inquiries') renderInquiries();
+            else if (section === 'rooms') renderRoomsTable();
+            else if (section === 'analytics') renderAnalytics();
+            else if (section === 'map') {
+                setTimeout(() => {
+                    initLandlordMap();
+                    if (landlordMap) { landlordMap.invalidateSize(); refreshLandlordMarkers(); }
+                }, 100);
+            }
+        }
+
+        document.querySelectorAll('.sidebar-nav a[data-section]').forEach(el => {
+            el.addEventListener('click', () => showSection(el.dataset.section));
+        });
+
+        function fmt(n) { return 'K' + Number(n).toLocaleString(); }
+
+        // ═══════════════════════════════════════════════
+        // LOAD DATA
+        // ═══════════════════════════════════════════════
+        async function loadDashboard() {
+            try {
+                const res = await fetch('/api/properties');
+                const data = await res.json();
+                if (data.status === 'success') allProperties = data.data || [];
+            } catch (e) { allProperties = []; }
+
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const myProps = allProperties.filter(p => p.landlord && p.landlord.name === user.full_name);
+            const list = myProps.length ? myProps : allProperties;
+
+            document.getElementById('statProperties').textContent = list.length;
+            document.getElementById('statAvailable').textContent = list.reduce((s, p) => s + (p.available_spaces || 0), 0);
+            document.getElementById('statInquiries').textContent = list.reduce((s, p) => s + (p.inquiry_count || 0), 0);
+            document.getElementById('statViews').textContent = list.reduce((s, p) => s + (p.view_count || 0), 0);
+            document.getElementById('statSaves').textContent = list.reduce((s, p) => s + (p.save_count || 0), 0);
+            document.getElementById('propertyBadge').textContent = list.length;
+
+            renderPropertyCards('propertyGrid', list.slice(0, 3));
+        }
+
+        // ═══════════════════════════════════════════════
+        // RENDER PROPERTY CARDS
+        // ═══════════════════════════════════════════════
+        function renderPropertyCards(gridId, list) {
+            const grid = document.getElementById(gridId);
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            if (!list || !list.length) {
+                grid.innerHTML = '<p style="color:#6b7280;padding:20px;">No properties yet.</p>';
+                return;
+            }
+
+            list.forEach(prop => {
+                const statusClass = prop.status || 'available';
+                const statusLabel = statusClass.charAt(0).toUpperCase() + statusClass.slice(1);
+                const isFull = prop.is_full ? 1 : 0;
+                const card = document.createElement('div');
+                card.className = 'property-card';
+                card.innerHTML = `
+                    <div class="property-img">
+                        <i class="fas fa-home"></i>
+                        ${prop.is_verified ? '<span class="verified-badge"><i class="fas fa-check-circle"></i> VERIFIED</span>' : ''}
+                        <span class="status-badge ${statusClass}">${statusLabel}</span>
+                    </div>
+                    <div class="property-body">
+                        <div class="property-name">${prop.property_name}</div>
+                        <div class="property-location"><i class="fas fa-map-marker-alt"></i> ${prop.area || 'Lusaka'}</div>
+                        <div class="property-meta">
+                            <div class="price">${fmt(prop.monthly_price)} <small>/month</small></div>
+                            <div class="spaces"><strong>${prop.available_spaces || 0}</strong> spaces · <strong>${prop.total_rooms || 0}</strong> rooms</div>
+                        </div>
+                    </div>
+                    <div class="property-actions">
+                        <button class="btn btn-primary" onclick="openRoomManager(${prop.property_id})"><i class="fas fa-door-open"></i> Manage Rooms</button>
+                        <button class="btn btn-success" onclick="openPropertyPhotos(${prop.property_id})"><i class="fas fa-camera"></i> Photos</button>
+                        <button class="toggle-full-btn ${isFull ? 'full' : 'vacant'}" onclick="toggleFull(${prop.property_id})">
+                            ${isFull ? '🔴 Mark Vacant' : '🟢 Mark Full'}
+                        </button>
+                        <button class="btn btn-outline" onclick="editProperty(${prop.property_id})"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-danger" onclick="deleteProperty(${prop.property_id})"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderProperties() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const myProps = allProperties.filter(p => p.landlord && p.landlord.name === user.full_name);
+            renderPropertyCards('allPropertiesGrid', myProps.length ? myProps : allProperties);
+        }
+
+        // ═══════════════════════════════════════════════
+        // FULL / VACANT TOGGLE
+        // ═══════════════════════════════════════════════
+        async function toggleFull(propertyId) {
+            try {
+                const res = await fetch(`/api/properties/${propertyId}/toggle-full`, { method: 'PUT' });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    pkToast(data.message, data.is_full ? 'warn' : 'success');
+                    await loadDashboard();
+                    if (currentSection === 'properties') renderProperties();
+                } else {
+                    pkToast(data.message || 'Failed', 'error');
+                }
+            } catch (e) { pkToast('Network error', 'error'); }
+        }
+
+        // ═══════════════════════════════════════════════
+        // ROOM MANAGER
+        // ═══════════════════════════════════════════════
+        async function openRoomManager(propertyId) {
+            currentPropertyId = propertyId;
+            const prop = allProperties.find(p => p.property_id === propertyId);
+            document.getElementById('rmTitle').textContent = prop ? prop.property_name : 'Rooms & Spaces';
+            await refreshRoomList();
+            document.getElementById('roomManagerModal').classList.add('open');
+        }
+        function closeRoomManager() { document.getElementById('roomManagerModal').classList.remove('open'); }
+
+        async function refreshRoomList() {
+            const list = document.getElementById('roomList');
+            list.innerHTML = '<p style="text-align:center;color:#9ca3af;padding:20px;">Loading rooms…</p>';
+            try {
+                const res = await fetch(`/api/rooms/${currentPropertyId}`);
+                const data = await res.json();
+                currentRooms = data.data || [];
+
+                if (!currentRooms.length) {
+                    list.innerHTML = '<p style="text-align:center;color:#9ca3af;padding:20px;">No rooms yet. Add one below.</p>';
+                    return;
+                }
+                list.innerHTML = '';
+                currentRooms.forEach(r => {
+                    const row = document.createElement('div');
+                    row.className = 'room-manager-row';
+                    const tagColor = r.status === 'available' ? '#059669' : r.status === 'full' ? '#dc2626' : '#d97706';
+                    const tagBg = r.status === 'available' ? '#d1fae5' : r.status === 'full' ? '#fee2e2' : '#fef3c7';
+                    row.innerHTML = `
+                        <div class="info">
+                            <div class="name">${r.room_name}</div>
+                            <div class="meta">
+                                ${r.room_type} · Capacity ${r.capacity} ·
+                                <strong>${r.occupied}</strong> occupied ·
+                                <strong>${r.available}</strong> available ·
+                                <span style="padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700;background:${tagBg};color:${tagColor};">${r.status.toUpperCase()}</span>
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <button class="btn-occupy" onclick="occupyRoom(${r.room_id})">+ Occupy</button>
+                            <button class="btn-vacate" onclick="vacateRoom(${r.room_id})">− Vacate</button>
+                            <button class="btn-photos" onclick="openRoomPhotos(${r.room_id})">📷</button>
+                            <button class="btn-edit-r" onclick="editRoom(${r.room_id})">✎</button>
+                            <button class="btn-del-r" onclick="deleteRoom(${r.room_id})">🗑</button>
+                        </div>
+                    `;
+                    list.appendChild(row);
+                });
+            } catch (e) {
+                list.innerHTML = '<p style="color:#dc2626;padding:20px;">Failed to load rooms.</p>';
+            }
+        }
+
+        async function occupyRoom(roomId) {
+            await fetch(`/api/rooms/${roomId}/occupy`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'occupy' }) });
+            pkToast('Bed marked as occupied');
+            await refreshRoomList();
+            await loadDashboard();
+        }
+        async function vacateRoom(roomId) {
+            await fetch(`/api/rooms/${roomId}/occupy`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'vacate' }) });
+            pkToast('Bed freed up');
+            await refreshRoomList();
+            await loadDashboard();
+        }
+        async function deleteRoom(roomId) {
+            if (!confirm('Delete this room?')) return;
+            await fetch(`/api/rooms/${roomId}`, { method: 'DELETE' });
+            pkToast('Room deleted', 'warn');
+            await refreshRoomList();
+            await loadDashboard();
+        }
+
+        function openAddRoom() {
+            editingRoomId = null;
+            document.getElementById('roomEditTitle').textContent = 'Add Room';
+            document.getElementById('roomNameInput').value = '';
+            document.getElementById('roomTypeInput').value = 'double';
+            document.getElementById('roomCapInput').value = '2';
+            document.getElementById('roomPriceInput').value = '1500';
+            document.getElementById('roomNotesInput').value = '';
+            document.getElementById('roomEditModal').classList.add('open');
+        }
+        function editRoom(roomId) {
+            const r = currentRooms.find(x => x.room_id === roomId);
+            if (!r) return;
+            editingRoomId = roomId;
+            document.getElementById('roomEditTitle').textContent = 'Edit Room';
+            document.getElementById('roomNameInput').value = r.room_name;
+            document.getElementById('roomTypeInput').value = r.room_type;
+            document.getElementById('roomCapInput').value = r.capacity;
+            document.getElementById('roomPriceInput').value = r.price || 0;
+            document.getElementById('roomNotesInput').value = r.notes || '';
+            document.getElementById('roomEditModal').classList.add('open');
+        }
+        function closeRoomEdit() { document.getElementById('roomEditModal').classList.remove('open'); }
+
+        async function saveRoom() {
+            const name = document.getElementById('roomNameInput').value.trim();
+            const type = document.getElementById('roomTypeInput').value;
+            const cap = parseInt(document.getElementById('roomCapInput').value) || 2;
+            const price = parseInt(document.getElementById('roomPriceInput').value) || 0;
+            const notes = document.getElementById('roomNotesInput').value.trim();
+
+            if (!name) { pkToast('Room name is required', 'error'); return; }
+
+            const payload = { property_id: currentPropertyId, room_name: name, room_type: type, capacity: cap, price, notes };
+
+            try {
+                if (editingRoomId) {
+                    const res = await fetch(`/api/rooms/${editingRoomId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    const data = await res.json();
+                    if (data.status !== 'success') { pkToast(data.message || 'Failed', 'error'); return; }
+                    pkToast('Room updated');
+                } else {
+                    const res = await fetch('/api/rooms', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    const data = await res.json();
+                    if (data.status !== 'success') { pkToast(data.message || 'Failed', 'error'); return; }
+                    pkToast('Room added');
+                }
+                closeRoomEdit();
+                await refreshRoomList();
+                await loadDashboard();
+            } catch (e) { pkToast('Network error', 'error'); }
+        }
+
+        // ═══════════════════════════════════════════════
+        // PHOTO UPLOADER
+        // ═══════════════════════════════════════════════
+        function openPropertyPhotos(propertyId) {
+            currentPropertyId = propertyId;
+            photoPropertyId = propertyId;
+            photoRoomId = null;
+            openPhotoModal();
+        }
+        function openRoomPhotos(roomId) {
+            photoPropertyId = currentPropertyId;
+            photoRoomId = roomId;
+            openPhotoModal(roomId);
+        }
+
+        async function openPhotoModal(roomId = null) {
+            // Ensure rooms are loaded for the dropdown
+            if (!currentRooms.length && photoPropertyId) {
+                try {
+                    const res = await fetch(`/api/rooms/${photoPropertyId}`);
+                    const data = await res.json();
+                    currentRooms = data.data || [];
+                } catch (e) { currentRooms = []; }
+            }
+
+            const roomSel = document.getElementById('photoRoomSelect');
+            roomSel.innerHTML = '';
+            currentRooms.forEach(r => {
+                const opt = document.createElement('option');
+                opt.value = r.room_id;
+                opt.textContent = r.room_name;
+                roomSel.appendChild(opt);
+            });
+
+            const scopeSel = document.getElementById('photoScope');
+            scopeSel.value = roomId ? 'room' : 'property';
+            photoCategory = 'exterior';
+
+            document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector('[data-cat="exterior"]').classList.add('active');
+
+            onPhotoScopeChange();
+            document.getElementById('photoModal').classList.add('open');
+        }
+
+        function closePhotoModal() { document.getElementById('photoModal').classList.remove('open'); }
+
+        function onPhotoScopeChange() {
+            const scope = document.getElementById('photoScope').value;
+            document.getElementById('photoRoomSelectWrap').style.display = scope === 'room' ? 'block' : 'none';
+            if (scope === 'room') {
+                const sel = document.getElementById('photoRoomSelect');
+                photoRoomId = sel.value ? parseInt(sel.value) : null;
+            } else {
+                photoRoomId = null;
+            }
+            loadPhotos();
+        }
+
+        // Scope + category + room dropdown handlers
+        document.addEventListener('change', (e) => {
+            if (e.target && e.target.id === 'photoRoomSelect') {
+                photoRoomId = parseInt(e.target.value) || null;
+                loadPhotos();
+            }
+        });
+        document.addEventListener('click', (e) => {
+            if (e.target.classList && e.target.classList.contains('cat-tab')) {
+                document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+                e.target.classList.add('active');
+                photoCategory = e.target.dataset.cat;
+                loadPhotos();
+            }
+        });
+
+        async function loadPhotos() {
+            const grid = document.getElementById('photoGrid');
+            if (!grid) return;
+            grid.innerHTML = '<p style="color:#9ca3af;padding:12px;grid-column:1/-1;text-align:center;">Loading…</p>';
+            try {
+                let url = `/api/photos?property_id=${photoPropertyId}`;
+                const res = await fetch(url);
+                const data = await res.json();
+                const all = data.data || [];
+                const photos = photoRoomId
+                    ? all.filter(p => p.room_id == photoRoomId)
+                    : all.filter(p => !p.room_id);
+
+                if (!photos.length) {
+                    grid.innerHTML = '<p style="color:#9ca3af;padding:12px;text-align:center;grid-column:1/-1;">No photos yet — upload the first one above.</p>';
+                    return;
+                }
+                grid.innerHTML = '';
+                photos.forEach(p => {
+                    const tile = document.createElement('div');
+                    tile.className = 'photo-tile' + (p.is_primary ? ' is-primary' : '');
+                    tile.innerHTML = `
+                        <img src="${p.url}" alt="${p.category}">
+                        <div class="p-actions">
+                            ${!p.is_primary ? `<button class="p-cover" title="Set as cover" onclick="setCover(${p.photo_id})">★</button>` : ''}
+                            <button class="p-del" title="Delete" onclick="deletePhoto(${p.photo_id})">✕</button>
+                        </div>
+                    `;
+                    grid.appendChild(tile);
+                });
+            } catch (e) {
+                grid.innerHTML = '<p style="color:#dc2626;padding:12px;">Failed to load photos.</p>';
+            }
+        }
+
+        async function handlePhotoUpload(event) {
+            const files = event.target.files;
+            if (!files || !files.length) return;
+            const form = new FormData();
+            form.append('property_id', photoPropertyId);
+            if (photoRoomId) form.append('room_id', photoRoomId);
+            form.append('category', photoCategory);
+            for (const f of files) form.append('photos', f);
+
+            const drop = document.getElementById('uploadDrop');
+            const label = drop.querySelector('p');
+            const original = label.textContent;
+            label.textContent = `Uploading ${files.length} photo(s)…`;
+
+            try {
+                const res = await fetch('/api/photos/upload', { method: 'POST', body: form });
+                const data = await res.json();
+                if (data.status === 'success') { pkToast(`${data.data.length} photo(s) uploaded`); await loadPhotos(); }
+                else { pkToast(data.message || 'Upload failed', 'error'); }
+            } catch (e) { pkToast('Upload error', 'error'); }
+            finally {
+                event.target.value = '';
+                label.textContent = original;
+            }
+        }
+
+        async function setCover(photoId) {
+            await fetch(`/api/photos/${photoId}/primary`, { method: 'PUT' });
+            pkToast('Cover photo updated');
+            await loadPhotos();
+        }
+        async function deletePhoto(photoId) {
+            if (!confirm('Delete this photo?')) return;
+            await fetch(`/api/photos/${photoId}`, { method: 'DELETE' });
+            pkToast('Photo deleted', 'warn');
+            await loadPhotos();
+        }
+
+        // Drag & drop
+        document.addEventListener('DOMContentLoaded', () => {
+            const drop = document.getElementById('uploadDrop');
+            if (!drop) return;
+            ['dragenter','dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('dragover'); }));
+            ['dragleave','drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('dragover'); }));
+            drop.addEventListener('drop', e => {
+                const input = document.getElementById('photoInput');
+                input.files = e.dataTransfer.files;
+                handlePhotoUpload({ target: input });
+            });
+        });
+
+        // Escape closes modals
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') document.querySelectorAll('.pk-modal.open').forEach(m => m.classList.remove('open'));
+        });
+
+        // ═══════════════════════════════════════════════
+        // INQUIRIES
+        // ═══════════════════════════════════════════════
+        async function renderInquiries() {
+            let inquiries = [];
+            try {
+                const res = await fetch('/api/inquiries');
+                const data = await res.json();
+                if (data.status === 'success') inquiries = data.data || [];
+            } catch (e) {}
+            const tbody = document.getElementById('inquiriesTable');
+            tbody.innerHTML = '';
+            if (!inquiries.length) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:#6b7280;">No inquiries yet</td></tr>';
+                return;
+            }
+            inquiries.forEach(i => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${i.student_name}</strong></td>
+                    <td>${i.property_name}</td>
+                    <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${i.message}</td>
+                    <td><span class="status-tag ${i.status}">${i.status.charAt(0).toUpperCase() + i.status.slice(1)}</span></td>
+                    <td>
+                        <button class="action-btn reply" onclick="replyInquiry('${i.student_name}')"><i class="fas fa-reply"></i> Reply</button>
+                        <button class="action-btn close" onclick="cancelInquiry(${i.id || 0}, '${i.student_name}')"><i class="fas fa-ban"></i> Cancel</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+        function replyInquiry(name) {
+            const msg = prompt('Reply to ' + name + ':', 'Hello, yes the space is available. When would you like to visit?');
+            if (msg === null || !msg.trim()) return;
+            showToast('💬 Reply sent to ' + name, 'success');
+        }
+        function closeInquiry() { showToast('✅ Inquiry closed', 'warning'); }
+
+        // ═══════════════════════════════════════════════
+        // ROOMS TABLE (sidebar "Rooms & Spaces" view)
+        // ═══════════════════════════════════════════════
+        function renderRoomsTable() {
+            const tbody = document.getElementById('roomsTable');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const myProps = allProperties.filter(p => p.landlord && p.landlord.name === user.full_name);
+            const list = myProps.length ? myProps : allProperties;
+
+            // Fetch rooms for each property and flatten
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:#6b7280;">Loading…</td></tr>';
+
+            Promise.all(list.map(p => fetch(`/api/rooms/${p.property_id}`).then(r => r.json()).then(d => ({ p, rooms: d.data || [] }))))
+                .then(results => {
+                    const flat = [];
+                    results.forEach(({ p, rooms }) => rooms.forEach(r => flat.push({ ...r, property_name: p.property_name })));
+                    if (!flat.length) {
+                        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:24px;color:#6b7280;">No rooms yet</td></tr>';
+                        return;
+                    }
+                    tbody.innerHTML = '';
+                    flat.forEach(r => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td><strong>${r.room_name}</strong></td>
+                            <td>${r.property_name}</td>
+                            <td>${r.room_type}</td>
+                            <td>${r.capacity}</td>
+                            <td>${r.occupied}</td>
+                            <td>${r.available}</td>
+                            <td><span class="status-tag ${r.status}">${r.status.charAt(0).toUpperCase() + r.status.slice(1)}</span></td>
+                            <td>
+                                <button class="action-btn reply" onclick="openRoomManager(${r.property_id})"><i class="fas fa-edit"></i></button>
+                            </td>
+                        `;
+                        tbody.appendChild(tbody);
+                        tbody.appendChild(tr);
+                    });
+                });
+        }
+
+        // ═══════════════════════════════════════════════
+        // ANALYTICS
+        // ═══════════════════════════════════════════════
+        function renderAnalytics() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const myProps = allProperties.filter(p => p.landlord && p.landlord.name === user.full_name);
+            const list = myProps.length ? myProps : allProperties;
+            document.getElementById('anViews').textContent = list.reduce((s, p) => s + (p.view_count || 0), 0);
+            document.getElementById('anSaves').textContent = list.reduce((s, p) => s + (p.save_count || 0), 0);
+            document.getElementById('anInquiries').textContent = list.reduce((s, p) => s + (p.inquiry_count || 0), 0);
+            document.getElementById('anRooms').textContent = list.reduce((s, p) => s + (p.total_rooms || 0), 0);
+        }
+
+        // ═══════════════════════════════════════════════
+        // ADD PROPERTY
+        // ═══════════════════════════════════════════════
+        async function addProperty() {
+            const name = document.getElementById('addPropName').value.trim();
+            const desc = document.getElementById('addPropDesc').value.trim();
+            const address = document.getElementById('addPropAddress').value.trim();
+            const area = document.getElementById('addPropArea').value.trim();
+            const price = document.getElementById('addPropPrice').value;
+
+            if (!name || !address || !price) { showToast('⚠️ Please fill in name, address, and price', 'error'); return; }
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+            try {
+                const res = await fetch('/api/properties', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        landlord_user_id: user.user_id,
+                        property_name: name, description: desc, address, area,
+                        monthly_price: parseInt(price)
+                    })
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    showToast('✅ Property added!', 'success');
+                    document.getElementById('addPropName').value = '';
+                    document.getElementById('addPropDesc').value = '';
+                    document.getElementById('addPropAddress').value = '';
+                    document.getElementById('addPropArea').value = '';
+                    document.getElementById('addPropPrice').value = '';
+                    await loadDashboard();
+                    showSection('properties');
+                } else showToast('❌ ' + (data.message || 'Failed'), 'error');
+            } catch (err) { showToast('❌ Network error', 'error'); }
+        }
+
+        // ═══════════════════════════════════════════════
+        // EDIT / DELETE PROPERTY
+        // ═══════════════════════════════════════════════
+        async function editProperty(id) {
+            const p = allProperties.find(x => x.property_id === id);
+            if (!p) return;
+            const newPrice = prompt('Monthly price (K):', p.monthly_price);
+            if (newPrice === null) return;
+            const newName = prompt('Property name:', p.property_name);
+            if (newName === null) return;
+            await fetch('/api/properties/' + id, {
+                method: 'PUT', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ monthly_price: parseInt(newPrice), property_name: newName })
+            });
+            showToast('✅ Property updated');
+            await loadDashboard();
+            if (currentSection === 'properties') renderProperties();
+        }
+        async function deleteProperty(id) {
+            if (!confirm('Delete this property? This cannot be undone.')) return;
+            await fetch('/api/properties/' + id, { method: 'DELETE' });
+            showToast('🗑️ Property deleted', 'warning');
+            await loadDashboard();
+            if (currentSection === 'properties') renderProperties();
+        }
+
+        // ═══════════════════════════════════════════════
+        // MAP
+        // ═══════════════════════════════════════════════
+        let landlordMap;
+        let landlordMarkers = [];
+        const EDEN_UNI = { lat: -15.3875, lng: 28.3228 };
+
+        function initLandlordMap() {
+            const el = document.getElementById('landlordMap');
+            if (!el || landlordMap) return;
+            landlordMap = L.map('landlordMap', { center: [EDEN_UNI.lat, EDEN_UNI.lng], zoom: 13 });
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap', maxZoom: 19 }).addTo(landlordMap);
+
+            const uniIcon = L.divIcon({
+                className: 'uni-marker',
+                html: '<div style="background:#2563eb;color:white;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 4px 12px rgba(37,99,235,0.4);border:3px solid white;">🎓</div>',
+                iconSize: [36, 36], iconAnchor: [18, 18]
+            });
+            L.marker([EDEN_UNI.lat, EDEN_UNI.lng], { icon: uniIcon }).addTo(landlordMap).bindPopup('<b>Eden University</b>');
+            refreshLandlordMarkers();
+        }
+
+        function refreshLandlordMarkers() {
+            if (!landlordMap) return;
+            landlordMarkers.forEach(m => landlordMap.removeLayer(m));
+            landlordMarkers = [];
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const myProps = allProperties.filter(p => p.landlord && p.landlord.name === user.full_name);
+            const list = myProps.length ? myProps : allProperties;
+
+            const tbody = document.getElementById('mapPropsTable');
+            if (tbody) {
+                tbody.innerHTML = '';
+                list.forEach(p => {
+                    const lat = p.latitude || EDEN_UNI.lat + (Math.random() - 0.5) * 0.02;
+                    const lng = p.longitude || EDEN_UNI.lng + (Math.random() - 0.5) * 0.02;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td><strong>${p.property_name}</strong></td><td>${p.area || 'Lusaka'}</td><td>${lat.toFixed(4)}</td><td>${lng.toFixed(4)}</td><td><span class="status-tag ${p.status || 'pending'}">${(p.status || 'pending')}</span></td>`;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            list.forEach(p => {
+                const lat = p.latitude || EDEN_UNI.lat + (Math.random() - 0.5) * 0.02;
+                const lng = p.longitude || EDEN_UNI.lng + (Math.random() - 0.5) * 0.02;
+                const color = p.status === 'available' ? '#059669' : p.status === 'full' ? '#dc2626' : '#f59e0b';
+                const icon = L.divIcon({
+                    className: 'landlord-marker',
+                    html: `<div style="background:${color};width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;color:white;box-shadow:0 3px 12px rgba(0,0,0,0.25);border:3px solid white;">🏠</div>`,
+                    iconSize: [34, 34], iconAnchor: [17, 17]
+                });
+                const marker = L.marker([lat, lng], { icon, draggable: true }).addTo(landlordMap);
+                marker.bindPopup(`
+                    <div style="min-width:200px;font-family:Inter,sans-serif;">
+                        <div style="font-weight:700;font-size:15px;margin-bottom:4px;">${p.property_name}</div>
+                        <div style="font-size:13px;color:#6b7280;margin-bottom:6px;">${p.area || 'Lusaka'}</div>
+                        <div style="font-weight:700;color:#f5a623;margin-bottom:4px;">K${Number(p.monthly_price).toLocaleString()}/month</div>
+                        <div style="font-size:12px;color:#9ca3af;margin-bottom:8px;">Drag pin to update location</div>
+                        <button onclick="savePinLocation(${p.property_id}, ${lat}, ${lng})" style="background:#f5a623;color:white;padding:6px 14px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;">Save Location</button>
+                        <button onclick="getLandlordDirections(${p.property_id})" style="display:inline-block;margin-left:6px;background:#2563eb;color:white;padding:6px 14px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;">🧭 Directions</button>
+                    </div>
+                `);
+                marker.on('dragend', function(e) {
+                    const nLat = e.target.getLatLng().lat.toFixed(6);
+                    const nLng = e.target.getLatLng().lng.toFixed(6);
+                    marker.setPopupContent(`
+                        <div style="min-width:200px;font-family:Inter,sans-serif;">
+                            <div style="font-weight:700;font-size:15px;margin-bottom:4px;">${p.property_name}</div>
+                            <div style="font-size:12px;color:#6b7280;margin-bottom:6px;">New: ${nLat}, ${nLng}</div>
+                            <button onclick="savePinLocation(${p.property_id}, ${nLat}, ${nLng})" style="background:#f5a623;color:white;padding:6px 14px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;">Save Location</button>
+                            <button onclick="getLandlordDirections(${p.property_id})" style="display:inline-block;margin-left:6px;background:#2563eb;color:white;padding:6px 14px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;">🧭 Directions</button>
+                        </div>
+                    `);
+                });
+                landlordMarkers.push(marker);
+            });
+        }
+
+        function locateLandlord() {
+            if (!navigator.geolocation) { showToast('⚠️ Geolocation not supported', 'error'); return; }
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const lat = pos.coords.latitude, lng = pos.coords.longitude;
+                    if (!landlordMap) return;
+                    landlordMap.setView([lat, lng], 15);
+                    L.circleMarker([lat, lng], { radius: 8, fillColor: '#2563eb', color: 'white', weight: 3, fillOpacity: 1 })
+                        .addTo(landlordMap).bindPopup('📍 You are here').openPopup();
+                    showToast('📍 Located you');
+                },
+                () => showToast('⚠️ Could not get location', 'error')
+            );
+        }
+
+        async function savePinLocation(propertyId, lat, lng) {
+            await fetch('/api/properties/' + propertyId, {
+                method: 'PUT', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ latitude: parseFloat(lat), longitude: parseFloat(lng) })
+            });
+            showToast('✅ Location saved');
+        }
+
+        function getLandlordDirections(propertyId) {
+            const p = allProperties.find(x => x.property_id === propertyId);
+            if (!p) return;
+            const destLat = p.latitude || EDEN_UNI.lat;
+            const destLng = p.longitude || EDEN_UNI.lng;
+            window.open('https://www.google.com/maps/dir/?api=1&destination=' + destLat + ',' + destLng, '_blank');
+            showToast('🧭 Opening directions…');
+        }
+
+        // ═══════════════════════════════════════════════
+        // LOGOUT
+        // ═══════════════════════════════════════════════
+        function logout() {
+            if (confirm('Logout?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/login';
+            }
+        }
+
+        // ═══════════════════════════════════════════════
+        // INIT
+        // ═══════════════════════════════════════════════
+        document.addEventListener('DOMContentLoaded', loadDashboard);
+
+        document.addEventListener('click', (e) => {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.mobile-toggle');
+            if (window.innerWidth <= 768 && !sidebar.contains(e.target) && !toggle?.contains(e.target)) {
+                sidebar.classList.remove('open');
+            }
+        });
+    </script>
+    <!-- ═══ EU PONKALA Chat Widget ═══ -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/shared/chat.js"></script>
+    <script>
+        (function() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            if (user && user.user_id && window.EU_CHAT) {
+                EU_CHAT.init({ userId: user.user_id, userType: 'landlord' });
+            }
+        })();
+        // Cancel/deactivate a property
+        async function cancelProperty(id, name) {
+            if (!confirm('Cancel "' + name + '"? It will be hidden from students.')) return;
+            try {
+                const res = await fetch('/api/properties/' + id, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    showToast(' Property cancelled', 'warning');
+                    loadDashboard();
+                    if (currentSection === 'properties') renderProperties();
+                } else {
+                    showToast(' ' + (data.message || 'Failed'), 'error');
+                }
+            } catch (e) { showToast(' Network error', 'error'); }
+        }
+    </script>
+</body>
+</html>
+
