@@ -53,3 +53,5 @@ Backend/Server/uploads/*
 Thumbs.db
 .vscode/
 .idea/
+
+*.pretestfix.bak
