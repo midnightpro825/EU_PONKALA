@@ -42,7 +42,6 @@ Backend/Server/inspect-*.js
 Backend/Server/cleanup-test-data.js
 Backend/Server/final-e2e-test.js
 Backend/Server/engine-laundry-patch.js
-Backend/Server/assign-job.js
 Backend/Server/setup-db.js
 
 # ================= UPLOADS (runtime-generated) =================
