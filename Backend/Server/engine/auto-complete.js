@@ -17,10 +17,12 @@ async function scheduleAutoComplete(orderId, minutesFromNow) {
     }
 
     // In SQLite: datetime('now', '+N minutes')
+    // Postgres: NOW() + (minutes * INTERVAL '1 minute')
     await run(
         `UPDATE service_orders
-         SET auto_complete_at = datetime('now', '+' || ? || ' minutes'), updated_at = CURRENT_TIMESTAMP
-         WHERE id = ?`,
+         SET auto_complete_at = NOW() + ($1 * INTERVAL '1 minute'),
+             updated_at = NOW()
+         WHERE id = $2`,
         [mins, orderId]
     );
 
@@ -56,7 +58,7 @@ async function autoComplete(orderId) {
     await run(
         `UPDATE service_orders
          SET completion_code_used = 1, dispute_info = COALESCE(dispute_info, '') || ' [auto-completed]',
-             updated_at = CURRENT_TIMESTAMP
+             updated_at = NOW()
          WHERE id = ?`,
         [orderId]
     );

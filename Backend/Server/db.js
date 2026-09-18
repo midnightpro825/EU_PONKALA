@@ -57,6 +57,12 @@ function translateSql(sql) {
     // datetime('now') -> NOW()
     out = out.replace(/datetime\s*\(\s*['"]now['"]\s*\)/gi, 'NOW()');
 
+    // CURRENT_TIMESTAMP -> NOW() (Postgres uses NOW())
+    out = out.replace(/\bCURRENT_TIMESTAMP\b/gi, 'NOW()');
+
+    // AUTOINCREMENT-ish leftovers (shouldn't be in queries, but safe)
+    out = out.replace(/\bAUTOINCREMENT\b/gi, '');
+
     return out;
 }
 
